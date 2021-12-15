@@ -1,6 +1,7 @@
 package eclipse.swing;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -8,12 +9,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import java.awt.TextArea;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.security.Security;
 import java.awt.Label;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import java.awt.SystemColor;
+import java.awt.Choice;
 
 public class Welcome extends JFrame {
 
@@ -63,6 +67,25 @@ public class Welcome extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(txtrAdamBarnes);
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		scrollPane.setBorder(null);
+		
+		JPanel panel = new JPanel();
+		contentPane.add(panel, BorderLayout.SOUTH);
+		
+		Choice choice = new Choice();
+		panel.add(choice);
+		
+		choice.add("Textual Password");
+		
+		Button startPassword = new Button("Start");
+		panel.add(startPassword);
+		
+		startPassword.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String data = "Password selected: " + choice.getItem(choice.getSelectedIndex());
+				txtrAdamBarnes.setText(data);
+			}
+		});
+		
 		
 	}
 
