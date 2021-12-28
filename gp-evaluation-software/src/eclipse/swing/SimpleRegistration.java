@@ -81,6 +81,7 @@ public class SimpleRegistration extends JFrame {
 			public void actionPerformed(ActionEvent event) {
 				String username = usernameField.getText();
 				String password = String.valueOf(passwordField.getPassword());
+				System.out.print(password);
 				String url = "jdbc:mysql://localhost:3306/gp_database";
 				String dbname = "root";
 				String dbpass = "Footyclone2001";
