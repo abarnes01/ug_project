@@ -85,12 +85,9 @@ public class SimpleRegistration extends JFrame {
 				String url = "jdbc:mysql://localhost:3306/gp_database";
 				String dbname = "root";
 				String dbpass = "Footyclone2001";
-				
-				
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
-					String query = "INSERT INTO user(username,password) values('" + username + "','" + password + "')";
-					
+					String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
 					Statement statement = connection.createStatement();
 					int x = statement.executeUpdate(query);
 					if(x == 0) {

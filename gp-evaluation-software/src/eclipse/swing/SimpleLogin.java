@@ -84,22 +84,18 @@ public class SimpleLogin extends JFrame {
 		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String username = textField.getText();
-				String password = passwordField.getPassword().toString();
-				System.out.print(password);
+				Integer password = String.valueOf(passwordField.getPassword()).hashCode();
 				String url = "jdbc:mysql://localhost:3306/gp_database";
 				String dbname = "root";
 				String dbpass = "Footyclone2001";
 				
 				try {
 					Connection connection = (Connection) DriverManager.getConnection(url,dbname,dbpass);
-					PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select * from user where username=?");
+					PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username, password from user where username=? and password=?");
 					
 					st.setString(1, username);
+					st.setInt(2, password);
 					ResultSet rs = st.executeQuery();
-			
-					
-					System.out.print(username);
-					System.out.print(password);
 					
 					if (rs.next()) {
 						System.out.println("Successful");
