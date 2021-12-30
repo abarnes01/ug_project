@@ -74,7 +74,8 @@ public class Welcome extends JFrame {
 		Choice choice = new Choice();
 		panel.add(choice);
 		
-		choice.add("Textual Password");
+		choice.add("Simple Textual Method");
+		choice.add("Grid Method");
 		
 		Button startPassword = new Button("Start");
 		panel.add(startPassword);
@@ -82,8 +83,11 @@ public class Welcome extends JFrame {
 		startPassword.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String data = "Password selected: " + choice.getItem(choice.getSelectedIndex());
-				if (choice.getItem(choice.getSelectedIndex()) == "Textual Password") {
+				if (choice.getItem(choice.getSelectedIndex()) == "Simple Textual Method") {
 					new SimpleRegistration().setVisible(true);
+					dispose();
+				} else if (choice.getItem(choice.getSelectedIndex()) == "Grid Method") {
+					// grid method page
 					dispose();
 				}
 			}

@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -97,7 +98,7 @@ public class SimpleLogin extends JFrame {
 					if (rs.next()) {
 						System.out.println("Successful");
 					} else {
-						System.out.println("Failed");
+						JOptionPane.showMessageDialog(loginButton, "Incorrect login details.");
 					}
 				} catch (SQLException sqlException){
 					sqlException.printStackTrace();
