@@ -88,21 +88,17 @@ public class SimpleLogin extends JFrame {
 				String url = "jdbc:mysql://localhost:3306/gp_database";
 				String dbname = "root";
 				String dbpass = "Footyclone2001";
-				
 				try {
 					Connection connection = (Connection) DriverManager.getConnection(url,dbname,dbpass);
 					PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username, password from user where username=? and password=?");
-					
 					st.setString(1, username);
 					st.setInt(2, password);
 					ResultSet rs = st.executeQuery();
-					
 					if (rs.next()) {
 						System.out.println("Successful");
 					} else {
 						System.out.println("Failed");
 					}
-					
 				} catch (SQLException sqlException){
 					sqlException.printStackTrace();
 					

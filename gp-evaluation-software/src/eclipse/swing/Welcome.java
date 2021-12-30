@@ -82,7 +82,10 @@ public class Welcome extends JFrame {
 		startPassword.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String data = "Password selected: " + choice.getItem(choice.getSelectedIndex());
-				txtrAdamBarnes.setText(data);
+				if (choice.getItem(choice.getSelectedIndex()) == "Textual Password") {
+					new SimpleRegistration().setVisible(true);
+					dispose();
+				}
 			}
 		});
 		

@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 import javax.swing.JButton;
@@ -81,19 +83,29 @@ public class SimpleRegistration extends JFrame {
 			public void actionPerformed(ActionEvent event) {
 				String username = usernameField.getText();
 				String password = String.valueOf(passwordField.getPassword());
-				System.out.print(password);
 				String url = "jdbc:mysql://localhost:3306/gp_database";
 				String dbname = "root";
 				String dbpass = "Footyclone2001";
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
-					String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
-					Statement statement = connection.createStatement();
-					int x = statement.executeUpdate(query);
-					if(x == 0) {
-						JOptionPane.showMessageDialog(registerButton, "User already exists");
+					
+					PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username from user where username=?");
+					
+					st.setString(1, username);
+					ResultSet rs = st.executeQuery();
+					
+					if (rs.next()) {
+						JOptionPane.showMessageDialog(registerButton, "User already exists.");
 					} else {
-						JOptionPane.showMessageDialog(registerButton, "User created");
+						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
+						Statement statement = connection.createStatement();
+						int x = statement.executeUpdate(query);
+						if(x == 0) {
+							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
+						} else {
+							new SimpleLogin().setVisible(true);
+							dispose();
+						}
 					}
 					connection.close();
 				} catch (Exception e) {
