@@ -72,7 +72,6 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 		formPanel.setLayout(new GridLayout(3,1,10,10));
 		
 		// Set the features to the panels
-		contentPane.add(headerPanel, BorderLayout.NORTH);
 		headerPanel.add(headerLabel);
 		formPanel.add(usernameLabel);
 		formPanel.add(usernameField);
@@ -80,6 +79,7 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 		formPanel.add(passwordField);
 		buttonPanel.add(registerButton);
 		
+		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(formPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 		setResizable(false);
