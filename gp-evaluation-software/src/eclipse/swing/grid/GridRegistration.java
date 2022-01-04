@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -21,6 +23,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 
 import eclipse.swing.SimpleLogin;
 
@@ -31,7 +35,8 @@ public class GridRegistration extends JFrame implements ActionListener{
 	private JLabel headerLabel, usernameLabel, passwordLabel, imageLabel;
 	private JTextField usernameField;
 	private JPasswordField passwordField;
-	private JButton registerButton;
+	private JButton registerButton, browseImageButton;
+	private JFileChooser fileChooser;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -65,9 +70,13 @@ public class GridRegistration extends JFrame implements ActionListener{
 		usernameField = new JTextField(10);
 		passwordLabel = new JLabel("Password:");
 		passwordField = new JPasswordField(10);
-		imageLabel = new JLabel("Select image:");
+		imageLabel = new JLabel("No Image Uploaded");
 		
-		// Create buttons
+		// Browse Image Button
+		browseImageButton = new JButton("Browse");
+		browseImageButton.addActionListener(this);
+		
+		// Register Button
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
 		
@@ -83,6 +92,7 @@ public class GridRegistration extends JFrame implements ActionListener{
 		formPanel.add(passwordLabel);
 		formPanel.add(passwordField);
 		formPanel.add(imageLabel);
+		formPanel.add(browseImageButton);
 		buttonPanel.add(registerButton);
 		
 		contentPane.add(formPanel, BorderLayout.CENTER);
@@ -121,14 +131,26 @@ public class GridRegistration extends JFrame implements ActionListener{
 					if (rs.next()) {
 						JOptionPane.showMessageDialog(registerButton, "User already exists.");
 					} else {
-						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
-						Statement statement = connection.createStatement();
-						int x = statement.executeUpdate(query);
-						if(x == 0) {
-							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
+						if (imageLabel.getText() == "No Image Uploaded") {
+							JOptionPane.showMessageDialog(registerButton, "No Image Uploaded.");
 						} else {
-							new SimpleLogin().setVisible(true);
-							dispose();
+							byte[] rawBytes = null;
+							FileInputStream fileInputStream = null;
+							
+							/*
+							 * Insert image into Grid method table in database.
+							 * Need to get raw bytes
+							 */
+							
+							String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
+							Statement statement = connection.createStatement();
+							int x = statement.executeUpdate(query);
+							if(x == 0) {
+								JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
+							} else {
+								new SimpleLogin().setVisible(true);
+								dispose();
+							}
 						}
 					}
 					connection.close();
@@ -136,7 +158,19 @@ public class GridRegistration extends JFrame implements ActionListener{
 					exception.printStackTrace();
 				}
 			}
+		} else if (btn.equals(browseImageButton)) {
+			fileChooser = new JFileChooser("C:\\", FileSystemView.getFileSystemView());
+			fileChooser.setFileFilter(new FileNameExtensionFilter("Image Files", "jpg", "png", "tif", "gif", "bmp"));
+			int returnVal = fileChooser.showOpenDialog(formPanel);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				String fileName = fileChooser.getSelectedFile().getName();
+				String extension = fileName.substring(fileName.lastIndexOf("."));
+				if (extension.equalsIgnoreCase(".jpg") || extension.equalsIgnoreCase(".png") || extension.equalsIgnoreCase(".tif") || extension.equalsIgnoreCase(".gif") || extension.equalsIgnoreCase(".bmp")) {
+					imageLabel.setText(fileChooser.getSelectedFile().getPath());
+				} else {
+					JOptionPane.showMessageDialog(this, "File selected is not an Image", "Error", JOptionPane.ERROR_MESSAGE);  
+				}
+			}
 		}
 	}
-
 }
