@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -122,6 +123,7 @@ public class GridRegistration extends JFrame implements ActionListener{
 			String password = String.valueOf(passwordField.getPassword());
 			String gridSizeStr = gridSizeField.getText();
 			Integer gridSize;
+			String imagePath = imageLabel.getText();
 			String url = "jdbc:mysql://localhost:3306/gp_database";
 			String dbname = "root";
 			String dbpass = "Footyclone2001";
@@ -145,13 +147,21 @@ public class GridRegistration extends JFrame implements ActionListener{
 					if (rs.next()) {
 						JOptionPane.showMessageDialog(registerButton, "User already exists.");
 					} else {
+						// ============== Image to database prep ===============
+						
 						byte[] rawBytes = null;
 						FileInputStream fileInputStream = null;
 						
-						/*
-						 * Insert image into Grid method table in database.
-						 * Need to get raw bytes
-						 */
+						File fObj = new File(imagePath);
+						fileInputStream = new FileInputStream(fObj);
+						
+						Integer imageLength = Integer.parseInt(String.valueOf(fObj.length()));
+						
+						rawBytes = new byte[imageLength];
+						
+						fileInputStream.read(rawBytes, 0, imageLength);
+						
+						// ============== Image to database prep ===============
 						
 						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
 						Statement statement = connection.createStatement();
