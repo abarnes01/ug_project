@@ -32,8 +32,8 @@ public class GridRegistration extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane, headerPanel, formPanel, buttonPanel;
-	private JLabel headerLabel, usernameLabel, passwordLabel, imageLabel;
-	private JTextField usernameField;
+	private JLabel headerLabel, usernameLabel, passwordLabel, imageLabel, gridSizeLabel;
+	private JTextField usernameField, gridSizeField;
 	private JPasswordField passwordField;
 	private JButton registerButton, browseImageButton;
 	private JFileChooser fileChooser;
@@ -76,6 +76,10 @@ public class GridRegistration extends JFrame implements ActionListener{
 		browseImageButton = new JButton("Browse");
 		browseImageButton.addActionListener(this);
 		
+		// Grid Size select
+		gridSizeLabel = new JLabel("Grid Size (4-20)");
+		gridSizeField = new JTextField(10);
+		
 		// Register Button
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
@@ -93,6 +97,8 @@ public class GridRegistration extends JFrame implements ActionListener{
 		formPanel.add(passwordField);
 		formPanel.add(imageLabel);
 		formPanel.add(browseImageButton);
+		formPanel.add(gridSizeLabel);
+		formPanel.add(gridSizeField);
 		buttonPanel.add(registerButton);
 		
 		contentPane.add(formPanel, BorderLayout.CENTER);
@@ -114,13 +120,21 @@ public class GridRegistration extends JFrame implements ActionListener{
 		if (btn.equals(registerButton)) {
 			String username = usernameField.getText();
 			String password = String.valueOf(passwordField.getPassword());
+			String gridSizeStr = gridSizeField.getText();
+			Integer gridSize;
 			String url = "jdbc:mysql://localhost:3306/gp_database";
 			String dbname = "root";
 			String dbpass = "Footyclone2001";
-			if (username.isBlank() || password.isBlank()) {
-				JOptionPane.showMessageDialog(registerButton, "Username or password is empty.");
+			if (username.isBlank() || password.isBlank() || gridSizeStr.isBlank() || imageLabel.getText() == "No Image Uploaded") {
+				JOptionPane.showMessageDialog(registerButton, "Error: Username, password, image or grid size is empty.");
+			} else if (!testProperInt(gridSizeStr)) {
+				JOptionPane.showMessageDialog(registerButton, "Error: Grid Size is not a number.");
+			} else if ((Integer.parseInt(gridSizeStr) < 4) || (Integer.parseInt(gridSizeStr) > 20)) {
+				JOptionPane.showMessageDialog(registerButton, "Error: Grid Size is smaller than 4 or bigger than 20.");
 			} else {
 				try {
+					gridSize = Integer.parseInt(gridSizeStr);
+					
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
 					
 					PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username from user where username=?");
@@ -131,26 +145,22 @@ public class GridRegistration extends JFrame implements ActionListener{
 					if (rs.next()) {
 						JOptionPane.showMessageDialog(registerButton, "User already exists.");
 					} else {
-						if (imageLabel.getText() == "No Image Uploaded") {
-							JOptionPane.showMessageDialog(registerButton, "No Image Uploaded.");
+						byte[] rawBytes = null;
+						FileInputStream fileInputStream = null;
+						
+						/*
+						 * Insert image into Grid method table in database.
+						 * Need to get raw bytes
+						 */
+						
+						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
+						Statement statement = connection.createStatement();
+						int x = statement.executeUpdate(query);
+						if(x == 0) {
+							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
 						} else {
-							byte[] rawBytes = null;
-							FileInputStream fileInputStream = null;
-							
-							/*
-							 * Insert image into Grid method table in database.
-							 * Need to get raw bytes
-							 */
-							
-							String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
-							Statement statement = connection.createStatement();
-							int x = statement.executeUpdate(query);
-							if(x == 0) {
-								JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
-							} else {
-								new SimpleLogin().setVisible(true);
-								dispose();
-							}
+							new SimpleLogin().setVisible(true);
+							dispose();
 						}
 					}
 					connection.close();
@@ -171,6 +181,15 @@ public class GridRegistration extends JFrame implements ActionListener{
 					JOptionPane.showMessageDialog(this, "File selected is not an Image", "Error", JOptionPane.ERROR_MESSAGE);  
 				}
 			}
+		}
+	}
+	
+	boolean testProperInt(String txt) {
+		try {
+			Integer.parseInt(txt);
+			return true;
+		} catch (NumberFormatException exception) {
+			return false;
 		}
 	}
 }
