@@ -168,6 +168,21 @@ public class GridRegistration extends JFrame implements ActionListener{
 						int x = statement.executeUpdate(query);
 						if(x == 0) {
 							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
+						} 
+						
+						PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
+						
+						nextst.setString(1, username);
+						ResultSet newrs = nextst.executeQuery();
+						newrs.next();
+						int userID = newrs.getInt("userID");
+						
+						System.out.print(userID);
+						
+						String gridQuery = "INSERT INTO grid_method(userID,grid_size,image) values('" + userID + "','" + gridSize + "','" + rawBytes + "')";
+						int y = statement.executeUpdate(gridQuery);
+						if(y == 0) {
+							JOptionPane.showMessageDialog(registerButton, "Grid method for user already exists.");
 						} else {
 							new SimpleLogin().setVisible(true);
 							dispose();
