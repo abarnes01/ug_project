@@ -29,6 +29,7 @@ public class SimpleLogin extends JFrame implements ActionListener{
 	private JPasswordField passwordField;
 	private JButton loginButton;
 	private JLabel headerLabel, usernameLabel, passwordLabel;
+	private Method method;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -102,6 +103,9 @@ public class SimpleLogin extends JFrame implements ActionListener{
 				st.setInt(2, password);
 				ResultSet rs = st.executeQuery();
 				if (rs.next()) {
+					if (method == Method.GRID) {
+						// go to grid log in
+					}
 					System.out.println("Successful");
 				} else {
 					JOptionPane.showMessageDialog(loginButton, "Incorrect login details.");
@@ -111,6 +115,14 @@ public class SimpleLogin extends JFrame implements ActionListener{
 				
 			}
 		}
+	}
+	
+	public Method getMethod() {
+		return method;
+	}
+	
+	public void setMethod(Method input) {
+		method = input;
 	}
 
 }

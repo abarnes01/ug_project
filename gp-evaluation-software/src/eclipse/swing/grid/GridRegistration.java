@@ -27,6 +27,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
+import eclipse.swing.Method;
 import eclipse.swing.SimpleLogin;
 
 public class GridRegistration extends JFrame implements ActionListener{
@@ -184,7 +185,9 @@ public class GridRegistration extends JFrame implements ActionListener{
 						if(y == 0) {
 							JOptionPane.showMessageDialog(registerButton, "Grid method for user already exists.");
 						} else {
-							new SimpleLogin().setVisible(true);
+							SimpleLogin sl = new SimpleLogin();
+							sl.setMethod(Method.GRID);
+							sl.setVisible(true);
 							dispose();
 						}
 					}
