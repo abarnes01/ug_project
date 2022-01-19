@@ -103,7 +103,7 @@ public class SimpleLogin extends JFrame implements ActionListener{
 				st.setInt(2, password);
 				ResultSet rs = st.executeQuery();
 				if (rs.next()) {
-					if (method == Method.GRID) {
+					if (method == Method.IMAGEGRID) {
 						// go to grid log in
 					}
 					System.out.println("Successful");

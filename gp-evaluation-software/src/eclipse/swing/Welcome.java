@@ -15,7 +15,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
-import eclipse.swing.grid.GridRegistration;
+import eclipse.swing.colourgrid.ColourGridRegistration;
+import eclipse.swing.imagegrid.ImageGridRegistration;
 
 public class Welcome extends JFrame implements ActionListener {
 
@@ -68,7 +69,8 @@ public class Welcome extends JFrame implements ActionListener {
 		
 		panel.add(choice);
 		choice.add("Simple Textual Method");
-		choice.add("Grid Method");
+		choice.add("Image Grid Method");
+		choice.add("Colour Grid Method");
 		panel.add(startPassword);
 		
 		contentPane.add(title, BorderLayout.NORTH);
@@ -90,9 +92,11 @@ public class Welcome extends JFrame implements ActionListener {
 			if (choice.getItem(choice.getSelectedIndex()) == "Simple Textual Method") {
 				new SimpleRegistration().setVisible(true);
 				dispose();
-			} else if (choice.getItem(choice.getSelectedIndex()) == "Grid Method") {
-				// grid method page
-				new GridRegistration().setVisible(true);
+			} else if (choice.getItem(choice.getSelectedIndex()) == "Image Grid Method") {
+				new ImageGridRegistration().setVisible(true);
+				dispose();
+			} else if (choice.getItem(choice.getSelectedIndex()) == "Image Grid Method") {
+				new ColourGridRegistration().setVisible(true);
 				dispose();
 			}
 		}

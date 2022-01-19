@@ -1,4 +1,4 @@
-package eclipse.swing.grid;
+package eclipse.swing.imagegrid;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -30,7 +30,7 @@ import javax.swing.filechooser.FileSystemView;
 import eclipse.swing.Method;
 import eclipse.swing.SimpleLogin;
 
-public class GridRegistration extends JFrame implements ActionListener{
+public class ImageGridRegistration extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane, headerPanel, formPanel, buttonPanel;
@@ -44,7 +44,7 @@ public class GridRegistration extends JFrame implements ActionListener{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GridRegistration frame = new GridRegistration();
+					ImageGridRegistration frame = new ImageGridRegistration();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -53,7 +53,7 @@ public class GridRegistration extends JFrame implements ActionListener{
 		});
 	}
 
-	public GridRegistration() {
+	public ImageGridRegistration() {
 		
 		// Auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -186,7 +186,7 @@ public class GridRegistration extends JFrame implements ActionListener{
 							JOptionPane.showMessageDialog(registerButton, "Grid method for user already exists.");
 						} else {
 							SimpleLogin sl = new SimpleLogin();
-							sl.setMethod(Method.GRID);
+							sl.setMethod(Method.IMAGEGRID);
 							sl.setVisible(true);
 							dispose();
 						}
