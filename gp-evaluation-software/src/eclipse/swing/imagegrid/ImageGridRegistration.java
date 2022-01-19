@@ -178,12 +178,10 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 						newrs.next();
 						int userID = newrs.getInt("userID");
 						
-						System.out.print(userID);
-						
-						String gridQuery = "INSERT INTO grid_method(userID,grid_size,image) values('" + userID + "','" + gridSize + "','" + rawBytes + "')";
+						String gridQuery = "INSERT INTO image_grid_method(userID,grid_size,image) values('" + userID + "','" + gridSize + "','" + rawBytes + "')";
 						int y = statement.executeUpdate(gridQuery);
 						if(y == 0) {
-							JOptionPane.showMessageDialog(registerButton, "Grid method for user already exists.");
+							JOptionPane.showMessageDialog(registerButton, "Image grid method for user already exists.");
 						} else {
 							SimpleLogin sl = new SimpleLogin();
 							sl.setMethod(Method.IMAGEGRID);
