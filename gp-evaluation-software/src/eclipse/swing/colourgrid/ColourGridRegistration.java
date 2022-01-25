@@ -1,6 +1,7 @@
 package eclipse.swing.colourgrid;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -22,12 +23,11 @@ import javax.swing.border.EmptyBorder;
 
 import eclipse.swing.Method;
 import eclipse.swing.SimpleLogin;
-import eclipse.swing.SimpleRegistration;
 
 public class ColourGridRegistration extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane, headerPanel, formPanel, buttonPanel;
+	private JPanel contentPane, headerPanel, formPanel, buttonPanel, mainPanel;
 	private JTextField usernameField;
 	private JPasswordField passwordField, patternPField;
 	private JButton registerButton;
@@ -59,6 +59,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		// Create the features
 		headerPanel = new JPanel();
 		headerLabel = new JLabel("Colour Grid Registration Form");
+		mainPanel = new JPanel();
 		formPanel = new JPanel();
 		buttonPanel = new JPanel();
 		usernameLabel = new JLabel("Username:");
@@ -86,10 +87,12 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		formPanel.add(patternPField);
 		buttonPanel.add(registerButton);
 		
+		mainPanel.add(formPanel);
+		
 		contentPane.add(headerPanel, BorderLayout.NORTH);
-		contentPane.add(formPanel, BorderLayout.CENTER);
+		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
-		setResizable(false);
+		//setResizable(false);
 	}
 	
 	/* ============ ActionPerformed ============
