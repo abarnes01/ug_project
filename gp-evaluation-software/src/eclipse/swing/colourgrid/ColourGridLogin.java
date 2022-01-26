@@ -71,16 +71,19 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		passwordField = new JPasswordField(10);
 		
 		gridPanel = new JPanel();
-		gridLayout = new GridLayout(25,40);
+		gridLayout = new GridLayout();
 		
 		mainPanel = new JPanel();
+		
+		Color[] colors = {Color.RED, Color.BLUE, Color.PINK, Color.WHITE, Color.GREEN, Color.YELLOW};
 		
 		// ================= GRID LAYOUT ====================
 		
 		gridPanel.setLayout(gridLayout);
-		for (int i = 1; i <= 100; i++) {
+		for (int i = 1; i <= 20; i++) {
 			JTextField tf = new JTextField(String.valueOf(i),4);
-			tf.setBackground(Color.RED);
+			int random_int = (int)Math.floor(Math.random()*(5-1+1)+1);
+			tf.setBackground(colors[random_int]);
 			gridPanel.add(tf);
 		}
 		
@@ -104,7 +107,7 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
-		setResizable(false);
+		//setResizable(false);
 		
 	}
 	
