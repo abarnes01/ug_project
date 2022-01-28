@@ -127,12 +127,23 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 			String dbpass = "Footyclone2001";
 			try {
 				Connection connection = (Connection) DriverManager.getConnection(url,dbname,dbpass);
-				PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username, password from user where username=? and password=?");
+				PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select userID, username, password from user where username=? and password=?");
 				st.setString(1, username);
 				st.setInt(2, password);
 				ResultSet rs = st.executeQuery();
 				if (rs.next()) {
 					System.out.println("Successful");
+					PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select patternPass from colour_grid_method where userID=?");
+					int userID = rs.getInt("userID");
+					System.out.println(userID);
+					nextst.setInt(1, userID);
+					ResultSet newrs = nextst.executeQuery();
+					if (newrs.next()) {
+						System.out.println("Got grid method details");
+						String patternPass = newrs.getString("patternPass");
+					} else {
+						JOptionPane.showMessageDialog(loginButton, "User does not have colour grid method details.");
+					}
 				} else {
 					JOptionPane.showMessageDialog(loginButton, "Incorrect login details.");
 				}

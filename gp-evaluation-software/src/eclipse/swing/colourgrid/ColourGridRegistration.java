@@ -145,9 +145,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 						if(y == 0) {
 							JOptionPane.showMessageDialog(registerButton, "Colour grid method for user already exists.");
 						} else {
-							SimpleLogin sl = new SimpleLogin();
-							sl.setMethod(Method.COLOURGRID);
-							sl.setVisible(true);
+							new ColourGridLogin().setVisible(true);
 							dispose();
 						}
 					}
