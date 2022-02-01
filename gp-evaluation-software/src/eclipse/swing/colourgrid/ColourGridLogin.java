@@ -28,11 +28,11 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 	private JPanel contentPane, formPanel, buttonPanel, gridPanel, mainPanel;
 	private static final long serialVersionUID = 1L;
 	private JPanel headerPanel;
-	private JTextField textField;
-	private JPasswordField passwordField, pColourField;
+	private JPasswordField pColourField;
 	private JButton loginButton;
-	private JLabel headerLabel, usernameLabel, passwordLabel, pColourLabel;
+	private JLabel headerLabel, pColourLabel;
 	private GridLayout gridLayout;
+	private String patternPass;
 
 	/**
 	 * Launch the application.
@@ -65,10 +65,6 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		headerLabel = new JLabel("Login Form");
 		formPanel = new JPanel();
 		buttonPanel = new JPanel();
-		usernameLabel = new JLabel("Username: ");
-		textField = new JTextField(10);
-		passwordLabel = new JLabel("Password: ");
-		passwordField = new JPasswordField(10);
 		
 		gridPanel = new JPanel();
 		gridLayout = new GridLayout();
@@ -95,10 +91,6 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		
 		headerPanel.add(headerLabel);
 		formPanel.setLayout(new GridLayout(3,1,10,10));
-		formPanel.add(usernameLabel);
-		formPanel.add(textField);
-		formPanel.add(passwordLabel);
-		formPanel.add(passwordField);	
 		buttonPanel.add(loginButton);
 		
 		mainPanel.add(formPanel);
@@ -114,45 +106,24 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
-		/*
-		 * Login Button action.
-		 * Will give an error if the login details are incorrect.
-		 * Correct details will prompt the next page with evaluation.
-		 */
+
 		if (btn.equals(loginButton)) {
-			String username = textField.getText();
-			Integer password = String.valueOf(passwordField.getPassword()).hashCode();
 			String url = "jdbc:mysql://localhost:3306/gp_database";
 			String dbname = "root";
 			String dbpass = "Footyclone2001";
-			try {
-				Connection connection = (Connection) DriverManager.getConnection(url,dbname,dbpass);
-				PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select userID, username, password from user where username=? and password=?");
-				st.setString(1, username);
-				st.setInt(2, password);
-				ResultSet rs = st.executeQuery();
-				if (rs.next()) {
-					System.out.println("Successful");
-					PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select patternPass from colour_grid_method where userID=?");
-					int userID = rs.getInt("userID");
-					System.out.println(userID);
-					nextst.setInt(1, userID);
-					ResultSet newrs = nextst.executeQuery();
-					if (newrs.next()) {
-						System.out.println("Got grid method details");
-						String patternPass = newrs.getString("patternPass");
-					} else {
-						JOptionPane.showMessageDialog(loginButton, "User does not have colour grid method details.");
-					}
-				} else {
-					JOptionPane.showMessageDialog(loginButton, "Incorrect login details.");
-				}
-			} catch (SQLException sqlException){
-				sqlException.printStackTrace();
-				
-			}
+			/*
+			 * try {
+			 * 
+			 * } catch (SQLException sqlException){ sqlException.printStackTrace();
+			 * 
+			 * }
+			 */
 		}
 	}
+	
+	public void setPatternPass(String str) {
+		patternPass = str;
+	} 
 
 }
 

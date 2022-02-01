@@ -20,6 +20,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.swing.colourgrid.ColourGridLogin;
+
 public class SimpleLogin extends JFrame implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
@@ -98,13 +100,34 @@ public class SimpleLogin extends JFrame implements ActionListener{
 			String dbpass = "Footyclone2001";
 			try {
 				Connection connection = (Connection) DriverManager.getConnection(url,dbname,dbpass);
-				PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username, password from user where username=? and password=?");
+				PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select userID from user where username=? and password=?");
 				st.setString(1, username);
 				st.setInt(2, password);
 				ResultSet rs = st.executeQuery();
 				if (rs.next()) {
-					if (method == Method.IMAGEGRID) {
-						// go to grid log in
+					if (method == Method.COLOURGRID) {
+						
+						
+						
+	
+						PreparedStatement cglSt = (PreparedStatement) connection.prepareStatement("Select patternPass from colour_grid_method where userID=?");
+						int userID = rs.getInt("userID");
+						cglSt.setInt(1, userID);
+						ResultSet cglRs = cglSt.executeQuery();
+						if (cglRs.next()) {
+							System.out.println("Got grid method details");
+							String patternPass = cglRs.getString("patternPass");
+							// go to grid log in
+							ColourGridLogin cgl = new ColourGridLogin();
+							cgl.setPatternPass(patternPass);
+							cgl.setVisible(true);
+							dispose();
+						} else {
+							JOptionPane.showMessageDialog(loginButton, "User does not have colour grid method details.");
+						}
+						
+						
+
 					}
 					System.out.println("Successful");
 				} else {
