@@ -20,5 +20,6 @@
 	<classpathentry kind="lib" path="/Users/adamjbarnes/.p2/pool/plugins/org.eclipse.ui.forms_3.11.200.v20210622-0925.jar" sourcepath="/Users/adamjbarnes/.p2/pool/plugins/org.eclipse.ui.forms_3.11.200.v20210622-0925.jar"/>
 	<classpathentry kind="lib" path="/Users/adamjbarnes/Documents/gp-project/ab1049/SQL Dependencies/mysql-connector-java-8.0.27.jar"/>
 	<classpathentry kind="lib" path="/Users/adamjbarnes/Documents/gp-project/ab1049/SQL Dependencies/mybatis-3.4.1.jar"/>
+	<classpathentry kind="lib" path="/Users/adamjbarnes/Documents/gp-project/ab1049/Ext Dependencies/commons-lang3-3.12.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

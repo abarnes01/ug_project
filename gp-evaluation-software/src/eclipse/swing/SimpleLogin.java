@@ -120,6 +120,7 @@ public class SimpleLogin extends JFrame implements ActionListener{
 							// go to grid log in
 							ColourGridLogin cgl = new ColourGridLogin();
 							cgl.setPatternPass(patternPass);
+							cgl.makeGrid();
 							cgl.setVisible(true);
 							dispose();
 						} else {
