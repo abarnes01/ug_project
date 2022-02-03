@@ -162,6 +162,10 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 				} else {
 					tf.setText((Character.toString((char)rand.nextInt(26) + 'a')));
 				}
+				// Set to white text if colour is blue. Accessibility
+				if (coloursOnGrid.get(randColourIndex) == Color.BLUE) {
+					tf.setForeground(Color.WHITE);
+				}
 				tf.setEditable(false);
 				gridPanel.add(tf);
 				coloursOnGrid.remove(randColourIndex);
