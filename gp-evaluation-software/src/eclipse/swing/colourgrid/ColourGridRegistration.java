@@ -47,16 +47,14 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 	}
 
 	public ColourGridRegistration() {
-		
-		// Auto
+		// auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		
-		// Create the features
+		// create the features
 		headerPanel = new JPanel();
 		headerLabel = new JLabel("Colour Grid Registration Form");
 		mainPanel = new JPanel();
@@ -68,16 +66,12 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		passwordField = new JPasswordField(10);
 		patternPLabel = new JLabel("Pattern Pass (6 chars):");
 		patternPField = new JPasswordField(6);
-
-		
-		// Create buttons
+		// create buttons
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
-		
-		// Set layout of form and grid constraints
+		// set layout of form and grid constraints
 		formPanel.setLayout(new GridLayout(3,1,10,10));
-		
-		// Set the features to the panels
+		// set the features to the panels
 		headerPanel.add(headerLabel);
 		formPanel.add(usernameLabel);
 		formPanel.add(usernameField);
@@ -86,26 +80,16 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		formPanel.add(patternPLabel);
 		formPanel.add(patternPField);
 		buttonPanel.add(registerButton);
-		
 		mainPanel.add(formPanel);
-		
 		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 		//setResizable(false);
 	}
 	
-	/* ============ ActionPerformed ============
-	 * Overridden action performed for handling all button click events in this window
-	 * @param event ActionEvent object
-	 */
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
-		/*
-		 * Register button action. Takes user name, password and tries to submit it to the database.
-		 * Will give an error if either user name or password is blank or if the user already exists.
-		 */
 		if (btn.equals(registerButton)) {
 			String username = usernameField.getText();
 			String password = String.valueOf(passwordField.getPassword());
@@ -118,12 +102,9 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
-					
 					PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username from user where username=?");
-					
 					st.setString(1, username);
 					ResultSet rs = st.executeQuery();
-					
 					if (rs.next()) {
 						JOptionPane.showMessageDialog(registerButton, "User already exists.");
 					} else {

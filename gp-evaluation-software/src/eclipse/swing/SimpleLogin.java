@@ -47,6 +47,7 @@ public class SimpleLogin extends JFrame implements ActionListener{
 	}
 
 	public SimpleLogin() {
+		// auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -54,6 +55,7 @@ public class SimpleLogin extends JFrame implements ActionListener{
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
+		// create elements
 		headerPanel = new JPanel();
 		headerLabel = new JLabel("Login Form");
 		formPanel = new JPanel();
@@ -62,10 +64,11 @@ public class SimpleLogin extends JFrame implements ActionListener{
 		textField = new JTextField(10);
 		passwordLabel = new JLabel("Password: ");
 		passwordField = new JPasswordField(10);
-		
+		// create login button
 		loginButton = new JButton("Login");
 		loginButton.addActionListener(this);
 		
+		// add features to window
 		headerPanel.add(headerLabel);
 		formPanel.setLayout(new GridLayout(3,1,10,10));
 		formPanel.add(usernameLabel);
@@ -73,7 +76,6 @@ public class SimpleLogin extends JFrame implements ActionListener{
 		formPanel.add(passwordLabel);
 		formPanel.add(passwordField);	
 		buttonPanel.add(loginButton);
-		
 		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(formPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
@@ -106,10 +108,6 @@ public class SimpleLogin extends JFrame implements ActionListener{
 				ResultSet rs = st.executeQuery();
 				if (rs.next()) {
 					if (method == Method.COLOURGRID) {
-						
-						
-						
-	
 						PreparedStatement cglSt = (PreparedStatement) connection.prepareStatement("Select patternPass from colour_grid_method where userID=?");
 						int userID = rs.getInt("userID");
 						cglSt.setInt(1, userID);
@@ -126,9 +124,6 @@ public class SimpleLogin extends JFrame implements ActionListener{
 						} else {
 							JOptionPane.showMessageDialog(loginButton, "User does not have colour grid method details.");
 						}
-						
-						
-
 					}
 					System.out.println("Successful");
 				} else {

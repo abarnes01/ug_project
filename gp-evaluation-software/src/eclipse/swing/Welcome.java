@@ -95,7 +95,7 @@ public class Welcome extends JFrame implements ActionListener {
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Image Grid Method") {
 				new ImageGridRegistration().setVisible(true);
 				dispose();
-			} else if (choice.getItem(choice.getSelectedIndex()) == "Image Grid Method") {
+			} else if (choice.getItem(choice.getSelectedIndex()) == "Colour Grid Method") {
 				new ColourGridRegistration().setVisible(true);
 				dispose();
 			}

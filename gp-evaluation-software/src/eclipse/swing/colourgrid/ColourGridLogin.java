@@ -13,7 +13,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -32,18 +34,16 @@ import eclipse.swing.Method;
 
 public class ColourGridLogin extends JFrame implements ActionListener{
 
-	private JPanel contentPane, formPanel, buttonPanel, gridPanel, mainPanel;
 	private static final long serialVersionUID = 1L;
+	private JPanel contentPane, formPanel, buttonPanel, gridPanel, mainPanel;
 	private JPanel headerPanel;
 	private JPasswordField pColourField;
 	private JButton loginButton;
 	private JLabel headerLabel, pColourLabel;
 	private GridLayout gridLayout;
 	private String patternPass;
+	private Color patternPassColour;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -57,10 +57,8 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public ColourGridLogin() {
+		// auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -68,49 +66,54 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
+		// create elements
 		headerPanel = new JPanel();
 		headerLabel = new JLabel("Login Form");
 		formPanel = new JPanel();
 		buttonPanel = new JPanel();
-		
-		
+		pColourLabel = new JLabel("Enter: ");
+		pColourField = new JPasswordField(10);
 		mainPanel = new JPanel();
-		
-		
-		
-		
-		
 		loginButton = new JButton("Login");
 		loginButton.addActionListener(this);
 		
+		// add elements to window
 		headerPanel.add(headerLabel);
 		formPanel.setLayout(new GridLayout(3,1,10,10));
+		formPanel.add(pColourLabel);
+		formPanel.add(pColourField);
 		buttonPanel.add(loginButton);
-		
 		mainPanel.add(formPanel);
-		
 		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 		//setResizable(false);
-		
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
-
 		if (btn.equals(loginButton)) {
-			String url = "jdbc:mysql://localhost:3306/gp_database";
-			String dbname = "root";
-			String dbpass = "Footyclone2001";
-			/*
-			 * try {
-			 * 
-			 * } catch (SQLException sqlException){ sqlException.printStackTrace();
-			 * 
-			 * }
-			 */
+			// value of user input
+			String ppInput = String.valueOf(pColourField.getPassword());
+			
+			// mapping all the colours to their first letter
+			Map<Color, String> colourMap = new HashMap<>();
+			colourMap.put(Color.RED, "R");
+			colourMap.put(Color.BLUE, "B");
+			colourMap.put(Color.PINK, "P");
+			colourMap.put(Color.WHITE, "W");
+			colourMap.put(Color.GREEN, "G");
+			colourMap.put(Color.YELLOW, "Y");
+			
+			// if user input equals the first letter of the colour their pattern pass lies in
+			if (ppInput.toUpperCase().equals(colourMap.get(patternPassColour))) {
+				JOptionPane.showMessageDialog(loginButton, "Successfully logged in.");
+				System.out.println("Successful log in.");
+				// EVALUATION PAGE
+			} else {
+				JOptionPane.showMessageDialog(loginButton, "Incorrect password.");
+			}
 		}
 	}
 	
@@ -119,9 +122,11 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 	}
 	
 	public void makeGrid() {
+		// create 6 by 6 grid to add to the main panel
 		gridPanel = new JPanel();
 		gridLayout = new GridLayout(6,6);
-		// Array of all the colour tiles that need to be placed on the grid
+		
+		// array of all the colour tiles that need to be placed on the grid
 		List<Color> coloursOnGrid = new ArrayList<Color>( Arrays.asList(Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED,
 								Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE,
 								Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK,
@@ -135,43 +140,38 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 			char[] rawPPCharArray = patternPass.toCharArray();
 			List<Character> ppCharArray = new ArrayList<Character>();
 			ppCharArray.addAll(Arrays.asList(ArrayUtils.toObject(rawPPCharArray)));
-			
 			// random generator
 			Random rand = new Random();
-			
 			int randColourIndex = rand.nextInt(coloursOnGrid.size());
-			
-			Color patternPassColour = coloursOnGrid.get(randColourIndex);
-			// ================= GRID LAYOUT ====================
+			// the colour the password will lie in
+			patternPassColour = coloursOnGrid.get(randColourIndex);
 			
 			gridPanel.setLayout(gridLayout);
-			
 			for (int i = 1; i <= 36; i++) {
-				
+				// for each element, create text field and assign random colour
 				JTextField tf = new JTextField(null, 2);
-				
 				randColourIndex = rand.nextInt(coloursOnGrid.size());
-				
 				tf.setBackground(coloursOnGrid.get(randColourIndex));
-				
+				// add pattern password letters if it is the correct colour
 				if (coloursOnGrid.get(randColourIndex) == patternPassColour) {
 					// set to random character of pattern pass and remove from pattern pass array
 					int randPPIndex = rand.nextInt(ppCharArray.size());
 					tf.setText(Character.toString(ppCharArray.get(randPPIndex)));
 					ppCharArray.remove(randPPIndex);
 				} else {
+					// otherwise set random letter from the alphabet
 					tf.setText((Character.toString((char)rand.nextInt(26) + 'a')));
 				}
-				// Set to white text if colour is blue. Accessibility
+				// set to white text if colour is blue. Accessibility
 				if (coloursOnGrid.get(randColourIndex) == Color.BLUE) {
 					tf.setForeground(Color.WHITE);
 				}
 				tf.setEditable(false);
 				gridPanel.add(tf);
+				// to make sure all colours are evenly distributed
 				coloursOnGrid.remove(randColourIndex);
 			}
-			
-			
+		// IF no pattern pass, which is also dealt with in simple login
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
