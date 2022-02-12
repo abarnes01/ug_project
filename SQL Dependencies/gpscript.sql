@@ -13,7 +13,8 @@ create table user
 create table image_grid_method (
 	userID int NOT NULL,
     grid_size int NOT NULL,
-    image LONGBLOB,
+    imageOne LONGBLOB,
+    imageTwo LONGBLOB,
     foreign key (userID) references user(userID)
 );
 

@@ -2,21 +2,22 @@ package eclipse.swing.imagegrid;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -24,8 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.filechooser.FileSystemView;
 
 import eclipse.swing.Method;
 import eclipse.swing.SimpleLogin;
@@ -33,12 +32,12 @@ import eclipse.swing.SimpleLogin;
 public class ImageGridRegistration extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane, headerPanel, formPanel, buttonPanel;
-	private JLabel headerLabel, usernameLabel, passwordLabel, imageLabel, gridSizeLabel;
-	private JTextField usernameField, gridSizeField;
+	private JPanel contentPane, headerPanel, formPanel, buttonPanel, imagesPanel, mainPanel;
+	private JLabel headerLabel, usernameLabel, passwordLabel, gridSizeLabel, imageSelectLabel;
+	private JTextField usernameField, gridSizeField, imageSelectField;
 	private JPasswordField passwordField;
-	private JButton registerButton, browseImageButton;
-	private JFileChooser fileChooser;
+	private JButton registerButton;
+	private ArrayList<BufferedImage> bufImages;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -72,11 +71,27 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		usernameField = new JTextField(10);
 		passwordLabel = new JLabel("Password:");
 		passwordField = new JPasswordField(10);
-		imageLabel = new JLabel("No Image Uploaded");
+		imageSelectLabel = new JLabel("Enter the number of the two images you want to select, with a space in between.");
+		imageSelectField = new JTextField(10);
+		imagesPanel = new JPanel();
+		mainPanel = new JPanel();
 		
-		// Browse Image Button
-		browseImageButton = new JButton("Browse");
-		browseImageButton.addActionListener(this);
+		// add images to array and print out
+		bufImages = new ArrayList<BufferedImage>();
+		try {
+			// add 6 images to array
+			for (int i = 1; i <= 6; i++) {
+				URL url = new URL("https://picsum.photos/50");
+				BufferedImage image = ImageIO.read(url.openStream());
+				
+				bufImages.add(image);
+				JLabel imgLabel = new JLabel(new ImageIcon(image));
+				imgLabel.setText(String.valueOf(i));
+				imagesPanel.add(imgLabel);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		// Grid Size select
 		gridSizeLabel = new JLabel("Grid Size (4-20)");
@@ -97,15 +112,18 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		formPanel.add(usernameField);
 		formPanel.add(passwordLabel);
 		formPanel.add(passwordField);
-		formPanel.add(imageLabel);
-		formPanel.add(browseImageButton);
 		formPanel.add(gridSizeLabel);
 		formPanel.add(gridSizeField);
+		formPanel.add(imageSelectLabel);
+		formPanel.add(imageSelectField);
+		
+		mainPanel.add(formPanel);
+		mainPanel.add(imagesPanel);
+		
 		buttonPanel.add(registerButton);
 		
-		contentPane.add(formPanel, BorderLayout.CENTER);
+		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
-		setResizable(false);
 	}
 	
 	/* ============ ActionPerformed ============
@@ -124,11 +142,10 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 			String password = String.valueOf(passwordField.getPassword());
 			String gridSizeStr = gridSizeField.getText();
 			Integer gridSize;
-			String imagePath = imageLabel.getText();
 			String url = "jdbc:mysql://localhost:3306/gp_database";
 			String dbname = "root";
 			String dbpass = "Footyclone2001";
-			if (username.isBlank() || password.isBlank() || gridSizeStr.isBlank() || imageLabel.getText() == "No Image Uploaded") {
+			if (username.isBlank() || password.isBlank() || gridSizeStr.isBlank() || imageSelectField.getText().isBlank()) {
 				JOptionPane.showMessageDialog(registerButton, "Error: Username, password, image or grid size is empty.");
 			} else if (!testProperInt(gridSizeStr)) {
 				JOptionPane.showMessageDialog(registerButton, "Error: Grid Size is not a number.");
@@ -148,21 +165,24 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 					if (rs.next()) {
 						JOptionPane.showMessageDialog(registerButton, "User already exists.");
 					} else {
-						// ============== Image to database prep ===============
+						byte[] imageOneBytes = null;
+						byte[] imageTwoBytes = null;
 						
-						byte[] rawBytes = null;
-						FileInputStream fileInputStream = null;
+						String[] split = imageSelectField.getText().split("\\s+");
+						BufferedImage imageOne = bufImages.get(Integer.parseInt(split[0])-1);
+						BufferedImage imageTwo = bufImages.get(Integer.parseInt(split[1])-1);
 						
-						File fObj = new File(imagePath);
-						fileInputStream = new FileInputStream(fObj);
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						ImageIO.write(imageOne, "jpg", baos);
+						imageOneBytes = baos.toByteArray();
+						baos.flush();
+						baos.close();
 						
-						Integer imageLength = Integer.parseInt(String.valueOf(fObj.length()));
-						
-						rawBytes = new byte[imageLength];
-						
-						fileInputStream.read(rawBytes, 0, imageLength);
-						
-						// ============== Image to database prep ===============
+						baos = new ByteArrayOutputStream();
+						ImageIO.write(imageTwo, "jpg", baos);
+						imageTwoBytes = baos.toByteArray();
+						baos.flush();
+						baos.close();
 						
 						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
 						Statement statement = connection.createStatement();
@@ -178,7 +198,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 						newrs.next();
 						int userID = newrs.getInt("userID");
 						
-						String gridQuery = "INSERT INTO image_grid_method(userID,grid_size,image) values('" + userID + "','" + gridSize + "','" + rawBytes + "')";
+						String gridQuery = "INSERT INTO image_grid_method(userID,grid_size,imageOne,imageTwo) values('" + userID + "','" + gridSize + "','" + imageOneBytes + "','" + imageTwoBytes + "')";
 						int y = statement.executeUpdate(gridQuery);
 						if(y == 0) {
 							JOptionPane.showMessageDialog(registerButton, "Image grid method for user already exists.");
@@ -194,20 +214,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 					exception.printStackTrace();
 				}
 			}
-		} else if (btn.equals(browseImageButton)) {
-			fileChooser = new JFileChooser("C:\\", FileSystemView.getFileSystemView());
-			fileChooser.setFileFilter(new FileNameExtensionFilter("Image Files", "jpg", "png", "tif", "gif", "bmp"));
-			int returnVal = fileChooser.showOpenDialog(formPanel);
-			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				String fileName = fileChooser.getSelectedFile().getName();
-				String extension = fileName.substring(fileName.lastIndexOf("."));
-				if (extension.equalsIgnoreCase(".jpg") || extension.equalsIgnoreCase(".png") || extension.equalsIgnoreCase(".tif") || extension.equalsIgnoreCase(".gif") || extension.equalsIgnoreCase(".bmp")) {
-					imageLabel.setText(fileChooser.getSelectedFile().getPath());
-				} else {
-					JOptionPane.showMessageDialog(this, "File selected is not an Image", "Error", JOptionPane.ERROR_MESSAGE);  
-				}
-			}
-		}
+		} 
 	}
 	
 	boolean testProperInt(String txt) {
@@ -218,4 +225,6 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 			return false;
 		}
 	}
+	
+	
 }
