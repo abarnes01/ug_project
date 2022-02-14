@@ -5,12 +5,17 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Base64;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,6 +26,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import eclipse.swing.colourgrid.ColourGridLogin;
+import eclipse.swing.imagegrid.ImageGridLogin;
 
 public class SimpleLogin extends JFrame implements ActionListener{
 	
@@ -107,15 +113,14 @@ public class SimpleLogin extends JFrame implements ActionListener{
 				st.setInt(2, password);
 				ResultSet rs = st.executeQuery();
 				if (rs.next()) {
+					int userID = rs.getInt("userID");
 					if (method == Method.COLOURGRID) {
 						PreparedStatement cglSt = (PreparedStatement) connection.prepareStatement("Select patternPass from colour_grid_method where userID=?");
-						int userID = rs.getInt("userID");
 						cglSt.setInt(1, userID);
 						ResultSet cglRs = cglSt.executeQuery();
 						if (cglRs.next()) {
 							System.out.println("Got grid method details");
 							String patternPass = cglRs.getString("patternPass");
-							// go to grid log in
 							ColourGridLogin cgl = new ColourGridLogin();
 							cgl.setPatternPass(patternPass);
 							cgl.makeGrid();
@@ -124,6 +129,32 @@ public class SimpleLogin extends JFrame implements ActionListener{
 						} else {
 							JOptionPane.showMessageDialog(loginButton, "User does not have colour grid method details.");
 						}
+					} else if (method == Method.IMAGEGRID) {
+						PreparedStatement igSt = (PreparedStatement) connection.prepareStatement("Select gridSize, imageOne, imageTwo from image_grid_method where userID=?");
+						igSt.setInt(1, userID);
+						ResultSet igRs = igSt.executeQuery();
+						if (igRs.next()) {
+							InputStream ioIS = igRs.getBinaryStream(2);
+							InputStream itIS = igRs.getBinaryStream(3);
+							try {
+								BufferedImage imgOne = ImageIO.read(ioIS);
+								BufferedImage imgTwo = ImageIO.read(itIS);
+								
+								ImageGridLogin igl = new ImageGridLogin();
+								igl.setImages(imgOne, imgTwo);
+								igl.setGridSize(igRs.getInt(1));
+								igl.makeGrid();
+								igl.setVisible(true);
+								dispose();
+							} catch (Exception e) {
+								e.printStackTrace();
+								System.err.println("Failed to create login page.");
+							}
+							
+						} else {
+							JOptionPane.showMessageDialog(loginButton, "User does not have image grid method details.");
+						}
+						
 					}
 					System.out.println("Successful");
 				} else {

@@ -6,14 +6,18 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.net.URL;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Base64;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -157,7 +161,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 					
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
 					
-					PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username from user where username=?");
+					PreparedStatement st = (PreparedStatement)connection.prepareStatement("Select username from user where username=?");
 					
 					st.setString(1, username);
 					ResultSet rs = st.executeQuery();
@@ -165,24 +169,19 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 					if (rs.next()) {
 						JOptionPane.showMessageDialog(registerButton, "User already exists.");
 					} else {
-						byte[] imageOneBytes = null;
-						byte[] imageTwoBytes = null;
 						
 						String[] split = imageSelectField.getText().split("\\s+");
 						BufferedImage imageOne = bufImages.get(Integer.parseInt(split[0])-1);
 						BufferedImage imageTwo = bufImages.get(Integer.parseInt(split[1])-1);
 						
-						ByteArrayOutputStream baos = new ByteArrayOutputStream();
-						ImageIO.write(imageOne, "jpg", baos);
-						imageOneBytes = baos.toByteArray();
-						baos.flush();
-						baos.close();
+						ByteArrayOutputStream baosOne = new ByteArrayOutputStream();
+						ImageIO.write(imageOne, "jpg", baosOne);
+						InputStream isOne = new ByteArrayInputStream(baosOne.toByteArray());
 						
-						baos = new ByteArrayOutputStream();
-						ImageIO.write(imageTwo, "jpg", baos);
-						imageTwoBytes = baos.toByteArray();
-						baos.flush();
-						baos.close();
+						
+						ByteArrayOutputStream baosTwo = new ByteArrayOutputStream();
+						ImageIO.write(imageTwo, "jpg", baosTwo);
+						InputStream isTwo = new ByteArrayInputStream(baosTwo.toByteArray());
 						
 						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
 						Statement statement = connection.createStatement();
@@ -198,8 +197,13 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 						newrs.next();
 						int userID = newrs.getInt("userID");
 						
-						String gridQuery = "INSERT INTO image_grid_method(userID,grid_size,imageOne,imageTwo) values('" + userID + "','" + gridSize + "','" + imageOneBytes + "','" + imageTwoBytes + "')";
-						int y = statement.executeUpdate(gridQuery);
+						String gridQuery = "INSERT INTO image_grid_method(userID,gridSize,imageOne,imageTwo) values(?, ?, ?, ?)";
+						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
+						gridst.setInt(1, userID);
+						gridst.setInt(2, gridSize);
+						gridst.setBlob(3, isOne);
+						gridst.setBlob(4, isTwo);
+						int y = gridst.executeUpdate();
 						if(y == 0) {
 							JOptionPane.showMessageDialog(registerButton, "Image grid method for user already exists.");
 						} else {
