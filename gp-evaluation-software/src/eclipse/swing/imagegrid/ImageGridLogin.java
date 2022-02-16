@@ -5,12 +5,16 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.Blob;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -18,17 +22,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-public class ImageGridLogin extends JFrame implements ActionListener {
+public class ImageGridLogin extends JFrame implements MouseListener {
 
 	private BufferedImage imageOne, imageTwo;
 	private Integer gridSize;
-	private JPanel contentPane, gridPanel, buttonPanel;
-	private JButton loginButton;
+	private JPanel contentPane, gridPanel;
 	private GridLayout gridLayout;
 	private ArrayList<BufferedImage> bufImages;
+	private JLabel[][] imageList;
+	private PassImage P1, P2, I1, I2;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -53,12 +59,8 @@ public class ImageGridLogin extends JFrame implements ActionListener {
 		setContentPane(contentPane);
 		
 		gridPanel = new JPanel();
-		buttonPanel = new JPanel();
-		loginButton = new JButton("Login");
-		loginButton.addActionListener(this);
 		
 		contentPane.add(gridPanel, BorderLayout.CENTER);
-		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 	}
 	
 	public void setImages(BufferedImage one, BufferedImage two) {
@@ -79,19 +81,37 @@ public class ImageGridLogin extends JFrame implements ActionListener {
 			bufImages.add(imageOne);
 			bufImages.add(imageTwo);
 			
+			Integer gridSizeSqr = gridSize*gridSize;
+			
 			// fill array with more random images
-			for (int i = 0; i < (gridSize*gridSize)-2; i++) {
+			for (int i = 0; i < gridSizeSqr-2; i++) {
 				URL url = new URL("https://picsum.photos/50");
 				BufferedImage randImg = ImageIO.read(url.openStream());
 				bufImages.add(randImg);
 			}
 			
+			imageList = new JLabel[gridSize][gridSize];
+			
+			boolean gotImgOne = false;
+			boolean gotImgTwo = false;
+			
 			// print the whole grid with our two images randomly placed
-			for (int i = 0; i < (gridSize*gridSize); i++) {
+			for (int i = 0; i < gridSizeSqr; i++) {
+				int row = i / gridSize;
+				int col = i % gridSize;
 				Random rand = new Random();
-				int randNum = rand.nextInt((gridSize*gridSize)-i);
+				int randNum = rand.nextInt(gridSizeSqr-i);
 				BufferedImage randImg = bufImages.get(randNum);
+				if (!gotImgOne && (randNum == 0)) {
+					I1 = new PassImage(row, col);
+					gotImgOne = true;
+				} else if (!gotImgTwo && (randNum == 1)) {
+					I2 = new PassImage(row, col);
+					gotImgTwo = true;
+				}
 				JLabel imgLabel = new JLabel(new ImageIcon(randImg));
+				imgLabel.addMouseListener(this);
+				imageList[row][col] = imgLabel;
 				gridPanel.add(imgLabel);
 				randImg.flush();
 				bufImages.remove(randNum);
@@ -105,9 +125,87 @@ public class ImageGridLogin extends JFrame implements ActionListener {
 		}
 	}
 
+
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		JLabel label = (JLabel)e.getSource();
+		for (int x = 0; x < gridSize; x++) {
+			for (int y = 0; y < gridSize; y++) {
+				// get this label position
+				if (imageList[x][y] == label) {
+					
+					// horizontal line
+					if (I1.x == I2.x) {
+						
+						// at edge
+						if (I1.x+1 == gridSize) {
+							P1 = new PassImage(I1.x, 0);
+							P2 = new PassImage(I2.x, I2.y+1);
+						} else if (I2.x+1 == gridSize) {
+							P1 = new PassImage(I1.x, I1.y+1);
+							P2 = new PassImage(I2.x, 0);
+						} else {
+							P1 = new PassImage(I1.x, I1.y+1);
+							P2 = new PassImage(I2.x, I2.y+1);
+						}
+						
+					}
+					// vertical line
+					else if (I1.y == I2.y) {
+						
+						// at edge
+						if (I1.y+1 == gridSize) {
+							P1 = new PassImage(0, I1.y);
+							P2 = new PassImage(I2.x+1, I2.y);
+						} else if (I2.x+1 == gridSize) {
+							P1 = new PassImage(I1.x+1, I1.y);
+							P2 = new PassImage(0, I2.y);
+						} else {
+							P1 = new PassImage(I1.x+1, I1.y);
+							P2 = new PassImage(I2.x+1, I2.y);
+						}
+						
+					}
+					// different x y coordinates
+					else {
+						P1 = new PassImage(I1.x, I2.y);
+						P2 = new PassImage(I2.x, I1.y);
+					}
+					
+					// check if this image is a pass image
+					if ((x == P1.x) && (y == P1.y)) {
+						JOptionPane.showMessageDialog(label, "Correct pass image one");
+					} else if ((x == P2.x) && (y == P2.y)) {
+						JOptionPane.showMessageDialog(label, "Correct pass image two");
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
