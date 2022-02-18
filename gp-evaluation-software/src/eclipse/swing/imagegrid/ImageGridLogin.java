@@ -97,21 +97,19 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 			
 			// print the whole grid with our two images randomly placed
 			for (int i = 0; i < gridSizeSqr; i++) {
-				int row = i / gridSize;
-				int col = i % gridSize;
+				int x = i % gridSize;
+				int y = i / gridSize;
 				Random rand = new Random();
 				int randNum = rand.nextInt(gridSizeSqr-i);
 				BufferedImage randImg = bufImages.get(randNum);
-				if (!gotImgOne && (randNum == 0)) {
-					I1 = new PassImage(row, col);
-					gotImgOne = true;
-				} else if (!gotImgTwo && (randNum == 1)) {
-					I2 = new PassImage(row, col);
-					gotImgTwo = true;
+				if (randImg == imageOne) {
+					I1 = new PassImage(x, y);
+				} else if (randImg == imageTwo) {
+					I2 = new PassImage(x, y);
 				}
 				JLabel imgLabel = new JLabel(new ImageIcon(randImg));
 				imgLabel.addMouseListener(this);
-				imageList[row][col] = imgLabel;
+				imageList[x][y] = imgLabel;
 				gridPanel.add(imgLabel);
 				randImg.flush();
 				bufImages.remove(randNum);
@@ -139,10 +137,10 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 					if (I1.x == I2.x) {
 						
 						// at edge
-						if (I1.x+1 == gridSize) {
+						if (I1.y+1 == gridSize) {
 							P1 = new PassImage(I1.x, 0);
 							P2 = new PassImage(I2.x, I2.y+1);
-						} else if (I2.x+1 == gridSize) {
+						} else if (I2.y+1 == gridSize) {
 							P1 = new PassImage(I1.x, I1.y+1);
 							P2 = new PassImage(I2.x, 0);
 						} else {
@@ -155,7 +153,7 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 					else if (I1.y == I2.y) {
 						
 						// at edge
-						if (I1.y+1 == gridSize) {
+						if (I1.x+1 == gridSize) {
 							P1 = new PassImage(0, I1.y);
 							P2 = new PassImage(I2.x+1, I2.y);
 						} else if (I2.x+1 == gridSize) {
@@ -172,6 +170,11 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 						P1 = new PassImage(I1.x, I2.y);
 						P2 = new PassImage(I2.x, I1.y);
 					}
+					
+//					System.out.println("I1.x: " + I1.x + " y: " + I1.y);
+//					System.out.println("I2.x: " + I2.x + " y: " + I2.y);
+//					System.out.println("P1.x: " + P1.x + " y: " + P1.y);
+//					System.out.println("P2.x: " + P2.x + " y: " + P2.y);
 					
 					// check if this image is a pass image
 					if ((x == P1.x) && (y == P1.y)) {
