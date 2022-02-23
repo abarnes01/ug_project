@@ -31,6 +31,7 @@ import javax.swing.border.EmptyBorder;
 import org.apache.commons.lang3.ArrayUtils;
 
 import eclipse.swing.Method;
+import eclipse.swing.Welcome;
 
 public class ColourGridLogin extends JFrame implements ActionListener{
 
@@ -109,8 +110,9 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 			// if user input equals the first letter of the colour their pattern pass lies in
 			if (ppInput.toUpperCase().equals(colourMap.get(patternPassColour))) {
 				JOptionPane.showMessageDialog(loginButton, "Successfully logged in.");
-				System.out.println("Successful log in.");
-				// EVALUATION PAGE
+				Welcome welcome = new Welcome();
+				welcome.setVisible(true);
+				dispose();
 			} else {
 				JOptionPane.showMessageDialog(loginButton, "Incorrect password.");
 			}

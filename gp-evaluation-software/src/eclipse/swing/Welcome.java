@@ -26,7 +26,7 @@ public class Welcome extends JFrame implements ActionListener {
 	private JTextArea txtrAdamBarnes;
 	private JLabel lblNewLabel;
 	private JScrollPane scrollPane;
-	private JButton startPassword;
+	private JButton registerBtn, loginBtn;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -56,8 +56,10 @@ public class Welcome extends JFrame implements ActionListener {
 		txtrAdamBarnes = new JTextArea();
 		lblNewLabel = new JLabel("Welcome!");
 		scrollPane = new JScrollPane(txtrAdamBarnes);
-		startPassword = new JButton("Start");
-		startPassword.addActionListener(this);
+		registerBtn = new JButton("Register");
+		registerBtn.addActionListener(this);
+		loginBtn = new JButton("Login");
+		loginBtn.addActionListener(this);
 		
 		title.add(lblNewLabel);
 		txtrAdamBarnes.setBackground(SystemColor.window);
@@ -71,7 +73,8 @@ public class Welcome extends JFrame implements ActionListener {
 		choice.add("Simple Textual Method");
 		choice.add("Image Grid Method");
 		choice.add("Colour Grid Method");
-		panel.add(startPassword);
+		panel.add(registerBtn);
+		panel.add(loginBtn);
 		
 		contentPane.add(title, BorderLayout.NORTH);
 		contentPane.add(scrollPane, BorderLayout.CENTER);
@@ -87,7 +90,7 @@ public class Welcome extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
 		// Button to go to next page based on the option selected in choice
-		if (btn.equals(startPassword)) {
+		if (btn.equals(registerBtn)) {
 			String data = "Password selected: " + choice.getItem(choice.getSelectedIndex());
 			if (choice.getItem(choice.getSelectedIndex()) == "Simple Textual Method") {
 				new SimpleRegistration().setVisible(true);
@@ -97,6 +100,24 @@ public class Welcome extends JFrame implements ActionListener {
 				dispose();
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Colour Grid Method") {
 				new ColourGridRegistration().setVisible(true);
+				dispose();
+			}
+		} else if (btn.equals(loginBtn)) {
+			String data = "Password selected: " + choice.getItem(choice.getSelectedIndex());
+			if (choice.getItem(choice.getSelectedIndex()) == "Simple Textual Method") {
+				SimpleLogin sl = new SimpleLogin();
+				sl.setMethod(Method.SIMPLE);
+				sl.setVisible(true);
+				dispose();
+			} else if (choice.getItem(choice.getSelectedIndex()) == "Image Grid Method") {
+				SimpleLogin sl = new SimpleLogin();
+				sl.setMethod(Method.IMAGEGRID);
+				sl.setVisible(true);
+				dispose();
+			} else if (choice.getItem(choice.getSelectedIndex()) == "Colour Grid Method") {
+				SimpleLogin sl = new SimpleLogin();
+				sl.setMethod(Method.COLOURGRID);
+				sl.setVisible(true);
 				dispose();
 			}
 		}

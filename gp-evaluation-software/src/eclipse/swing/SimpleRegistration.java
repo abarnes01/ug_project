@@ -122,7 +122,9 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 						if(x == 0) {
 							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
 						} else {
-							new SimpleLogin().setVisible(true);
+							SimpleLogin sl = new SimpleLogin();
+							sl.setMethod(Method.SIMPLE);
+							sl.setVisible(true);
 							dispose();
 						}
 					}

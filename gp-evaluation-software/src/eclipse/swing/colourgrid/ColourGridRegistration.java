@@ -114,15 +114,24 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 						if(x == 0) {
 							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
 						}
-						PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
-						
-						nextst.setString(1, username);
-						ResultSet newrs = nextst.executeQuery();
-						newrs.next();
-						int userID = newrs.getInt("userID");
-						
-						String gridQuery = "INSERT INTO colour_grid_method(userID,patternPass) values('" + userID + "','" + patternPass + "')";
-						int y = statement.executeUpdate(gridQuery);
+					}
+					PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
+					nextst.setString(1, username);
+					ResultSet newrs = nextst.executeQuery();
+					newrs.next();
+					int userID = newrs.getInt("userID");
+					
+					PreparedStatement checkdbst = (PreparedStatement) connection.prepareStatement("Select userID from colour_grid_method where userID=?");
+					checkdbst.setInt(1, userID);
+					ResultSet checkdbrs = checkdbst.executeQuery();
+					if (checkdbrs.next()) {
+						JOptionPane.showMessageDialog(registerButton, "Colour grid method for user already exists.");
+					} else {
+						String gridQuery = "INSERT INTO colour_grid_method(userID,patternPass) values(?, ?)";
+						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
+						gridst.setInt(1, userID);
+						gridst.setString(2, patternPass);
+						int y = gridst.executeUpdate();
 						if(y == 0) {
 							JOptionPane.showMessageDialog(registerButton, "Colour grid method for user already exists.");
 						} else {

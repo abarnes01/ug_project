@@ -155,8 +155,12 @@ public class SimpleLogin extends JFrame implements ActionListener{
 							JOptionPane.showMessageDialog(loginButton, "User does not have image grid method details.");
 						}
 						
+					} else if (method == Method.SIMPLE) {
+						JOptionPane.showMessageDialog(loginButton, "Successfully logged in.");
+						Welcome welcome = new Welcome();
+						welcome.setVisible(true);
+						dispose();
 					}
-					System.out.println("Successful");
 				} else {
 					JOptionPane.showMessageDialog(loginButton, "Incorrect login details.");
 				}

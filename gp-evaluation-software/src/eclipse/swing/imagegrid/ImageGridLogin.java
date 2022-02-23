@@ -26,6 +26,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.commons.lang3.time.StopWatch;
+
+import eclipse.swing.Welcome;
+
 public class ImageGridLogin extends JFrame implements MouseListener {
 
 	private BufferedImage imageOne, imageTwo;
@@ -35,6 +39,7 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 	private ArrayList<BufferedImage> bufImages;
 	private JLabel[][] imageList;
 	private PassImage P1, P2, I1, I2;
+	private StopWatch elapsedTime;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -61,6 +66,9 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 		gridPanel = new JPanel();
 		
 		contentPane.add(gridPanel, BorderLayout.CENTER);
+		
+		elapsedTime = new StopWatch();
+		elapsedTime.start();
 	}
 	
 	public void setImages(BufferedImage one, BufferedImage two) {
@@ -178,9 +186,18 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 					
 					// check if this image is a pass image
 					if ((x == P1.x) && (y == P1.y)) {
-						JOptionPane.showMessageDialog(label, "Correct pass image one");
+						elapsedTime.stop();
+						long stopTime = elapsedTime.getStopTime();
+						JOptionPane.showMessageDialog(label, "Correct pass image one. Took " + (int)(((stopTime) / 1000) % 60) + "s");
+						Welcome welcome = new Welcome();
+						welcome.setVisible(true);
+						dispose();
 					} else if ((x == P2.x) && (y == P2.y)) {
-						JOptionPane.showMessageDialog(label, "Correct pass image two");
+						long stopTime = elapsedTime.getStopTime();
+						JOptionPane.showMessageDialog(label, "Correct pass image two. Took " + (int)(((stopTime) / 1000) % 60) + "s");
+						Welcome welcome = new Welcome();
+						welcome.setVisible(true);
+						dispose();
 					}
 				}
 			}

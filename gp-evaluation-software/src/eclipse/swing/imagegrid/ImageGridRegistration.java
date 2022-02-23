@@ -167,8 +167,29 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 					ResultSet rs = st.executeQuery();
 					
 					if (rs.next()) {
-						JOptionPane.showMessageDialog(registerButton, "User already exists.");
+						JOptionPane.showMessageDialog(registerButton, "User already exists. Inserting image grid details only.");
 					} else {
+						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
+						Statement statement = connection.createStatement();
+						int x = statement.executeUpdate(query);
+						if(x == 0) {
+							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
+						} 
+					}
+					PreparedStatement useridst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
+					useridst.setString(1, username);
+					ResultSet useridrs = useridst.executeQuery();
+					useridrs.next();
+					int userID = useridrs.getInt("userID");
+					
+					PreparedStatement checkdbst = (PreparedStatement) connection.prepareStatement("Select userID from image_grid_method where userID=?");
+					checkdbst.setInt(1, userID);
+					ResultSet checkdbrs = checkdbst.executeQuery();
+					if (checkdbrs.next()) {
+						JOptionPane.showMessageDialog(registerButton, "Image grid method for user already exists.");
+					} else {
+						String gridQuery = "INSERT INTO image_grid_method(userID,gridSize,imageOne,imageTwo) values(?, ?, ?, ?)";
+						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
 						
 						String[] split = imageSelectField.getText().split("\\s+");
 						BufferedImage imageOne = bufImages.get(Integer.parseInt(split[0])-1);
@@ -178,34 +199,17 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 						ImageIO.write(imageOne, "jpg", baosOne);
 						InputStream isOne = new ByteArrayInputStream(baosOne.toByteArray());
 						
-						
 						ByteArrayOutputStream baosTwo = new ByteArrayOutputStream();
 						ImageIO.write(imageTwo, "jpg", baosTwo);
 						InputStream isTwo = new ByteArrayInputStream(baosTwo.toByteArray());
 						
-						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
-						Statement statement = connection.createStatement();
-						int x = statement.executeUpdate(query);
-						if(x == 0) {
-							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
-						} 
-						
-						PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
-						
-						nextst.setString(1, username);
-						ResultSet newrs = nextst.executeQuery();
-						newrs.next();
-						int userID = newrs.getInt("userID");
-						
-						String gridQuery = "INSERT INTO image_grid_method(userID,gridSize,imageOne,imageTwo) values(?, ?, ?, ?)";
-						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
 						gridst.setInt(1, userID);
 						gridst.setInt(2, gridSize);
 						gridst.setBlob(3, isOne);
 						gridst.setBlob(4, isTwo);
 						int y = gridst.executeUpdate();
 						if(y == 0) {
-							JOptionPane.showMessageDialog(registerButton, "Image grid method for user already exists.");
+							JOptionPane.showMessageDialog(registerButton, "Image grid method for user already exists. 2nd box");
 						} else {
 							SimpleLogin sl = new SimpleLogin();
 							sl.setMethod(Method.IMAGEGRID);
