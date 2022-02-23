@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -25,8 +26,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import org.apache.commons.lang3.time.StopWatch;
 
 import eclipse.swing.Welcome;
 
@@ -39,7 +38,7 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 	private ArrayList<BufferedImage> bufImages;
 	private JLabel[][] imageList;
 	private PassImage P1, P2, I1, I2;
-	private StopWatch elapsedTime;
+	private long startTime;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -67,8 +66,7 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 		
 		contentPane.add(gridPanel, BorderLayout.CENTER);
 		
-		elapsedTime = new StopWatch();
-		elapsedTime.start();
+		startTime = System.nanoTime();
 	}
 	
 	public void setImages(BufferedImage one, BufferedImage two) {
@@ -186,15 +184,16 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 					
 					// check if this image is a pass image
 					if ((x == P1.x) && (y == P1.y)) {
-						elapsedTime.stop();
-						long stopTime = elapsedTime.getStopTime();
-						JOptionPane.showMessageDialog(label, "Correct pass image one. Took " + (int)(((stopTime) / 1000) % 60) + "s");
+						long stopTime = System.nanoTime()-startTime;
+						long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
+						JOptionPane.showMessageDialog(label, "Correct pass image one. Took " + seconds + "s");
 						Welcome welcome = new Welcome();
 						welcome.setVisible(true);
 						dispose();
 					} else if ((x == P2.x) && (y == P2.y)) {
-						long stopTime = elapsedTime.getStopTime();
-						JOptionPane.showMessageDialog(label, "Correct pass image two. Took " + (int)(((stopTime) / 1000) % 60) + "s");
+						long stopTime = System.nanoTime()-startTime;
+						long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
+						JOptionPane.showMessageDialog(label, "Correct pass image two. Took " + seconds + "s");
 						Welcome welcome = new Welcome();
 						welcome.setVisible(true);
 						dispose();

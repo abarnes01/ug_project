@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -44,6 +45,7 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 	private GridLayout gridLayout;
 	private String patternPass;
 	private Color patternPassColour;
+	private long startTime;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -89,6 +91,8 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 		//setResizable(false);
+		
+		startTime = System.nanoTime();
 	}
 	
 	@Override
@@ -109,7 +113,9 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 			
 			// if user input equals the first letter of the colour their pattern pass lies in
 			if (ppInput.toUpperCase().equals(colourMap.get(patternPassColour))) {
-				JOptionPane.showMessageDialog(loginButton, "Successfully logged in.");
+				long stopTime = System.nanoTime()-startTime;
+				long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
+				JOptionPane.showMessageDialog(loginButton, "Successfully logged in. Took " + seconds + "s");
 				Welcome welcome = new Welcome();
 				welcome.setVisible(true);
 				dispose();
