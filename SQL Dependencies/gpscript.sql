@@ -1,8 +1,6 @@
-drop database gp_database;
-create database gp_database;
+CREATE DATABASE IF NOT EXISTS gp_database;
 use gp_database;
-
-create table user
+create table if not exists user
 (
 	userID int NOT NULL AUTO_INCREMENT,
 	username varchar(250) NOT NULL,
@@ -10,7 +8,7 @@ create table user
     primary key (userID)
 );
 
-create table image_grid_method (
+create table if not exists image_grid_method (
 	userID int NOT NULL,
     gridSize int NOT NULL,
     imageOne LONGBLOB,
@@ -18,10 +16,8 @@ create table image_grid_method (
     foreign key (userID) references user(userID)
 );
 
-create table colour_grid_method (
+create table if not exists colour_grid_method (
 	userID int NOT NULL,
     patternPass varchar(250) NOT NULL,
     foreign key (userID) references user(userID)
 );
-
-INSERT INTO user(username, password) values("abarnes01", "password");

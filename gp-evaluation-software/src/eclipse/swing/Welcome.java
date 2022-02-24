@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -17,6 +18,7 @@ import javax.swing.border.EmptyBorder;
 
 import eclipse.swing.colourgrid.ColourGridRegistration;
 import eclipse.swing.imagegrid.ImageGridRegistration;
+import eclipse.sql.*;
 
 public class Welcome extends JFrame implements ActionListener {
 
@@ -26,12 +28,14 @@ public class Welcome extends JFrame implements ActionListener {
 	private JTextArea txtrAdamBarnes;
 	private JLabel lblNewLabel;
 	private JScrollPane scrollPane;
-	private JButton registerBtn, loginBtn;
+	private JButton registerBtn, loginBtn, resetDbBtn;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					DatabaseRunner dbR = new DatabaseRunner();
+					dbR.createDB();
 					Welcome frame = new Welcome();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -44,7 +48,7 @@ public class Welcome extends JFrame implements ActionListener {
 
 	public Welcome() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 550, 400);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -60,6 +64,8 @@ public class Welcome extends JFrame implements ActionListener {
 		registerBtn.addActionListener(this);
 		loginBtn = new JButton("Login");
 		loginBtn.addActionListener(this);
+		resetDbBtn = new JButton("Reset DB");
+		resetDbBtn.addActionListener(this);
 		
 		title.add(lblNewLabel);
 		txtrAdamBarnes.setBackground(SystemColor.window);
@@ -75,6 +81,7 @@ public class Welcome extends JFrame implements ActionListener {
 		choice.add("Colour Grid Method");
 		panel.add(registerBtn);
 		panel.add(loginBtn);
+		panel.add(resetDbBtn);
 		
 		contentPane.add(title, BorderLayout.NORTH);
 		contentPane.add(scrollPane, BorderLayout.CENTER);
@@ -120,6 +127,17 @@ public class Welcome extends JFrame implements ActionListener {
 				sl.setVisible(true);
 				dispose();
 			}
+		} else if (btn.equals(resetDbBtn)) {
+			DatabaseRunner dbRunner = new DatabaseRunner();
+			try {
+				dbRunner.dropDB();
+				dbRunner.createDB();
+				JOptionPane.showMessageDialog(resetDbBtn, "Database reinitialized.");
+			} catch (Exception e) {
+				System.err.println("Could not drop database.");
+				e.printStackTrace();
+			}
+			
 		}
 	}
 
