@@ -23,6 +23,7 @@ import javax.swing.border.EmptyBorder;
 
 import eclipse.swing.Method;
 import eclipse.swing.SimpleLogin;
+import eclipse.swing.Welcome;
 
 public class ColourGridRegistration extends JFrame implements ActionListener {
 
@@ -30,7 +31,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 	private JPanel contentPane, headerPanel, formPanel, buttonPanel, mainPanel;
 	private JTextField usernameField;
 	private JPasswordField passwordField, patternPField;
-	private JButton registerButton;
+	private JButton registerButton, backBtn;
 	private JLabel headerLabel, usernameLabel, passwordLabel, patternPLabel;
 
 	public static void main(String[] args) {
@@ -69,9 +70,12 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		// create buttons
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
+		backBtn = new JButton("<");
+		backBtn.addActionListener(this);
 		// set layout of form and grid constraints
 		formPanel.setLayout(new GridLayout(3,1,10,10));
 		// set the features to the panels
+		headerPanel.add(backBtn);
 		headerPanel.add(headerLabel);
 		formPanel.add(usernameLabel);
 		formPanel.add(usernameField);
@@ -146,6 +150,9 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 					exception.printStackTrace();
 				}
 			}
+		} else if (btn.equals(backBtn)) {
+			new Welcome().setVisible(true);
+			dispose();
 		}
 	}
 

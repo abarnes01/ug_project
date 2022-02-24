@@ -26,7 +26,9 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import eclipse.swing.colourgrid.ColourGridLogin;
+import eclipse.swing.colourgrid.ColourGridRegistration;
 import eclipse.swing.imagegrid.ImageGridLogin;
+import eclipse.swing.imagegrid.ImageGridRegistration;
 
 public class SimpleLogin extends JFrame implements ActionListener{
 	
@@ -35,7 +37,7 @@ public class SimpleLogin extends JFrame implements ActionListener{
 	private JPanel contentPane, formPanel, buttonPanel;
 	private JTextField textField;
 	private JPasswordField passwordField;
-	private JButton loginButton;
+	private JButton loginButton, backBtn;
 	private JLabel headerLabel, usernameLabel, passwordLabel;
 	private Method method;
 
@@ -73,8 +75,10 @@ public class SimpleLogin extends JFrame implements ActionListener{
 		// create login button
 		loginButton = new JButton("Login");
 		loginButton.addActionListener(this);
-		
+		backBtn = new JButton("<");
+		backBtn.addActionListener(this);
 		// add features to window
+		headerPanel.add(backBtn);
 		headerPanel.add(headerLabel);
 		formPanel.setLayout(new GridLayout(3,1,10,10));
 		formPanel.add(usernameLabel);
@@ -114,7 +118,7 @@ public class SimpleLogin extends JFrame implements ActionListener{
 				ResultSet rs = st.executeQuery();
 				if (rs.next()) {
 					int userID = rs.getInt("userID");
-					if (method == Method.COLOURGRID) {
+					if (getMethod() == Method.COLOURGRID) {
 						PreparedStatement cglSt = (PreparedStatement) connection.prepareStatement("Select patternPass from colour_grid_method where userID=?");
 						cglSt.setInt(1, userID);
 						ResultSet cglRs = cglSt.executeQuery();
@@ -129,7 +133,7 @@ public class SimpleLogin extends JFrame implements ActionListener{
 						} else {
 							JOptionPane.showMessageDialog(loginButton, "User does not have colour grid method details.");
 						}
-					} else if (method == Method.IMAGEGRID) {
+					} else if (getMethod() == Method.IMAGEGRID) {
 						PreparedStatement igSt = (PreparedStatement) connection.prepareStatement("Select gridSize, imageOne, imageTwo from image_grid_method where userID=?");
 						igSt.setInt(1, userID);
 						ResultSet igRs = igSt.executeQuery();
@@ -155,7 +159,7 @@ public class SimpleLogin extends JFrame implements ActionListener{
 							JOptionPane.showMessageDialog(loginButton, "User does not have image grid method details.");
 						}
 						
-					} else if (method == Method.SIMPLE) {
+					} else if (getMethod() == Method.SIMPLE) {
 						JOptionPane.showMessageDialog(loginButton, "Successfully logged in.");
 						Welcome welcome = new Welcome();
 						welcome.setVisible(true);
@@ -167,6 +171,17 @@ public class SimpleLogin extends JFrame implements ActionListener{
 			} catch (SQLException sqlException){
 				sqlException.printStackTrace();
 				
+			}
+		} else if (btn.equals(backBtn)) {
+			if (getMethod() == Method.COLOURGRID) {
+				new ColourGridRegistration().setVisible(true);
+				dispose();
+			} else if (getMethod() == Method.IMAGEGRID) {
+				new ImageGridRegistration().setVisible(true);
+				dispose();
+			} else if (getMethod() == Method.SIMPLE) {
+				new SimpleRegistration().setVisible(true);
+				dispose();				
 			}
 		}
 	}

@@ -27,7 +27,7 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 	private JPanel contentPane, headerPanel, formPanel, buttonPanel;
 	private JTextField usernameField;
 	private JPasswordField passwordField;
-	private JButton registerButton;
+	private JButton registerButton, backBtn;
 	private JLabel headerLabel, usernameLabel, passwordLabel;
 
 	public static void main(String[] args) {
@@ -67,11 +67,14 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 		// Create buttons
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
+		backBtn = new JButton("<");
+		backBtn.addActionListener(this);
 		
 		// Set layout of form and grid constraints
 		formPanel.setLayout(new GridLayout(3,1,10,10));
 		
 		// Set the features to the panels
+		headerPanel.add(backBtn);
 		headerPanel.add(headerLabel);
 		formPanel.add(usernameLabel);
 		formPanel.add(usernameField);
@@ -133,6 +136,9 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 					exception.printStackTrace();
 				}
 			}
+		} else if (btn.equals(backBtn)) {
+			new Welcome().setVisible(true);
+			dispose();
 		}
 	}
 

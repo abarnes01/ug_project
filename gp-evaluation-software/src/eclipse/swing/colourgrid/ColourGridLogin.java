@@ -32,6 +32,7 @@ import javax.swing.border.EmptyBorder;
 import org.apache.commons.lang3.ArrayUtils;
 
 import eclipse.swing.Method;
+import eclipse.swing.SimpleLogin;
 import eclipse.swing.Welcome;
 
 public class ColourGridLogin extends JFrame implements ActionListener{
@@ -40,7 +41,7 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 	private JPanel contentPane, formPanel, buttonPanel, gridPanel, mainPanel;
 	private JPanel headerPanel;
 	private JPasswordField pColourField;
-	private JButton loginButton;
+	private JButton loginButton, backBtn;
 	private JLabel headerLabel, pColourLabel;
 	private GridLayout gridLayout;
 	private String patternPass;
@@ -79,8 +80,11 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		mainPanel = new JPanel();
 		loginButton = new JButton("Login");
 		loginButton.addActionListener(this);
+		backBtn = new JButton("<");
+		backBtn.addActionListener(this);
 		
 		// add elements to window
+		headerPanel.add(backBtn);
 		headerPanel.add(headerLabel);
 		formPanel.setLayout(new GridLayout(3,1,10,10));
 		formPanel.add(pColourLabel);
@@ -122,6 +126,11 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 			} else {
 				JOptionPane.showMessageDialog(loginButton, "Incorrect password.");
 			}
+		} else if (btn.equals(backBtn)) {
+			SimpleLogin sl = new SimpleLogin();
+			sl.setMethod(Method.COLOURGRID);
+			sl.setVisible(true);
+			dispose();
 		}
 	}
 	

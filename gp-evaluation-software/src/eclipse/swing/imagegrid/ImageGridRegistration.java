@@ -32,6 +32,7 @@ import javax.swing.border.EmptyBorder;
 
 import eclipse.swing.Method;
 import eclipse.swing.SimpleLogin;
+import eclipse.swing.Welcome;
 
 public class ImageGridRegistration extends JFrame implements ActionListener{
 
@@ -40,7 +41,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 	private JLabel headerLabel, usernameLabel, passwordLabel, gridSizeLabel, imageSelectLabel;
 	private JTextField usernameField, gridSizeField, imageSelectField;
 	private JPasswordField passwordField;
-	private JButton registerButton;
+	private JButton registerButton, backBtn;
 	private ArrayList<BufferedImage> bufImages;
 
 	public static void main(String[] args) {
@@ -75,7 +76,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		usernameField = new JTextField(10);
 		passwordLabel = new JLabel("Password:");
 		passwordField = new JPasswordField(10);
-		imageSelectLabel = new JLabel("Enter the number of the two images you want to select, with a space in between.");
+		imageSelectLabel = new JLabel("PassImages ('x y')");
 		imageSelectField = new JTextField(10);
 		imagesPanel = new JPanel();
 		mainPanel = new JPanel();
@@ -98,20 +99,23 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		}
 		
 		// Grid Size select
-		gridSizeLabel = new JLabel("Grid Size (4-20)");
+		gridSizeLabel = new JLabel("Grid Size (3-8)");
 		gridSizeField = new JTextField(10);
 		
 		// Register Button
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
+		backBtn = new JButton("<");
+		backBtn.addActionListener(this);
 		
 		// Set layout of form and grid constraints
 		formPanel.setLayout(new GridLayout(4,0));
 		
 		// Set the features to the panels
 		contentPane.add(headerPanel, BorderLayout.NORTH);
-		headerPanel.add(headerLabel);
 		
+		headerPanel.add(backBtn);
+		headerPanel.add(headerLabel);
 		formPanel.add(usernameLabel);
 		formPanel.add(usernameField);
 		formPanel.add(passwordLabel);
@@ -153,8 +157,8 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 				JOptionPane.showMessageDialog(registerButton, "Error: Username, password, image or grid size is empty.");
 			} else if (!testProperInt(gridSizeStr)) {
 				JOptionPane.showMessageDialog(registerButton, "Error: Grid Size is not a number.");
-			} else if ((Integer.parseInt(gridSizeStr) < 4) || (Integer.parseInt(gridSizeStr) > 20)) {
-				JOptionPane.showMessageDialog(registerButton, "Error: Grid Size is smaller than 4 or bigger than 20.");
+			} else if ((Integer.parseInt(gridSizeStr) < 3) || (Integer.parseInt(gridSizeStr) > 8)) {
+				JOptionPane.showMessageDialog(registerButton, "Error: Grid Size is smaller than 3 or bigger than 8.");
 			} else {
 				try {
 					gridSize = Integer.parseInt(gridSizeStr);
@@ -222,7 +226,10 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 					exception.printStackTrace();
 				}
 			}
-		} 
+		} else if (btn.equals(backBtn)) {
+			new Welcome().setVisible(true);
+			dispose();
+		}
 	}
 	
 	boolean testProperInt(String txt) {
