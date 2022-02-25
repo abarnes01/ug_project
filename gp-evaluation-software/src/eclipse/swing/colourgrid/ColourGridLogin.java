@@ -120,6 +120,8 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 				long stopTime = System.nanoTime()-startTime;
 				long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
 				JOptionPane.showMessageDialog(loginButton, "Successfully logged in. Took " + seconds + "s");
+				System.out.println("For a shoulder surfer who knows the colour grid algorithm and spots the colour first letter input they have " + (float)seconds/6 + "s to memorise each letter");
+				System.out.println("For a unknowing shoulder surfer ... \n");
 				Welcome welcome = new Welcome();
 				welcome.setVisible(true);
 				dispose();

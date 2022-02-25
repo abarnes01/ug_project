@@ -84,6 +84,9 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 		
 		try {
 			
+			// add our two images to an array of random images. Save these coordinates
+			// display all images randomly in JLabels. Add a clicker
+			
 			bufImages.add(imageOne);
 			bufImages.add(imageTwo);
 			
@@ -97,9 +100,6 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 			}
 			
 			imageList = new JLabel[gridSize][gridSize];
-			
-			boolean gotImgOne = false;
-			boolean gotImgTwo = false;
 			
 			// print the whole grid with our two images randomly placed
 			for (int i = 0; i < gridSizeSqr; i++) {
@@ -132,7 +132,6 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
 		JLabel label = (JLabel)e.getSource();
 		for (int x = 0; x < gridSize; x++) {
 			for (int y = 0; y < gridSize; y++) {
@@ -141,7 +140,6 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 					
 					// horizontal line
 					if (I1.x == I2.x) {
-						
 						// at edge
 						if (I1.y+1 == gridSize) {
 							P1 = new PassImage(I1.x, 0);
@@ -184,9 +182,13 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 					
 					// check if this image is a pass image
 					if ((x == P1.x) && (y == P1.y)) {
+						// display seconds taken
 						long stopTime = System.nanoTime()-startTime;
 						long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
 						JOptionPane.showMessageDialog(label, "Correct pass image one. Took " + seconds + "s");
+						// TODO Time and complexity analysis for shoulder surfer
+						System.out.println("For a shoulder surfer who knows the image grid algorithm, there are " + (gridSize-1)*2 + " tiles that could be a pass image.");
+						System.out.println("For a unknowing shoulder surfer ... \n");
 						Welcome welcome = new Welcome();
 						welcome.setVisible(true);
 						dispose();
@@ -205,26 +207,18 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
