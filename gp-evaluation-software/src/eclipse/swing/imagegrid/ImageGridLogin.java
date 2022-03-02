@@ -36,24 +36,32 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 	private JPanel contentPane, gridPanel;
 	private GridLayout gridLayout;
 	private ArrayList<BufferedImage> bufImages;
-	private JLabel[][] imageList;
+	private JLabel[][] labelList;
+	private BufferedImage[][] imageList;
+	private ArrayList<BufferedImage> possibleImages;
 	private PassImage P1, P2, I1, I2;
 	private long startTime;
+	private Boolean surfed;
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ImageGridLogin frame = new ImageGridLogin();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					ImageGridLogin frame = new ImageGridLogin();
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
-	public ImageGridLogin() {
+	public ImageGridLogin(Integer gs, BufferedImage iO, BufferedImage iT) {
+		setGridSize(gs);
+		setImages(iO, iT);
+		possibleImages = new ArrayList<BufferedImage>();
+		surfed = false;
+		
 		// auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 800);
@@ -67,6 +75,10 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 		contentPane.add(gridPanel, BorderLayout.CENTER);
 		
 		startTime = System.nanoTime();
+		
+		makeGrid();
+		
+		
 	}
 	
 	public void setImages(BufferedImage one, BufferedImage two) {
@@ -78,7 +90,20 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 		gridSize = size;
 	}
 	
+	public BufferedImage getImageOne() {
+		return imageOne;
+	}
+	
+	public BufferedImage getImageTwo() {
+		return imageTwo;
+	}
+	
+	public Integer getGridSize() {
+		return gridSize;
+	}
+	
 	public void makeGrid() {
+		System.out.println("Making grid...");
 		
 		bufImages = new ArrayList<BufferedImage>();
 		
@@ -99,7 +124,8 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 				bufImages.add(randImg);
 			}
 			
-			imageList = new JLabel[gridSize][gridSize];
+			labelList = new JLabel[gridSize][gridSize];
+			imageList = new BufferedImage[gridSize][gridSize];
 			
 			// print the whole grid with our two images randomly placed
 			for (int i = 0; i < gridSizeSqr; i++) {
@@ -115,7 +141,10 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 				}
 				JLabel imgLabel = new JLabel(new ImageIcon(randImg));
 				imgLabel.addMouseListener(this);
-				imageList[x][y] = imgLabel;
+				
+				labelList[x][y] = imgLabel;
+				imageList[x][y] = randImg;
+				
 				gridPanel.add(imgLabel);
 				randImg.flush();
 				bufImages.remove(randNum);
@@ -123,6 +152,7 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 			
 			gridLayout = new GridLayout(gridSize, gridSize);
 			gridPanel.setLayout(gridLayout);
+			System.out.println("Grid made.");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -136,7 +166,7 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 		for (int x = 0; x < gridSize; x++) {
 			for (int y = 0; y < gridSize; y++) {
 				// get this label position
-				if (imageList[x][y] == label) {
+				if (labelList[x][y] == label) {
 					
 					// horizontal line
 					if (I1.x == I2.x) {
@@ -183,27 +213,132 @@ public class ImageGridLogin extends JFrame implements MouseListener {
 					// check if this image is a pass image
 					if ((x == P1.x) && (y == P1.y)) {
 						// display seconds taken
-						long stopTime = System.nanoTime()-startTime;
-						long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
-						JOptionPane.showMessageDialog(label, "Correct pass image one. Took " + seconds + "s");
-						// TODO Time and complexity analysis for shoulder surfer
-						System.out.println("For a shoulder surfer who knows the image grid algorithm, there are " + (gridSize-1)*2 + " tiles that could be a pass image.");
-						System.out.println("For a unknowing shoulder surfer ... \n");
-						Welcome welcome = new Welcome();
-						welcome.setVisible(true);
-						dispose();
+//						long stopTime = System.nanoTime()-startTime;
+//						long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
+//						JOptionPane.showMessageDialog(label, "Correct pass image one. Took " + seconds + "s");
+//						// TODO Time and complexity analysis for shoulder surfer
+//						System.out.println("For a shoulder surfer who knows the image grid algorithm, there are " + (gridSize-1)*2 + " tiles that could be a pass image.");
+//						System.out.println("For a unknowing shoulder surfer ... \n");
+						
+						if (possibleImages.isEmpty()) {
+							for (int i = 0; i < gridSize; i++) {
+								if (labelList[i][P1.y] != label) {
+									possibleImages.add(imageList[i][P1.y]);
+									System.out.println("added x: " + i + " y: " + P1.y);
+								}
+								if (labelList[P1.x][i] != label) {
+									possibleImages.add(imageList[P1.x][i]);
+									System.out.println("added x: " + P1.x + " y: " + i);
+								}
+							}
+						} else {
+							
+							ArrayList<BufferedImage> currentImages = new ArrayList<BufferedImage>();
+							for (int i = 0; i < gridSize; i++) {
+								if (labelList[i][P1.y] != label) {
+									currentImages.add(imageList[i][P1.y]);
+								}
+								if (labelList[P1.x][i] != label) {
+									currentImages.add(imageList[P1.x][i]);
+								}
+							}
+							
+							ArrayList<BufferedImage> matches = new ArrayList<BufferedImage>();
+							for (int i = 0; i < currentImages.size(); i++) {
+								for (int j = 0; j < possibleImages.size(); j++) {
+									if (currentImages.get(i) == possibleImages.get(j)) {
+										matches.add(possibleImages.get(j));
+										//continue;
+									}
+								}
+							}
+							possibleImages.clear();
+							possibleImages = matches;
+							if (possibleImages.size() <= 2) {
+								System.out.println("Shoulder surfer found images.");
+								Welcome welcome = new Welcome();
+								welcome.setVisible(true);
+								dispose();
+							}
+						}
+						
+						gridPanel.removeAll();
+						gridPanel.revalidate();
+						gridPanel.repaint();
+						contentPane.removeAll();
+						contentPane.revalidate();
+						contentPane.repaint();
+						
+						makeGrid();
+						contentPane.add(gridPanel, BorderLayout.CENTER);
+						
+						
+						System.out.println(possibleImages.size());
+						
+
 					} else if ((x == P2.x) && (y == P2.y)) {
-						long stopTime = System.nanoTime()-startTime;
-						long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
-						JOptionPane.showMessageDialog(label, "Correct pass image two. Took " + seconds + "s");
-						Welcome welcome = new Welcome();
-						welcome.setVisible(true);
-						dispose();
+//						long stopTime = System.nanoTime()-startTime;
+//						long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
+//						JOptionPane.showMessageDialog(label, "Correct pass image two. Took " + seconds + "s");
+
+						if (possibleImages.isEmpty()) {
+							for (int i = 0; i < gridSize; i++) {
+								if (labelList[i][P2.y] != label) {
+									possibleImages.add(imageList[i][P2.y]);
+									System.out.println("added x: " + i + " y: " + P2.y);
+								}
+								if (labelList[P2.x][i] != label) {
+									possibleImages.add(imageList[P2.x][i]);
+									System.out.println("added x: " + P2.x + " y: " + i);
+								}
+							}
+						} else {
+							
+							ArrayList<BufferedImage> currentImages = new ArrayList<BufferedImage>();
+							for (int i = 0; i < gridSize; i++) {
+								if (labelList[i][P2.y] != label) {
+									currentImages.add(imageList[i][P2.y]);
+								}
+								if (labelList[P2.x][i] != label) {
+									currentImages.add(imageList[P2.x][i]);
+								}
+							}
+							
+							ArrayList<BufferedImage> matches = new ArrayList<BufferedImage>();
+							for (int i = 0; i < currentImages.size(); i++) {
+								for (int j = 0; j < possibleImages.size(); j++) {
+									if (currentImages.get(i) == possibleImages.get(j)) {
+										matches.add(possibleImages.get(j));
+										//continue;
+									}
+								}
+							}
+							possibleImages.clear();
+							possibleImages = matches;
+							if (possibleImages.size() <= 2) {
+								System.out.println("Found our images");
+								Welcome welcome = new Welcome();
+								welcome.setVisible(true);
+								dispose();
+							}
+						}
+						
+						gridPanel.removeAll();
+						gridPanel.revalidate();
+						gridPanel.repaint();
+						contentPane.removeAll();
+						contentPane.revalidate();
+						contentPane.repaint();
+						makeGrid();
+						contentPane.add(gridPanel, BorderLayout.CENTER);
+						System.out.println(possibleImages.size());
 					}
 				}
 			}
 		}
 	}
+	
+	
 
 	@Override
 	public void mousePressed(MouseEvent e) {

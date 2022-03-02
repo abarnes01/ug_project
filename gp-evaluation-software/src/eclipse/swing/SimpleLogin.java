@@ -144,10 +144,10 @@ public class SimpleLogin extends JFrame implements ActionListener{
 								BufferedImage imgOne = ImageIO.read(ioIS);
 								BufferedImage imgTwo = ImageIO.read(itIS);
 								
-								ImageGridLogin igl = new ImageGridLogin();
-								igl.setImages(imgOne, imgTwo);
-								igl.setGridSize(igRs.getInt(1));
-								igl.makeGrid();
+								ImageGridLogin igl = new ImageGridLogin(igRs.getInt(1), imgOne, imgTwo);
+//								igl.setImages(imgOne, imgTwo);
+//								igl.setGridSize(igRs.getInt(1));
+//								igl.makeGrid();
 								igl.setVisible(true);
 								dispose();
 							} catch (Exception e) {
