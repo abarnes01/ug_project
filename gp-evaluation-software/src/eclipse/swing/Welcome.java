@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.swing.coinpass.CoinPassRegistration;
 import eclipse.swing.colourgrid.ColourGridRegistration;
 import eclipse.swing.imagegrid.ImageGridRegistration;
 import eclipse.sql.*;
@@ -79,6 +80,7 @@ public class Welcome extends JFrame implements ActionListener {
 		choice.add("Simple Textual Method");
 		choice.add("Image Grid Method");
 		choice.add("Colour Grid Method");
+		choice.add("Coin Password Method");
 		panel.add(registerBtn);
 		panel.add(loginBtn);
 		panel.add(resetDbBtn);
@@ -107,6 +109,9 @@ public class Welcome extends JFrame implements ActionListener {
 				dispose();
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Colour Grid Method") {
 				new ColourGridRegistration().setVisible(true);
+				dispose();
+			} else if (choice.getItem(choice.getSelectedIndex()) == "Coin Password Method") {
+				new CoinPassRegistration().setVisible(true);
 				dispose();
 			}
 		} else if (btn.equals(loginBtn)) {
