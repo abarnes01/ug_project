@@ -91,16 +91,11 @@ public class Welcome extends JFrame implements ActionListener {
 		setResizable(false);
 	}
 
-	/* ============ ActionPerformed ============
-	 * Overridden action performed for handling all button click events in this window
-	 * @param event ActionEvent object
-	 */
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
 		// Button to go to next page based on the option selected in choice
 		if (btn.equals(registerBtn)) {
-			String data = "Password selected: " + choice.getItem(choice.getSelectedIndex());
 			if (choice.getItem(choice.getSelectedIndex()) == "Simple Textual Method") {
 				new SimpleRegistration().setVisible(true);
 				dispose();
@@ -115,21 +110,14 @@ public class Welcome extends JFrame implements ActionListener {
 				dispose();
 			}
 		} else if (btn.equals(loginBtn)) {
-			String data = "Password selected: " + choice.getItem(choice.getSelectedIndex());
 			if (choice.getItem(choice.getSelectedIndex()) == "Simple Textual Method") {
-				SimpleLogin sl = new SimpleLogin();
-				sl.setMethod(Method.SIMPLE);
-				sl.setVisible(true);
+				new InitialLogin(Method.SIMPLE).setVisible(true);
 				dispose();
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Image Grid Method") {
-				SimpleLogin sl = new SimpleLogin();
-				sl.setMethod(Method.IMAGEGRID);
-				sl.setVisible(true);
+				new InitialLogin(Method.IMAGEGRID).setVisible(true);
 				dispose();
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Colour Grid Method") {
-				SimpleLogin sl = new SimpleLogin();
-				sl.setMethod(Method.COLOURGRID);
-				sl.setVisible(true);
+				new InitialLogin(Method.COLOURGRID).setVisible(true);
 				dispose();
 			}
 		} else if (btn.equals(resetDbBtn)) {

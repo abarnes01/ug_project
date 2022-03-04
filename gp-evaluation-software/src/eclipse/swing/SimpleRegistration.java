@@ -1,7 +1,6 @@
 package eclipse.swing;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +18,6 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 
 public class SimpleRegistration extends JFrame implements ActionListener{
 
@@ -29,19 +27,6 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 	private JPasswordField passwordField;
 	private JButton registerButton, backBtn;
 	private JLabel headerLabel, usernameLabel, passwordLabel;
-
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SimpleRegistration frame = new SimpleRegistration();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	public SimpleRegistration() {
 		
@@ -88,17 +73,10 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 		setResizable(false);
 	}
 	
-	/* ============ ActionPerformed ============
-	 * Overridden action performed for handling all button click events in this window
-	 * @param event ActionEvent object
-	 */
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
-		/*
-		 * Register button action. Takes user name, password and tries to submit it to the database.
-		 * Will give an error if either user name or password is blank or if the user already exists.
-		 */
+
 		if (btn.equals(registerButton)) {
 			String username = usernameField.getText();
 			String password = String.valueOf(passwordField.getPassword());
@@ -110,12 +88,9 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
-					
 					PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username from user where username=?");
-					
 					st.setString(1, username);
 					ResultSet rs = st.executeQuery();
-					
 					if (rs.next()) {
 						JOptionPane.showMessageDialog(registerButton, "User already exists.");
 					} else {
@@ -125,9 +100,7 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 						if(x == 0) {
 							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
 						} else {
-							SimpleLogin sl = new SimpleLogin();
-							sl.setMethod(Method.SIMPLE);
-							sl.setVisible(true);
+							new InitialLogin(Method.SIMPLE).setVisible(true);
 							dispose();
 						}
 					}

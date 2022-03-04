@@ -2,22 +2,15 @@ package eclipse.swing.colourgrid;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JButton;
@@ -31,8 +24,8 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import eclipse.swing.InitialLogin;
 import eclipse.swing.Method;
-import eclipse.swing.SimpleLogin;
 import eclipse.swing.Welcome;
 
 public class ColourGridLogin extends JFrame implements ActionListener{
@@ -48,20 +41,7 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 	private Color patternPassColour;
 	private long startTime;
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ColourGridLogin frame = new ColourGridLogin();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	public ColourGridLogin() {
+	public ColourGridLogin(String pp) {
 		// auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -69,6 +49,9 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		
+		// set pattern pass
+		setPatternPass(pp);
 		
 		// create elements
 		headerPanel = new JPanel();
@@ -97,6 +80,7 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		//setResizable(false);
 		
 		startTime = System.nanoTime();
+		makeGrid();
 	}
 	
 	@Override
@@ -129,9 +113,7 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 				JOptionPane.showMessageDialog(loginButton, "Incorrect password.");
 			}
 		} else if (btn.equals(backBtn)) {
-			SimpleLogin sl = new SimpleLogin();
-			sl.setMethod(Method.COLOURGRID);
-			sl.setVisible(true);
+			new InitialLogin(Method.COLOURGRID).setVisible(true);
 			dispose();
 		}
 	}

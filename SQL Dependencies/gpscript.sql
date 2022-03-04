@@ -22,7 +22,7 @@ create table if not exists colour_grid_method (
     foreign key (userID) references user(userID)
 );
 
-create table if not exists grid_pass_method (
+create table if not exists coin_pass_method (
 	userID int NOT NULL,
     coinpass varchar(250) NOT NULL,
     foreign key (userID) references user(userID)

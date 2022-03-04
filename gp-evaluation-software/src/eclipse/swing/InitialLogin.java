@@ -1,19 +1,16 @@
 package eclipse.swing;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Base64;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -30,7 +27,7 @@ import eclipse.swing.colourgrid.ColourGridRegistration;
 import eclipse.swing.imagegrid.ImageGridLogin;
 import eclipse.swing.imagegrid.ImageGridRegistration;
 
-public class SimpleLogin extends JFrame implements ActionListener{
+public class InitialLogin extends JFrame implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel headerPanel;
@@ -41,20 +38,7 @@ public class SimpleLogin extends JFrame implements ActionListener{
 	private JLabel headerLabel, usernameLabel, passwordLabel;
 	private Method method;
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SimpleLogin frame = new SimpleLogin();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	public SimpleLogin() {
+	public InitialLogin(Method method) {
 		// auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -62,6 +46,9 @@ public class SimpleLogin extends JFrame implements ActionListener{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		
+		// set graphical password method we are using
+		setMethod(method);
 		
 		// create elements
 		headerPanel = new JPanel();
@@ -72,11 +59,13 @@ public class SimpleLogin extends JFrame implements ActionListener{
 		textField = new JTextField(10);
 		passwordLabel = new JLabel("Password: ");
 		passwordField = new JPasswordField(10);
+		
 		// create login button
 		loginButton = new JButton("Login");
 		loginButton.addActionListener(this);
 		backBtn = new JButton("<");
 		backBtn.addActionListener(this);
+		
 		// add features to window
 		headerPanel.add(backBtn);
 		headerPanel.add(headerLabel);
@@ -91,19 +80,11 @@ public class SimpleLogin extends JFrame implements ActionListener{
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 		setResizable(false);
 	}
-	
-	/* ============ ActionPerformed ============
-	 * Overridden action performed for handling all button click events in this window
-	 * @param event ActionEvent object
-	 */
+
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
-		/*
-		 * Login Button action.
-		 * Will give an error if the login details are incorrect.
-		 * Correct details will prompt the next page with evaluation.
-		 */
+
 		if (btn.equals(loginButton)) {
 			String username = textField.getText();
 			Integer password = String.valueOf(passwordField.getPassword()).hashCode();
@@ -125,10 +106,7 @@ public class SimpleLogin extends JFrame implements ActionListener{
 						if (cglRs.next()) {
 							System.out.println("Got grid method details");
 							String patternPass = cglRs.getString("patternPass");
-							ColourGridLogin cgl = new ColourGridLogin();
-							cgl.setPatternPass(patternPass);
-							cgl.makeGrid();
-							cgl.setVisible(true);
+							new ColourGridLogin(patternPass).setVisible(true);
 							dispose();
 						} else {
 							JOptionPane.showMessageDialog(loginButton, "User does not have colour grid method details.");
@@ -143,12 +121,7 @@ public class SimpleLogin extends JFrame implements ActionListener{
 							try {
 								BufferedImage imgOne = ImageIO.read(ioIS);
 								BufferedImage imgTwo = ImageIO.read(itIS);
-								
-								ImageGridLogin igl = new ImageGridLogin(igRs.getInt(1), imgOne, imgTwo);
-//								igl.setImages(imgOne, imgTwo);
-//								igl.setGridSize(igRs.getInt(1));
-//								igl.makeGrid();
-								igl.setVisible(true);
+								new ImageGridLogin(igRs.getInt(1), imgOne, imgTwo).setVisible(true);
 								dispose();
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -164,6 +137,8 @@ public class SimpleLogin extends JFrame implements ActionListener{
 						Welcome welcome = new Welcome();
 						welcome.setVisible(true);
 						dispose();
+					} else if (getMethod() == Method.COIN) {
+						// TODO Coin login
 					}
 				} else {
 					JOptionPane.showMessageDialog(loginButton, "Incorrect login details.");

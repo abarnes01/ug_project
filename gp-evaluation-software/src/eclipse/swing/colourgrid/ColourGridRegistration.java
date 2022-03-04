@@ -1,8 +1,6 @@
 package eclipse.swing.colourgrid;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,8 +19,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.swing.InitialLogin;
 import eclipse.swing.Method;
-import eclipse.swing.SimpleLogin;
 import eclipse.swing.Welcome;
 
 public class ColourGridRegistration extends JFrame implements ActionListener {
@@ -34,19 +32,6 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 	private JButton registerButton, backBtn;
 	private JLabel headerLabel, usernameLabel, passwordLabel, patternPLabel;
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ColourGridRegistration frame = new ColourGridRegistration();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
 	public ColourGridRegistration() {
 		// auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,6 +40,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		
 		// create the features
 		headerPanel = new JPanel();
 		headerLabel = new JLabel("Colour Grid Registration Form");
@@ -67,13 +53,16 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		passwordField = new JPasswordField(10);
 		patternPLabel = new JLabel("Pattern Pass (6 chars):");
 		patternPField = new JPasswordField(6);
+		
 		// create buttons
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
 		backBtn = new JButton("<");
 		backBtn.addActionListener(this);
+		
 		// set layout of form and grid constraints
 		formPanel.setLayout(new GridLayout(3,1,10,10));
+		
 		// set the features to the panels
 		headerPanel.add(backBtn);
 		headerPanel.add(headerLabel);
@@ -139,9 +128,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 						if(y == 0) {
 							JOptionPane.showMessageDialog(registerButton, "Colour grid method for user already exists.");
 						} else {
-							SimpleLogin sl = new SimpleLogin();
-							sl.setMethod(Method.COLOURGRID);
-							sl.setVisible(true);
+							new InitialLogin(Method.COLOURGRID).setVisible(true);
 							dispose();
 						}
 					}

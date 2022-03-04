@@ -31,15 +31,16 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.swing.InitialLogin;
 import eclipse.swing.Method;
-import eclipse.swing.SimpleLogin;
+import eclipse.swing.Welcome;
 
 public class CoinPassRegistration extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 575557513944314476L;
 	private JPanel contentPane, headerPanel, formPanel, buttonPanel, elementsPanel, mainPanel;
 	private JLabel headerLabel, nameLabel, passwordLabel, coinPassLabel;
-	private JButton registerButton;
+	private JButton registerButton, backBtn;
 	private JTextField nameField, coinPassField;
 	private JPasswordField passField;
 	
@@ -69,6 +70,8 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		coinPassField.setEditable(false);
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
+		backBtn = new JButton("<");
+		backBtn.addActionListener(this);
 		
 		// get element J labels
 		
@@ -99,7 +102,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 				iconMap.put(imgIcon, Integer.toString(i));
 				iconLabel.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
-						coinPassField.setText(coinPassField.getText() + ":" + iconMap.get(imgIcon));
+						coinPassField.setText(coinPassField.getText() + ":" + iconMap.get(imgIcon) + ".png");
 					}
 				});
 				elementsPanel.add(iconLabel);
@@ -131,6 +134,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			e.printStackTrace();
 		}
 		
+		headerPanel.add(backBtn);
 		headerPanel.add(headerLabel);
 		formPanel.add(nameLabel);
 		formPanel.add(nameField);
@@ -202,9 +206,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 						if(y == 0) {
 							JOptionPane.showMessageDialog(registerButton, "Coin pass method for user already exists. 2nd box");
 						} else {
-							SimpleLogin sl = new SimpleLogin();
-							sl.setMethod(Method.COIN);
-							sl.setVisible(true);
+							new InitialLogin(Method.COIN).setVisible(true);
 							dispose();
 						}
 					}
@@ -213,6 +215,9 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 					exception.printStackTrace();
 				}
 			}
+		} else if (btn.equals(backBtn)) {
+			new Welcome().setVisible(true);
+			dispose();
 		}
 	}
 

@@ -1,7 +1,6 @@
 package eclipse.swing.imagegrid;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,14 +9,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Base64;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -30,8 +27,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.swing.InitialLogin;
 import eclipse.swing.Method;
-import eclipse.swing.SimpleLogin;
 import eclipse.swing.Welcome;
 
 public class ImageGridRegistration extends JFrame implements ActionListener{
@@ -43,19 +40,6 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 	private JPasswordField passwordField;
 	private JButton registerButton, backBtn;
 	private ArrayList<BufferedImage> bufImages;
-
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ImageGridRegistration frame = new ImageGridRegistration();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	public ImageGridRegistration() {
 		
@@ -134,17 +118,10 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 	}
 	
-	/* ============ ActionPerformed ============
-	 * Overridden action performed for handling all button click events in this window
-	 * @param event ActionEvent object
-	 */
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
-		/*
-		 * Register button action. Takes user name, password and tries to submit it to the database.
-		 * Will give an error if either user name or password is blank or if the user already exists.
-		 */
+
 		if (btn.equals(registerButton)) {
 			String username = usernameField.getText();
 			String password = String.valueOf(passwordField.getPassword());
@@ -215,9 +192,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 						if(y == 0) {
 							JOptionPane.showMessageDialog(registerButton, "Image grid method for user already exists. 2nd box");
 						} else {
-							SimpleLogin sl = new SimpleLogin();
-							sl.setMethod(Method.IMAGEGRID);
-							sl.setVisible(true);
+							new InitialLogin(Method.IMAGEGRID).setVisible(true);
 							dispose();
 						}
 					}
