@@ -22,6 +22,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.swing.coinpass.CoinPassLogin;
+import eclipse.swing.coinpass.CoinPassRegistration;
 import eclipse.swing.colourgrid.ColourGridLogin;
 import eclipse.swing.colourgrid.ColourGridRegistration;
 import eclipse.swing.imagegrid.ImageGridLogin;
@@ -139,6 +141,17 @@ public class InitialLogin extends JFrame implements ActionListener{
 						dispose();
 					} else if (getMethod() == Method.COIN) {
 						// TODO Coin login
+						PreparedStatement cpSt = (PreparedStatement) connection.prepareStatement("Select coinpass from coin_pass_method where userID=?");
+						cpSt.setInt(1, userID);
+						ResultSet cpRs = cpSt.executeQuery();
+						if (cpRs.next()) {
+							System.out.println("Got coin pass method details");
+							String coinPass = cpRs.getString("coinpass");
+							new CoinPassLogin(coinPass).setVisible(true);
+							dispose();
+						} else {
+							JOptionPane.showMessageDialog(loginButton, "User does not have coin pass method details.");
+						}
 					}
 				} else {
 					JOptionPane.showMessageDialog(loginButton, "Incorrect login details.");
@@ -157,6 +170,9 @@ public class InitialLogin extends JFrame implements ActionListener{
 			} else if (getMethod() == Method.SIMPLE) {
 				new SimpleRegistration().setVisible(true);
 				dispose();				
+			} else if (getMethod() == Method.COIN) {
+				new CoinPassRegistration().setVisible(true);
+				dispose();
 			}
 		}
 	}

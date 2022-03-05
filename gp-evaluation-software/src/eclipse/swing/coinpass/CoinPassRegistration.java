@@ -43,6 +43,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 	private JButton registerButton, backBtn;
 	private JTextField nameField, coinPassField;
 	private JPasswordField passField;
+	private Boolean iconEntered, numEntered, colEntered;
 	
 
 	public CoinPassRegistration() {
@@ -52,6 +53,8 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		
+		iconEntered = numEntered = colEntered = false;
 		
 		headerPanel = new JPanel();
 		formPanel = new JPanel();
@@ -103,6 +106,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 				iconLabel.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
 						coinPassField.setText(coinPassField.getText() + ":" + iconMap.get(imgIcon) + ".png");
+						iconEntered = true;
 					}
 				});
 				elementsPanel.add(iconLabel);
@@ -112,6 +116,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 				numberLabel.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
 						coinPassField.setText(coinPassField.getText() + ":" + numberLabel.getText());
+						numEntered = true;
 					}
 				});
 				elementsPanel.add(numberLabel);
@@ -122,6 +127,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 				colourLabel.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
 						coinPassField.setText(coinPassField.getText() + ":" + colourLabel.getText());
+						colEntered = true;
 					}
 				});
 				elementsPanel.add(colourLabel);
@@ -164,8 +170,17 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			String dbname = "root";
 			String dbpass = "Footyclone2001";
 			
+			String[] stringSplit = coinpass.split(":");
+			System.out.println(stringSplit[0] + " " + stringSplit[1]);
+			
 			if (username.isBlank() || password.isBlank() || coinpass.isBlank()) {
 				JOptionPane.showMessageDialog(registerButton, "Error: Username, password or Coin pass is empty.");
+			} else if (stringSplit.length > 7) {
+				JOptionPane.showMessageDialog(registerButton, "Error: Coin pass is too long.");
+				coinPassField.setText("");
+				iconEntered = numEntered = colEntered = false;
+			} else if (!iconEntered || !numEntered || !colEntered) {
+				JOptionPane.showMessageDialog(registerButton, "Error: One of each coin pass element needed.");
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);

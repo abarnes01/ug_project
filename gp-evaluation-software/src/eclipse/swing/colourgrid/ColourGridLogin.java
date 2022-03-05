@@ -178,6 +178,5 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		}
 		mainPanel.add(gridPanel);
 	}
-
 }
 
