@@ -119,6 +119,9 @@ public class Welcome extends JFrame implements ActionListener {
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Colour Grid Method") {
 				new InitialLogin(Method.COLOURGRID).setVisible(true);
 				dispose();
+			} else if (choice.getItem(choice.getSelectedIndex()) == "Coin Password Method") {
+				new InitialLogin(Method.COIN).setVisible(true);
+				dispose();
 			}
 		} else if (btn.equals(resetDbBtn)) {
 			DatabaseRunner dbRunner = new DatabaseRunner();

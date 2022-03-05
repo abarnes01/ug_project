@@ -44,6 +44,10 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 	private JTextField nameField, coinPassField;
 	private JPasswordField passField;
 	private Boolean iconEntered, numEntered, colEntered;
+	private List<Color> colourList;
+	private Map<ImageIcon, String> iconMap;
+	private Map<Color, String> colourMap;
+	private ArrayList<ImageIcon> iconArray;
 	
 
 	public CoinPassRegistration() {
@@ -80,7 +84,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		
 		try {
 			
-			Map<Color, String> colourMap = new HashMap<>();
+			colourMap = new HashMap<>();
 			colourMap.put(Color.RED, "red");
 			colourMap.put(Color.BLUE, "blue");
 			colourMap.put(Color.PINK, "pink");
@@ -92,16 +96,18 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			colourMap.put(Color.CYAN, "cyan");
 			colourMap.put(Color.MAGENTA, "magenta");
 			
-			List<Color> colourList = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK, Color.WHITE,
+			colourList = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK, Color.WHITE,
 					Color.GREEN, Color.YELLOW, Color.BLACK, Color.ORANGE, Color.CYAN, Color.MAGENTA));
 			
-			Map<ImageIcon, String> iconMap = new HashMap<>();
+			iconMap = new HashMap<>();
 			
+			iconArray = new ArrayList<ImageIcon>();
 			for (int i = 0; i < 10; i++) {
 				//File pathToFile = new File("./Icons/" + Integer.toString(i) + ".png");
 				BufferedImage img = ImageIO.read(new File("Icons/" + Integer.toString(i) + ".png"));
 				ImageIcon imgIcon = new ImageIcon(img);
 				JLabel iconLabel = new JLabel(imgIcon);
+				iconArray.add(imgIcon);
 				iconMap.put(imgIcon, Integer.toString(i));
 				iconLabel.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
