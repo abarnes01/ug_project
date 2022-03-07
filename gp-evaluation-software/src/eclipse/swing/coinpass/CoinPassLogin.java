@@ -21,6 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.Border;
@@ -34,21 +35,21 @@ import eclipse.swing.Method;
 public class CoinPassLogin extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 7037648802373260841L;
-	private JPanel contentPane, headerPanel, coinPanel, formPanel, buttonPanel, mainPanel;
-	private JLabel headerLabel, passEntryLabel;
+	private JPanel contentPane, headerPanel, coinPanel, buttonPanel;
+	private JLabel headerLabel;
 	private JButton loginBtn, backBtn;
 	private JPasswordField passEntryField;
-	private String coinPass;
+	private String coinPass, passEntry;
 	private ArrayList<String> coinPassElements;
 	private ArrayList<Color> colourArray;
 	private Map<String, ImageIcon> iconMap;
-	private Map<Color, String> colourMap;
+	private Map<String, Color> colourMap;
 	private ArrayList<ImageIcon> iconArray;
 	private ArrayList<Integer> numArray;
 
 	public CoinPassLogin(String coinPass) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 500, 400);
+		setBounds(100, 100, 550, 550);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -60,19 +61,15 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		
 		headerPanel = new JPanel();
 		coinPanel = new JPanel();
-		formPanel = new JPanel();
 		buttonPanel = new JPanel();
-		mainPanel = new JPanel();
 		
 		headerLabel = new JLabel("Coin Password Login");
-		passEntryLabel = new JLabel("Password: ");
 		loginBtn = new JButton("Login");
 		loginBtn.addActionListener(this);
 		backBtn = new JButton("<");
 		backBtn.addActionListener(this);
-		passEntryField = new JPasswordField(14);
-		passEntryField.setText(":");
-		passEntryField.setEditable(false);
+		
+		passEntry = "";
 		
 		makeCoins();
 		coinPanel.setLayout(new GridLayout(0, 3));
@@ -80,16 +77,10 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		headerPanel.add(backBtn);
 		headerPanel.add(headerLabel);
 		
-		formPanel.add(passEntryLabel);
-		formPanel.add(passEntryField);
-		
-		mainPanel.add(coinPanel);
-		mainPanel.add(formPanel);
-		
 		buttonPanel.add(loginBtn);
 		
 		contentPane.add(headerPanel, BorderLayout.NORTH);
-		contentPane.add(mainPanel, BorderLayout.CENTER);
+		contentPane.add(coinPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 	}
 	
@@ -100,16 +91,16 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		System.out.println("Creating coins.");
 		try {
 			colourMap = new HashMap<>();
-			colourMap.put(Color.RED, "red");
-			colourMap.put(Color.BLUE, "blue");
-			colourMap.put(Color.PINK, "pink");
-			colourMap.put(Color.WHITE, "white");
-			colourMap.put(Color.GREEN, "green");
-			colourMap.put(Color.YELLOW, "yellow");
-			colourMap.put(Color.BLACK, "black");
-			colourMap.put(Color.ORANGE, "orange");
-			colourMap.put(Color.CYAN, "cyan");
-			colourMap.put(Color.MAGENTA, "magenta");
+			colourMap.put("red", Color.RED);
+			colourMap.put("blue", Color.BLUE);
+			colourMap.put("pink", Color.PINK);
+			colourMap.put("white", Color.WHITE);
+			colourMap.put("green", Color.GREEN);
+			colourMap.put("yellow", Color.YELLOW);
+			colourMap.put("black", Color.BLACK);
+			colourMap.put("orange", Color.ORANGE);
+			colourMap.put("cyan", Color.CYAN);
+			colourMap.put("magenta", Color.MAGENTA);
 			
 			colourArray = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK, Color.WHITE,
 					Color.GREEN, Color.YELLOW, Color.BLACK, Color.ORANGE, Color.CYAN, Color.MAGENTA));
@@ -129,37 +120,52 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 			
 			for (int i = 0; i < 10; i++) {
 				Random rand = new Random();
+				int randIcon = rand.nextInt(10-i);
 				int randNum = rand.nextInt(10-i);
-				JLabel coin = new JLabel(iconArray.get(randNum));
+				int randCol = rand.nextInt(10-i);
+				JLabel coin = new JLabel(iconArray.get(randIcon));
 				coin.setText(Integer.toString(numArray.get(randNum)));
-				Border border = BorderFactory.createLineBorder(colourArray.get(randNum), 5);
-				coin.setForeground(colourArray.get(randNum));
-				iconArray.remove(randNum);
+				Border border = BorderFactory.createLineBorder(colourArray.get(randCol), 5);
+				coin.setForeground(colourArray.get(randCol));
+				iconArray.remove(randIcon);
 				numArray.remove(randNum);
-				colourArray.remove(randNum);
+				colourArray.remove(randCol);
 				coin.setBorder(border);
-				
 				coin.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
-						String str = coinPassElements.get(0);
-						if (str.contains(".png") && iconMap.get(str) == (ImageIcon)coin.getIcon()) {
-							passEntryField.setText(String.valueOf(passEntryField.getPassword()) + str + ":");
-							coinPassElements.remove(0);
-						} else if (StringUtils.isNumeric(str) && str == coin.getText()) {
-							passEntryField.setText(String.valueOf(passEntryField.getPassword()) + str + ":");
-							coinPassElements.remove(0);
-						} else if (colourArray.contains(str) && str == colourMap.get(coin.getForeground())) {
-							passEntryField.setText(String.valueOf(passEntryField.getPassword()) + str + ":");
-							coinPassElements.remove(0);
+						
+						if (!coinPassElements.isEmpty()) {
+							String str = coinPassElements.get(0);
+							
+							ImageIcon iconViewed = (ImageIcon)coin.getIcon();
+							String numViewed = coin.getText();
+							Color colViewed = coin.getForeground();
+							
+							if (str.contains(".png") && iconMap.get(str) == iconViewed) {
+								passEntry += ":" + str;
+								coinPassElements.remove(0);
+							} else if (colourMap.containsKey(str) && colourMap.get(str) == colViewed) {
+								passEntry += ":" + str;
+								coinPassElements.remove(0);
+							} else if (str.equals(numViewed)) {
+								passEntry += ":" + str;
+								coinPassElements.remove(0);
+							} else {
+								passEntry = "";
+								coinPassElements = new ArrayList<String>();
+								setCoinPassElements(coinPass);
+								JOptionPane.showMessageDialog(coin, "Incorrect: Try again.");
+							}
+
+							System.out.println("Currently looking at element: " + str);
+							System.out.println(passEntry);
 						}
-						System.out.println(String.valueOf(passEntryField.getPassword()));
 						coinPanel.removeAll();
 						coinPanel.revalidate();
 						coinPanel.repaint();
 						makeCoins();
 					}
 				});
-				
 				coinPanel.add(coin);
 			}
 		} catch (Exception e) {
@@ -174,6 +180,9 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		
 		if (btn.equals(loginBtn)) {
 			// TODO login checks whether pass field is same as entered stuff
+			if (passEntry.equals(getCoinPass())) {
+				JOptionPane.showMessageDialog(loginBtn, "Successfully logged in.");
+			}
 			
 		} else if (btn.equals(backBtn)) {
 			new InitialLogin(Method.COIN).setVisible(true);
