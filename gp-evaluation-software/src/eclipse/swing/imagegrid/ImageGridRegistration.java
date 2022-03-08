@@ -129,7 +129,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 			Integer gridSize;
 			String url = "jdbc:mysql://localhost:3306/gp_database";
 			String dbname = "root";
-			String dbpass = "Footyclone2001";
+			String dbpass = "";
 			if (username.isBlank() || password.isBlank() || gridSizeStr.isBlank() || imageSelectField.getText().isBlank()) {
 				JOptionPane.showMessageDialog(registerButton, "Error: Username, password, image or grid size is empty.");
 			} else if (!testProperInt(gridSizeStr)) {

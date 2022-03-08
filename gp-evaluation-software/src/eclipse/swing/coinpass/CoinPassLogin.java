@@ -72,7 +72,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		passEntry = "";
 		
 		makeCoins();
-		coinPanel.setLayout(new GridLayout(0, 3));
+		coinPanel.setLayout(new GridLayout(0, 3, 20, 20));
 		
 		headerPanel.add(backBtn);
 		headerPanel.add(headerLabel);
@@ -131,6 +131,9 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 				numArray.remove(randNum);
 				colourArray.remove(randCol);
 				coin.setBorder(border);
+				coin.setBackground(Color.LIGHT_GRAY);
+				coin.setOpaque(true);
+				coin.setSize(5, 5);
 				coin.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
 						

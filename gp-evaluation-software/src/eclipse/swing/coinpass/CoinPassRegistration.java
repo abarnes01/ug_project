@@ -174,7 +174,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			String coinpass = coinPassField.getText();
 			String url = "jdbc:mysql://localhost:3306/gp_database";
 			String dbname = "root";
-			String dbpass = "Footyclone2001";
+			String dbpass = "";
 			
 			String[] stringSplit = coinpass.split(":");
 			System.out.println(stringSplit[0] + " " + stringSplit[1]);

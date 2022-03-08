@@ -127,6 +127,8 @@ public class Welcome extends JFrame implements ActionListener {
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Coin Password Method") {
 				new InitialLogin(Method.COIN).setVisible(true);
 				dispose();
+			} else if (choice.getItem(choice.getSelectedIndex()) == "Colour Wheel Method") {
+				// TODO make colour wheel login
 			}
 		} else if (btn.equals(resetDbBtn)) {
 			DatabaseRunner dbRunner = new DatabaseRunner();
@@ -138,7 +140,6 @@ public class Welcome extends JFrame implements ActionListener {
 				System.err.println("Could not drop database.");
 				e.printStackTrace();
 			}
-			
 		}
 	}
 

@@ -89,9 +89,9 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 			String patternPass = String.valueOf(patternPField.getPassword());
 			String url = "jdbc:mysql://localhost:3306/gp_database";
 			String dbname = "root";
-			String dbpass = "Footyclone2001";
-			if (username.isBlank() || password.isBlank()) {
-				JOptionPane.showMessageDialog(registerButton, "Username or password is empty.");
+			String dbpass = "";
+			if (username.isBlank() || password.isBlank() || patternPass.length() != 6) {
+				JOptionPane.showMessageDialog(registerButton, "Username or password is empty or pattern pass does not equal 6.");
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);

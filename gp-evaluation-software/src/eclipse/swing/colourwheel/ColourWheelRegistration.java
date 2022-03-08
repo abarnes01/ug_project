@@ -7,6 +7,12 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,12 +22,15 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.swing.InitialLogin;
+import eclipse.swing.Method;
 import eclipse.swing.Welcome;
 
 public class ColourWheelRegistration extends JFrame implements ActionListener {
@@ -53,9 +62,9 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		nameLabel = new JLabel("Username: ");
 		passwordLabel = new JLabel("Password: ");
 		colChosenTxt = new JLabel("Selected colour: ");
+		chosenCol = new JLabel();
 		nameField = new JTextField(10);
 		passField = new JPasswordField(10);
-		chosenCol = new JLabel();
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
 		backBtn = new JButton("<");
@@ -92,8 +101,18 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 			colourLbl.setForeground(colourList.get(i));
 			Border border = BorderFactory.createLineBorder(colourList.get(i), 5);
 			colourLbl.setBorder(border);
+			colourLbl.setBackground(Color.BLACK);
+			colourLbl.setOpaque(true);
 			colourLbl.addMouseListener(new MouseAdapter() {
-				// TODO select colour
+				public void mouseClicked(MouseEvent me) {
+					System.out.println("clicked");
+					chosenCol.setText(colourStr);
+					chosenCol.setForeground(colourLbl.getForeground());
+					Border border = BorderFactory.createLineBorder(colourLbl.getForeground(), 5);
+					chosenCol.setBorder(border);
+					chosenCol.setBackground(Color.BLACK);
+					chosenCol.setOpaque(true);
+				}
 			});
 			coloursPanel.add(colourLbl);
 		}
@@ -113,6 +132,61 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		
 		if (btn.equals(registerButton)) {
 			// TODO check if register button
+			String username = nameField.getText();
+			String password = String.valueOf(passField.getPassword());
+			String colStr = chosenCol.getText();
+			String url = "jdbc:mysql://localhost:3306/gp_database";
+			String dbname = "root";
+			String dbpass = "";
+			if (username.isBlank() || password.isBlank() || colStr.isBlank()) {
+				JOptionPane.showMessageDialog(registerButton, "Username, password or selected colour is empty.");
+			} else {
+				try {
+					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
+					PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username from user where username=?");
+					st.setString(1, username);
+					ResultSet rs = st.executeQuery();
+					if (rs.next()) {
+						JOptionPane.showMessageDialog(registerButton, "User already exists: registering colour wheel details only.");
+					} else {
+						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
+						Statement statement = connection.createStatement();
+						int x = statement.executeUpdate(query);
+						if(x == 0) {
+							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
+						}
+					}
+					
+					
+					PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
+					nextst.setString(1, username);
+					ResultSet newrs = nextst.executeQuery();
+					newrs.next();
+					int userID = newrs.getInt("userID");
+					
+					PreparedStatement checkdbst = (PreparedStatement) connection.prepareStatement("Select userID from colour_wheel_method where userID=?");
+					checkdbst.setInt(1, userID);
+					ResultSet checkdbrs = checkdbst.executeQuery();
+					if (checkdbrs.next()) {
+						JOptionPane.showMessageDialog(registerButton, "Colour wheel method for user already exists.");
+					} else {
+						String gridQuery = "INSERT INTO colour_wheel_method(userID,chosenColour) values(?, ?)";
+						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
+						gridst.setInt(1, userID);
+						gridst.setString(2, colStr);
+						int y = gridst.executeUpdate();
+						if(y == 0) {
+							JOptionPane.showMessageDialog(registerButton, "Colour wheel method for user already exists.");
+						} else {
+							new InitialLogin(Method.WHEEL).setVisible(true);
+							dispose();
+						}
+					}
+					connection.close();
+				} catch (Exception exception) {
+					exception.printStackTrace();
+				}
+			}
 		} else if (btn.equals(backBtn)) {
 			new Welcome().setVisible(true);
 			dispose();

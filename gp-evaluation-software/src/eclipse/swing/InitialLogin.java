@@ -92,7 +92,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 			Integer password = String.valueOf(passwordField.getPassword()).hashCode();
 			String url = "jdbc:mysql://localhost:3306/gp_database";
 			String dbname = "root";
-			String dbpass = "Footyclone2001";
+			String dbpass = "";
 			try {
 				Connection connection = (Connection) DriverManager.getConnection(url,dbname,dbpass);
 				PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select userID from user where username=? and password=?");

@@ -82,7 +82,7 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 			String password = String.valueOf(passwordField.getPassword());
 			String url = "jdbc:mysql://localhost:3306/gp_database";
 			String dbname = "root";
-			String dbpass = "Footyclone2001";
+			String dbpass = "";
 			if (username.isBlank() || password.isBlank()) {
 				JOptionPane.showMessageDialog(registerButton, "Username or password is empty.");
 			} else {
