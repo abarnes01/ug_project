@@ -26,6 +26,8 @@ import eclipse.swing.coinpass.CoinPassLogin;
 import eclipse.swing.coinpass.CoinPassRegistration;
 import eclipse.swing.colourgrid.ColourGridLogin;
 import eclipse.swing.colourgrid.ColourGridRegistration;
+import eclipse.swing.colourwheel.ColourWheelLogin;
+import eclipse.swing.colourwheel.ColourWheelRegistration;
 import eclipse.swing.imagegrid.ImageGridLogin;
 import eclipse.swing.imagegrid.ImageGridRegistration;
 
@@ -152,6 +154,18 @@ public class InitialLogin extends JFrame implements ActionListener{
 						} else {
 							JOptionPane.showMessageDialog(loginButton, "User does not have coin pass method details.");
 						}
+					} else if (getMethod() == Method.WHEEL) {
+						PreparedStatement cpSt = (PreparedStatement) connection.prepareStatement("Select chosenColour from colour_wheel_method where userID=?");
+						cpSt.setInt(1, userID);
+						ResultSet cpRs = cpSt.executeQuery();
+						if (cpRs.next()) {
+							System.out.println("Got colour wheel method details");
+							String chosenCol = cpRs.getString("chosenColour");
+							new ColourWheelLogin(chosenCol).setVisible(true);
+							dispose();
+						} else {
+							JOptionPane.showMessageDialog(loginButton, "User does not have coin pass method details.");
+						}
 					}
 				} else {
 					JOptionPane.showMessageDialog(loginButton, "Incorrect login details.");
@@ -172,6 +186,9 @@ public class InitialLogin extends JFrame implements ActionListener{
 				dispose();				
 			} else if (getMethod() == Method.COIN) {
 				new CoinPassRegistration().setVisible(true);
+				dispose();
+			} else if (getMethod() == Method.WHEEL) {
+				new ColourWheelRegistration().setVisible(true);
 				dispose();
 			}
 		}
