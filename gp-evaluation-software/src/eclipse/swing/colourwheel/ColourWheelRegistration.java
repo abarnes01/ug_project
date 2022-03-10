@@ -36,10 +36,10 @@ import eclipse.swing.Welcome;
 public class ColourWheelRegistration extends JFrame implements ActionListener {
 
 	private JPanel contentPane, headerPanel, formPanel, buttonPanel, coloursPanel, mainPanel;
-	private JLabel headerLabel, nameLabel, passwordLabel, colChosenTxt, chosenCol;
+	private JLabel headerLabel, nameLabel, passwordLabel, colChosenTxt, chosenCol, wheelPassLbl;
 	private JButton registerButton, backBtn;
 	private JTextField nameField;
-	private JPasswordField passField;
+	private JPasswordField passField, wheelPassField;
 	private Map<Color, String> colourMap;
 	private ArrayList<Color> colourList;
 
@@ -57,14 +57,16 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		buttonPanel = new JPanel();
 		mainPanel = new JPanel();
 		
-		headerLabel = new JLabel("Coin Password Registration");
+		headerLabel = new JLabel("Colour Wheel Registration");
 		formPanel.setLayout(new GridLayout(3, 0));
 		nameLabel = new JLabel("Username: ");
 		passwordLabel = new JLabel("Password: ");
 		colChosenTxt = new JLabel("Selected colour: ");
+		wheelPassLbl = new JLabel("Wheel Pass: ");
 		chosenCol = new JLabel();
 		nameField = new JTextField(10);
 		passField = new JPasswordField(10);
+		wheelPassField = new JPasswordField(10);
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
 		backBtn = new JButton("<");
@@ -77,8 +79,11 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		formPanel.add(nameField);
 		formPanel.add(passwordLabel);
 		formPanel.add(passField);
+		formPanel.add(wheelPassLbl);
+		formPanel.add(wheelPassField);
 		formPanel.add(colChosenTxt);
 		formPanel.add(chosenCol);
+		formPanel.setLayout(new GridLayout(4, 1));
 		
 		colourMap = new HashMap<>();
 		colourMap.put(Color.RED, "red");
@@ -135,11 +140,12 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 			String username = nameField.getText();
 			String password = String.valueOf(passField.getPassword());
 			String colStr = chosenCol.getText();
+			String wheelPass = String.valueOf(wheelPassField.getPassword());
 			String url = "jdbc:mysql://localhost:3306/gp_database";
 			String dbname = "root";
 			String dbpass = "";
-			if (username.isBlank() || password.isBlank() || colStr.isBlank()) {
-				JOptionPane.showMessageDialog(registerButton, "Username, password or selected colour is empty.");
+			if (username.isBlank() || password.isBlank() || colStr.isBlank() || wheelPass.isBlank()) {
+				JOptionPane.showMessageDialog(registerButton, "Username, password, selected colour or wheel pass is empty.");
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
@@ -157,7 +163,6 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 						}
 					}
 					
-					
 					PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
 					nextst.setString(1, username);
 					ResultSet newrs = nextst.executeQuery();
@@ -170,10 +175,11 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 					if (checkdbrs.next()) {
 						JOptionPane.showMessageDialog(registerButton, "Colour wheel method for user already exists.");
 					} else {
-						String gridQuery = "INSERT INTO colour_wheel_method(userID,chosenColour) values(?, ?)";
+						String gridQuery = "INSERT INTO colour_wheel_method(userID,chosenColour,wheelPass) values(?, ?, ?)";
 						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
 						gridst.setInt(1, userID);
 						gridst.setString(2, colStr);
+						gridst.setString(3, wheelPass);
 						int y = gridst.executeUpdate();
 						if(y == 0) {
 							JOptionPane.showMessageDialog(registerButton, "Colour wheel method for user already exists.");

@@ -155,13 +155,14 @@ public class InitialLogin extends JFrame implements ActionListener{
 							JOptionPane.showMessageDialog(loginButton, "User does not have coin pass method details.");
 						}
 					} else if (getMethod() == Method.WHEEL) {
-						PreparedStatement cpSt = (PreparedStatement) connection.prepareStatement("Select chosenColour from colour_wheel_method where userID=?");
+						PreparedStatement cpSt = (PreparedStatement) connection.prepareStatement("Select chosenColour, wheelPass from colour_wheel_method where userID=?");
 						cpSt.setInt(1, userID);
 						ResultSet cpRs = cpSt.executeQuery();
 						if (cpRs.next()) {
 							System.out.println("Got colour wheel method details");
 							String chosenCol = cpRs.getString("chosenColour");
-							new ColourWheelLogin(chosenCol).setVisible(true);
+							String wheelPass = cpRs.getString("wheelPass");
+							new ColourWheelLogin(chosenCol, wheelPass).setVisible(true);
 							dispose();
 						} else {
 							JOptionPane.showMessageDialog(loginButton, "User does not have coin pass method details.");

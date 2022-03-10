@@ -2,7 +2,9 @@ package eclipse.swing.colourwheel;
 
 import java.awt.*;
 import java.awt.geom.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.*;
 
@@ -55,11 +57,21 @@ public class WheelCanvas extends JComponent {
 		g2d.translate(rec.getCenterX(), rec.getCenterY());
 		g2d.rotate(-Math.toRadians(startAng));
 		g2d.translate(90, -50);
+		
+		// turn around if upside down
+		if (-startAng <= -135.0 && -startAng >= -225.0) {
+			System.out.println("this needs to rotate");
+			g2d.rotate(Math.toRadians(180),0,0);
+			g2d.translate(-100, 0);
+		}
+		
+		// draw out each letter
 		for (int j = 0; j < 8; j++) {
 			g2d.drawString(chars.get(j), 0, 0);
 			g2d.translate(13, 0);
 		}
 		g2d.setTransform(temp);
+		System.out.println("\n");
 	}
 	
 	

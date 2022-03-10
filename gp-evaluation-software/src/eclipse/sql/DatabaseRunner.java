@@ -39,7 +39,7 @@ public class DatabaseRunner {
 		
 		String url = "jdbc:mysql://localhost:3306/";
 		String dbname = "root";
-		String dbpass = "Footyclone2001";
+		String dbpass = "";
 		
 		Connection con = DriverManager.getConnection(url, dbname, dbpass);
 		System.out.println("Database connection established...");

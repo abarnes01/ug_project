@@ -31,5 +31,6 @@ create table if not exists coin_pass_method (
 create table if not exists colour_wheel_method (
 	userID int NOT NULL,
     chosenColour varchar(250) NOT NULL,
+    wheelPass varchar(250) NOT NULL,
     foreign key (userID) references user(userID)
 );

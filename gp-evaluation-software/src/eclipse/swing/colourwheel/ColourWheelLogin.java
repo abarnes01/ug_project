@@ -27,42 +27,41 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 	private JButton rotLftBtn, rotRgtBtn, loginBtn, entryBtn;
 	private JPasswordField passField;
 	private int width, height;
-	private String chosenCol;
+	private String chosenCol, wheelPass;
 	private List<Color> colourList;
 	private List<List<String>> charLists;
 	private WheelCanvas wc;
 	private Map<String, Color> colourMap;
+	private String[] wpLetters;
 
-	public ColourWheelLogin(String chosenCol) {
+	public ColourWheelLogin(String chosenCol, String wheelPass) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		width = 450;
 		height = 300;
-		setBounds(100, 100, width, height);
+		setBounds(100, 100, width+10, (height*2));
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
 		this.chosenCol = chosenCol;
+		this.wheelPass = wheelPass;
+		wpLetters = wheelPass.split("");
 		
 		headerPanel = new JPanel();
 		headerLbl = new JLabel("Colour Wheel");
 		headerPanel.add(headerLbl);
 		
 		formPanel = new JPanel();
-		rotLftBtn = new JButton("Rotate left");
+		rotLftBtn = new JButton("Rotate anticlockwise");
 		rotLftBtn.addActionListener(this);
-		rotRgtBtn = new JButton("Rotate right");
+		rotRgtBtn = new JButton("Rotate clockwise");
 		rotRgtBtn.addActionListener(this);
 		entryBtn = new JButton("Confirm");
 		entryBtn.addActionListener(this);
-		passLbl = new JLabel("Password: ");
-		passField = new JPasswordField(10);
 		formPanel.add(rotLftBtn);
 		formPanel.add(rotRgtBtn);
 		formPanel.add(entryBtn);
-		formPanel.add(passLbl);
-		formPanel.add(passField);
 		
 		loginPanel = new JPanel();
 		loginBtn = new JButton("Login");
