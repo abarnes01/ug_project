@@ -60,7 +60,6 @@ public class WheelCanvas extends JComponent {
 		
 		// turn around if upside down
 		if (-startAng <= -135.0 && -startAng >= -225.0) {
-			System.out.println("this needs to rotate");
 			g2d.rotate(Math.toRadians(180),0,0);
 			g2d.translate(-100, 0);
 		}
@@ -71,7 +70,6 @@ public class WheelCanvas extends JComponent {
 			g2d.translate(13, 0);
 		}
 		g2d.setTransform(temp);
-		System.out.println("\n");
 	}
 	
 	

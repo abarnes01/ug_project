@@ -5,6 +5,9 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -60,10 +65,20 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		headerLbl = new JLabel("Colour Wheel");
 		headerPanel.add(headerLbl);
 		
+		// get rotate icons
+		try {
+			BufferedImage rotRgt = ImageIO.read(new File("Icons/clockwise.png"));
+			BufferedImage rotLft = ImageIO.read(new File("Icons/anticlockwise.png"));
+			rotLftBtn = new JButton(new ImageIcon(rotLft));
+			rotRgtBtn = new JButton(new ImageIcon(rotRgt));
+		} catch (IOException e) {
+			e.printStackTrace();
+			rotLftBtn = new JButton("Anticlockwise");
+			rotRgtBtn = new JButton("Clockwise");
+		}
+		
 		formPanel = new JPanel();
-		rotLftBtn = new JButton("Rotate anticlockwise");
 		rotLftBtn.addActionListener(this);
-		rotRgtBtn = new JButton("Rotate clockwise");
 		rotRgtBtn.addActionListener(this);
 		entryBtn = new JButton("Confirm");
 		entryBtn.addActionListener(this);
@@ -123,12 +138,14 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 			for (int i = 0; i < 8; i++) {
 				if (colourMap.get(chosenCol) == colourList.get(i)) {
 					Boolean isCorrect = false;
-					for (int j = 0; j < 8; j++) {
-						System.out.println(charLists.get(i).get(j));
-						if (charLists.get(i).get(j).equals(wpLetters[passCount])) {
-							System.out.println("Correct");
-							passCount += 1;
-							isCorrect = true;
+					if (passCount < passLength) {
+						for (int j = 0; j < 8; j++) {
+							if (charLists.get(i).get(j).equals(wpLetters[passCount])) {
+								System.out.println("Correct.");
+								passCount += 1;
+								isCorrect = true;
+								break;
+							}
 						}
 					}
 					if (!isCorrect) {
