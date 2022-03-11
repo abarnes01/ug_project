@@ -16,23 +16,28 @@ import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.swing.Welcome;
+
 public class ColourWheelLogin extends JFrame implements ActionListener {
 
-	private JPanel contentPane, headerPanel, formPanel, loginPanel, botmPanel;
-	private JLabel headerLbl, passLbl;
+	private JPanel contentPane, headerPanel, formPanel;
+	private JLabel headerLbl;
 	private JButton rotLftBtn, rotRgtBtn, loginBtn, entryBtn;
-	private JPasswordField passField;
 	private int width, height;
-	private String chosenCol, wheelPass;
+	private String chosenCol;
 	private List<Color> colourList;
 	private List<List<String>> charLists;
 	private WheelCanvas wc;
 	private Map<String, Color> colourMap;
 	private String[] wpLetters;
+	private int passCount;
+	private int passLength;
+	private int warningCount;
 
 	public ColourWheelLogin(String chosenCol, String wheelPass) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,8 +50,11 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		setContentPane(contentPane);
 		
 		this.chosenCol = chosenCol;
-		this.wheelPass = wheelPass;
 		wpLetters = wheelPass.split("");
+		
+		passCount = 0;
+		passLength = wpLetters.length;
+		warningCount = 0;
 		
 		headerPanel = new JPanel();
 		headerLbl = new JLabel("Colour Wheel");
@@ -59,14 +67,12 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		rotRgtBtn.addActionListener(this);
 		entryBtn = new JButton("Confirm");
 		entryBtn.addActionListener(this);
+		loginBtn = new JButton("Login");
+		loginBtn.addActionListener(this);
 		formPanel.add(rotLftBtn);
 		formPanel.add(rotRgtBtn);
 		formPanel.add(entryBtn);
-		
-		loginPanel = new JPanel();
-		loginBtn = new JButton("Login");
-		
-		botmPanel = new JPanel();
+		formPanel.add(loginBtn);
 		
 		colourMap = new HashMap<>();
 		colourMap.put("red", Color.RED);
@@ -100,9 +106,7 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		wc = new WheelCanvas(width, height, colourList, charLists);
 		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(wc, BorderLayout.CENTER);
-		botmPanel.add(formPanel);
-		botmPanel.add(loginPanel);
-		contentPane.add(botmPanel, BorderLayout.SOUTH);
+		contentPane.add(formPanel, BorderLayout.SOUTH);
 	}
 
 	@Override
@@ -118,16 +122,33 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		} else if (btn.equals(entryBtn)) {
 			for (int i = 0; i < 8; i++) {
 				if (colourMap.get(chosenCol) == colourList.get(i)) {
+					Boolean isCorrect = false;
 					for (int j = 0; j < 8; j++) {
 						System.out.println(charLists.get(i).get(j));
-						if (charLists.get(i).get(j).equals("m")) {
-							System.out.println("test work");
+						if (charLists.get(i).get(j).equals(wpLetters[passCount])) {
+							System.out.println("Correct");
+							passCount += 1;
+							isCorrect = true;
 						}
 					}
+					if (!isCorrect) {
+						warningCount += 1;
+						if (warningCount == 3) {
+							JOptionPane.showMessageDialog(entryBtn, "Too many warnings: Login failed.");
+							new Welcome().setVisible(true);
+							dispose();
+						} else {
+							JOptionPane.showMessageDialog(entryBtn, "Incorrect: Warning " + warningCount + ".");
+						}
+					} 
 				}
 			}
 		} else if (btn.equals(loginBtn)) {
-			
+			if (passCount == passLength) {
+				JOptionPane.showMessageDialog(loginBtn, "Successfully logged in.");
+			} else {
+				JOptionPane.showMessageDialog(loginBtn, "Incorrect password.");
+			}
 		}
 	}
 
