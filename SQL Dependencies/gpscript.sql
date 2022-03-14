@@ -13,6 +13,7 @@ create table if not exists image_grid_method (
     gridSize int NOT NULL,
     imageOne LONGBLOB,
     imageTwo LONGBLOB,
+    randomOrPreset varchar(250),
     foreign key (userID) references user(userID)
 );
 

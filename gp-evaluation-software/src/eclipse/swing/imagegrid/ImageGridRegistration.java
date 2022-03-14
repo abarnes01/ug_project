@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -38,18 +40,21 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 	private JLabel headerLabel, usernameLabel, passwordLabel, gridSizeLabel, imageSelectLabel;
 	private JTextField usernameField, gridSizeField, imageSelectField;
 	private JPasswordField passwordField;
-	private JButton registerButton, backBtn;
+	private JButton registerButton, backBtn, rndmImgBtn, prstImgBtn;
 	private ArrayList<BufferedImage> bufImages;
+	private Boolean genRndmImg, genPrstImg;
 
 	public ImageGridRegistration() {
 		
 		// Auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 400);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		
+		genRndmImg = genPrstImg = false;
 		
 		// Create the features
 		headerPanel = new JPanel();
@@ -62,25 +67,12 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		passwordField = new JPasswordField(10);
 		imageSelectLabel = new JLabel("PassImages ('x y')");
 		imageSelectField = new JTextField(10);
+		rndmImgBtn = new JButton("Random Images");
+		rndmImgBtn.addActionListener(this);
+		prstImgBtn = new JButton("Preset Images");
+		prstImgBtn.addActionListener(this);
 		imagesPanel = new JPanel();
 		mainPanel = new JPanel();
-		
-		// add images to array and print out
-		bufImages = new ArrayList<BufferedImage>();
-		try {
-			// add 6 images to array
-			for (int i = 1; i <= 6; i++) {
-				URL url = new URL("https://picsum.photos/50");
-				BufferedImage image = ImageIO.read(url.openStream());
-				
-				bufImages.add(image);
-				JLabel imgLabel = new JLabel(new ImageIcon(image));
-				imgLabel.setText(String.valueOf(i));
-				imagesPanel.add(imgLabel);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
 		// Grid Size select
 		gridSizeLabel = new JLabel("Grid Size (3-8)");
@@ -93,7 +85,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		backBtn.addActionListener(this);
 		
 		// Set layout of form and grid constraints
-		formPanel.setLayout(new GridLayout(4,0));
+		formPanel.setLayout(new GridLayout(0,2));
 		
 		// Set the features to the panels
 		contentPane.add(headerPanel, BorderLayout.NORTH);
@@ -108,6 +100,8 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		formPanel.add(gridSizeField);
 		formPanel.add(imageSelectLabel);
 		formPanel.add(imageSelectField);
+		formPanel.add(rndmImgBtn);
+		formPanel.add(prstImgBtn);
 		
 		mainPanel.add(formPanel);
 		mainPanel.add(imagesPanel);
@@ -116,6 +110,48 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
+	}
+	
+	public void genRandomImages() {
+		// add images to array and print out
+		bufImages = new ArrayList<BufferedImage>();
+		try {
+			// add 6 images to array
+			for (int i = 1; i <= 6; i++) {
+				URL url = new URL("https://picsum.photos/50");
+				BufferedImage image = ImageIO.read(url.openStream());
+				bufImages.add(image);
+				JLabel imgLabel = new JLabel(new ImageIcon(image));
+				imgLabel.setText(String.valueOf(i));
+				imagesPanel.add(imgLabel);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void genPresetImages() {
+		// add images to array and print out
+		bufImages = new ArrayList<BufferedImage>();
+		try {
+			// add 6 images to array
+			int oldInt = -1;
+			for (int i = 1; i <= 6; i++) {
+				Random random = new Random();
+				int randInt = random.nextInt(64);
+				while (randInt == oldInt) {
+					randInt = random.nextInt(64);
+				}
+				BufferedImage image = ImageIO.read(new File("Images/" + Integer.toString(randInt) + ".jpg"));			
+				bufImages.add(image);
+				JLabel imgLabel = new JLabel(new ImageIcon(image));
+				imgLabel.setText(String.valueOf(i));
+				imagesPanel.add(imgLabel);
+				oldInt = randInt;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -130,7 +166,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 			String url = "jdbc:mysql://localhost:3306/gp_database";
 			String dbname = "root";
 			String dbpass = "";
-			if (username.isBlank() || password.isBlank() || gridSizeStr.isBlank() || imageSelectField.getText().isBlank()) {
+			if (username.isBlank() || password.isBlank() || gridSizeStr.isBlank() || imageSelectField.getText().isBlank() || (!genRndmImg && !genPrstImg)) {
 				JOptionPane.showMessageDialog(registerButton, "Error: Username, password, image or grid size is empty.");
 			} else if (!testProperInt(gridSizeStr)) {
 				JOptionPane.showMessageDialog(registerButton, "Error: Grid Size is not a number.");
@@ -169,7 +205,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 					if (checkdbrs.next()) {
 						JOptionPane.showMessageDialog(registerButton, "Image grid method for user already exists.");
 					} else {
-						String gridQuery = "INSERT INTO image_grid_method(userID,gridSize,imageOne,imageTwo) values(?, ?, ?, ?)";
+						String gridQuery = "INSERT INTO image_grid_method(userID,gridSize,imageOne,imageTwo,randomOrPreset) values(?, ?, ?, ?, ?)";
 						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
 						
 						String[] split = imageSelectField.getText().split("\\s+");
@@ -188,6 +224,15 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 						gridst.setInt(2, gridSize);
 						gridst.setBlob(3, isOne);
 						gridst.setBlob(4, isTwo);
+						
+						if (genRndmImg) {
+							gridst.setString(5, "random");
+						} else if (genPrstImg) {
+							gridst.setString(5, "preset");
+						} else {
+							System.err.println("Error. Random or preset not set.");
+						}
+						
 						int y = gridst.executeUpdate();
 						if(y == 0) {
 							JOptionPane.showMessageDialog(registerButton, "Image grid method for user already exists. 2nd box");
@@ -204,6 +249,25 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		} else if (btn.equals(backBtn)) {
 			new Welcome().setVisible(true);
 			dispose();
+		} else if (btn.equals(rndmImgBtn)) {
+			if (!genRndmImg && !genPrstImg) {
+				genRndmImg = true;
+				genRandomImages();
+				System.out.println("ping2");
+				imagesPanel.revalidate();
+				imagesPanel.repaint();
+				contentPane.revalidate();
+				contentPane.repaint();
+			}
+		} else if (btn.equals(prstImgBtn)) {
+			if (!genRndmImg && !genPrstImg) {
+				genPrstImg = true;
+				genPresetImages();
+				imagesPanel.revalidate();
+				imagesPanel.repaint();
+				contentPane.revalidate();
+				contentPane.repaint();
+			}
 		}
 	}
 	

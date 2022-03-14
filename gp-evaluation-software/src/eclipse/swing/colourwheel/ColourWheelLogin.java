@@ -117,7 +117,6 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 			charLists.add(currentChars);
 		}
 		
-		// TODO
 		wc = new WheelCanvas(width, height, colourList, charLists);
 		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(wc, BorderLayout.CENTER);
