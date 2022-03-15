@@ -25,29 +25,14 @@ import eclipse.sql.*;
 public class Welcome extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
+	private DatabaseRunner dbRunner;
 	private JPanel contentPane, bottomPane;
 	private Choice choice;
 	private JEditorPane mainText;
 	private JScrollPane scrollPane;
 	private JButton registerBtn, loginBtn, resetDbBtn;
-	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					DatabaseRunner dbR = new DatabaseRunner();
-					dbR.createDB();
-					Welcome frame = new Welcome();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		
-	}
 
-	public Welcome() {
+	public Welcome(DatabaseRunner dbRunner) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 550, 400);
 		contentPane = new JPanel();
@@ -55,6 +40,7 @@ public class Welcome extends JFrame implements ActionListener {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		setTitle("Welcome");
+		this.dbRunner = dbRunner;
 		
 		bottomPane = new JPanel();
 		choice = new Choice();
@@ -119,40 +105,39 @@ public class Welcome extends JFrame implements ActionListener {
 		// Button to go to next page based on the option selected in choice
 		if (btn.equals(registerBtn)) {
 			if (choice.getItem(choice.getSelectedIndex()) == "Simple Textual Method") {
-				new SimpleRegistration().setVisible(true);
+				new SimpleRegistration(dbRunner).setVisible(true);
 				dispose();
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Image Grid Method") {
-				new ImageGridRegistration().setVisible(true);
+				new ImageGridRegistration(dbRunner).setVisible(true);
 				dispose();
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Colour Grid Method") {
-				new ColourGridRegistration().setVisible(true);
+				new ColourGridRegistration(dbRunner).setVisible(true);
 				dispose();
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Coin Password Method") {
-				new CoinPassRegistration().setVisible(true);
+				new CoinPassRegistration(dbRunner).setVisible(true);
 				dispose();
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Colour Wheel Method") {
-				new ColourWheelRegistration().setVisible(true);
+				new ColourWheelRegistration(dbRunner).setVisible(true);
 				dispose();
 			}
 		} else if (btn.equals(loginBtn)) {
 			if (choice.getItem(choice.getSelectedIndex()) == "Simple Textual Method") {
-				new InitialLogin(Method.SIMPLE).setVisible(true);
+				new InitialLogin(dbRunner, Method.SIMPLE).setVisible(true);
 				dispose();
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Image Grid Method") {
-				new InitialLogin(Method.IMAGEGRID).setVisible(true);
+				new InitialLogin(dbRunner, Method.IMAGEGRID).setVisible(true);
 				dispose();
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Colour Grid Method") {
-				new InitialLogin(Method.COLOURGRID).setVisible(true);
+				new InitialLogin(dbRunner, Method.COLOURGRID).setVisible(true);
 				dispose();
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Coin Password Method") {
-				new InitialLogin(Method.COIN).setVisible(true);
+				new InitialLogin(dbRunner, Method.COIN).setVisible(true);
 				dispose();
 			} else if (choice.getItem(choice.getSelectedIndex()) == "Colour Wheel Method") {
-				new InitialLogin(Method.WHEEL).setVisible(true);
+				new InitialLogin(dbRunner, Method.WHEEL).setVisible(true);
 				dispose();
 			}
 		} else if (btn.equals(resetDbBtn)) {
-			DatabaseRunner dbRunner = new DatabaseRunner();
 			try {
 				dbRunner.dropDB();
 				dbRunner.createDB();

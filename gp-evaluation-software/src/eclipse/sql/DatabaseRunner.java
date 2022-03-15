@@ -11,6 +11,38 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 
 public class DatabaseRunner {
 	
+	private String dburl, dbname, dbpass;
+	
+	public DatabaseRunner(String dburl, String dbname, String dbpass) {
+		this.dburl = dburl;
+		this.dbname = dbname;
+		this.dbpass = dbpass;
+	}
+		
+	public final String getDburl() {
+		return dburl;
+	}
+
+	public final void setDburl(String dburl) {
+		this.dburl = dburl;
+	}
+
+	public final String getDbname() {
+		return dbname;
+	}
+
+	public final void setDbname(String dbname) {
+		this.dbname = dbname;
+	}
+
+	public final String getDbpass() {
+		return dbpass;
+	}
+
+	public final void setDbpass(String dbpass) {
+		this.dbpass = dbpass;
+	}
+
 	public void createDB() throws Exception {
 		
 		DriverManager.registerDriver(new com.mysql.jdbc.Driver());

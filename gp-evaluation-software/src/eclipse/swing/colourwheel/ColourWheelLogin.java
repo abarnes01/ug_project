@@ -26,10 +26,13 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.sql.DatabaseRunner;
 import eclipse.swing.Welcome;
 
 public class ColourWheelLogin extends JFrame implements ActionListener {
 
+	private static final long serialVersionUID = -6168526356154212099L;
+	private DatabaseRunner dbRunner;
 	private JPanel contentPane, headerPanel, formPanel;
 	private JLabel headerLbl;
 	private JButton rotLftBtn, rotRgtBtn, loginBtn, entryBtn;
@@ -44,7 +47,7 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 	private int passLength;
 	private int warningCount;
 
-	public ColourWheelLogin(String chosenCol, String wheelPass) {
+	public ColourWheelLogin(DatabaseRunner dbRunner, String chosenCol, String wheelPass) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		width = 450;
 		height = 300;
@@ -53,6 +56,7 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		this.dbRunner = dbRunner;
 		
 		this.chosenCol = chosenCol;
 		wpLetters = wheelPass.split("");
@@ -151,7 +155,7 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 						warningCount += 1;
 						if (warningCount == 3) {
 							JOptionPane.showMessageDialog(entryBtn, "Too many warnings: Login failed.");
-							new Welcome().setVisible(true);
+							new Welcome(dbRunner).setVisible(true);
 							dispose();
 						} else {
 							JOptionPane.showMessageDialog(entryBtn, "Incorrect: Warning " + warningCount + ".");

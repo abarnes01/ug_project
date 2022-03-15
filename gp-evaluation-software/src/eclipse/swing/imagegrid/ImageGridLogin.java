@@ -1,7 +1,6 @@
 package eclipse.swing.imagegrid;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -13,19 +12,19 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.sql.DatabaseRunner;
 import eclipse.swing.Welcome;
 
 public class ImageGridLogin extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	private DatabaseRunner dbRunner;
 	private BufferedImage imageOne, imageTwo;
 	private Integer gridSize;
 	private JPanel contentPane, gridPanel;
@@ -35,28 +34,27 @@ public class ImageGridLogin extends JFrame {
 	private BufferedImage[][] imageList;
 	private ArrayList<BufferedImage> possibleImages;
 	private PassImage P1, P2, I1, I2;
-	//private long startTime;
 	private String randomOrPreset;
 	private ImageGridSurfer surfer;
 
-	public ImageGridLogin(Integer gs, BufferedImage iO, BufferedImage iT, String randomOrPreset) {
+	public ImageGridLogin(DatabaseRunner dbRunner, Integer gs, BufferedImage iO, BufferedImage iT, String randomOrPreset) {
 		setGridSize(gs);
 		setImages(iO, iT);
 		possibleImages = new ArrayList<BufferedImage>();
 		this.randomOrPreset = randomOrPreset;
+		this.dbRunner = dbRunner;
 		
-		// auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, gridSize*50, gridSize*50);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		setTitle("(Digraph) Image Grid Login");
 		
 		// create initial grid
 		gridPanel = new JPanel();
 		contentPane.add(gridPanel, BorderLayout.CENTER);
-		//startTime = System.nanoTime();
 		makeGrid();
 		
 		surfer = new ImageGridSurfer();
@@ -97,13 +95,10 @@ public class ImageGridLogin extends JFrame {
 	
 	public void makeGrid() {
 		System.out.println("Making grid...");
-		
 		bufImages = new ArrayList<BufferedImage>();
-		
 		try {
 			// add our two images to an array of random images. Save these coordinates
 			// display all images randomly in JLabels. Add a clicker
-			
 			bufImages.add(imageOne);
 			bufImages.add(imageTwo);
 			
@@ -118,12 +113,11 @@ public class ImageGridLogin extends JFrame {
 						while (buffImgsEqual(bufImages.get(j), prstImg)) {
 							URL temp = new File("Images/"+Integer.toString(new Random().nextInt(gridSizeSqr-2))+".jpg").toURI().toURL();
 							prstImg = ImageIO.read(temp.openStream());
-							System.err.println("Duplicate");
+							System.err.println("Duplicate image. Refetching...");
 						}
 					}
 					bufImages.add(prstImg);
 				}
-				
 			} else {
 				// fill array with more random images
 				for (int i = 0; i < gridSizeSqr-2; i++) {
@@ -133,16 +127,14 @@ public class ImageGridLogin extends JFrame {
 						while (buffImgsEqual(bufImages.get(j), randImg)) {
 							URL temp = new URL("https://picsum.photos/50");
 							randImg = ImageIO.read(temp.openStream());
-							System.err.println("Duplicate");
+							System.err.println("Duplicate image. Refetching...");
 						}
 					}
 					bufImages.add(randImg);
 				}
 			}
-			
 			labelList = new JLabel[gridSize][gridSize];
 			imageList = new BufferedImage[gridSize][gridSize];
-			
 			// print the whole grid with our two images randomly placed
 			for (int i = 0; i < gridSizeSqr; i++) {
 				int x = i % gridSize;
@@ -165,7 +157,6 @@ public class ImageGridLogin extends JFrame {
 							for (int y = 0; y < gridSize; y++) {
 								// get this label position
 								if (labelList[x][y] == label) {
-									
 									// horizontal line
 									if (I1.x == I2.x) {
 										// at edge
@@ -179,11 +170,9 @@ public class ImageGridLogin extends JFrame {
 											P1 = new PassImage(I1.x, I1.y+1);
 											P2 = new PassImage(I2.x, I2.y+1);
 										}
-										
 									}
 									// vertical line
 									else if (I1.y == I2.y) {
-										
 										// at edge
 										if (I1.x+1 == gridSize) {
 											P1 = new PassImage(0, I1.y);
@@ -195,22 +184,14 @@ public class ImageGridLogin extends JFrame {
 											P1 = new PassImage(I1.x+1, I1.y);
 											P2 = new PassImage(I2.x+1, I2.y);
 										}
-										
 									}
 									// different x y coordinates
 									else {
 										P1 = new PassImage(I1.x, I2.y);
 										P2 = new PassImage(I2.x, I1.y);
 									}
-									
-//									System.out.println("I1.x: " + I1.x + " y: " + I1.y);
-//									System.out.println("I2.x: " + I2.x + " y: " + I2.y);
-//									System.out.println("P1.x: " + P1.x + " y: " + P1.y);
-//									System.out.println("P2.x: " + P2.x + " y: " + P2.y);
-									
 									// check if this image is a pass image
 									if ((x == P1.x) && (y == P1.y)) {
-										
 										if (possibleImages.isEmpty()) {
 											for (int i = 0; i < gridSize; i++) {
 												if (labelList[i][P1.y] != label) {
@@ -223,7 +204,6 @@ public class ImageGridLogin extends JFrame {
 												}
 											}
 										} else {
-											
 											ArrayList<BufferedImage> currentImages = new ArrayList<BufferedImage>();
 											for (int i = 0; i < gridSize; i++) {
 												if (labelList[i][P1.y] != label) {
@@ -233,58 +213,45 @@ public class ImageGridLogin extends JFrame {
 													currentImages.add(imageList[P1.x][i]);
 												}
 											}
-											
 											ArrayList<BufferedImage> matches = new ArrayList<BufferedImage>();
 											for (int i = 0; i < currentImages.size(); i++) {
 												for (int j = 0; j < possibleImages.size(); j++) {
 													if (buffImgsEqual(currentImages.get(i),possibleImages.get(j))) {
 														matches.add(possibleImages.get(j));
-														//continue;
 													}
 												}
 											}
 											possibleImages.clear();
 											possibleImages = matches;
 											if (possibleImages.size() <= 2) {
-												System.out.println("Shoulder surfer found images.");
-												Welcome welcome = new Welcome();
+												Welcome welcome = new Welcome(dbRunner);
 												welcome.setVisible(true);
 												recreate = false;
 												dispose();
 											}
 										}
-										
 										surfer.updateSurfer(possibleImages);
 										gridPanel.removeAll();
 										gridPanel.revalidate();
 										gridPanel.repaint();
 										contentPane.removeAll();
 										contentPane.revalidate();
-										contentPane.repaint();
-										
+										contentPane.repaint();		
 										if (recreate) {
 											makeGrid();											
 										}
 										contentPane.add(gridPanel, BorderLayout.CENTER);
-										
-										
-										System.out.println(possibleImages.size());
-										
-
 									} else if ((x == P2.x) && (y == P2.y)) {
 										if (possibleImages.isEmpty()) {
 											for (int i = 0; i < gridSize; i++) {
 												if (labelList[i][P2.y] != label) {
 													possibleImages.add(imageList[i][P2.y]);
-													System.out.println("added x: " + i + " y: " + P2.y);
 												}
 												if (labelList[P2.x][i] != label) {
 													possibleImages.add(imageList[P2.x][i]);
-													System.out.println("added x: " + P2.x + " y: " + i);
 												}
 											}
 										} else {
-											
 											ArrayList<BufferedImage> currentImages = new ArrayList<BufferedImage>();
 											for (int i = 0; i < gridSize; i++) {
 												if (labelList[i][P2.y] != label) {
@@ -294,27 +261,23 @@ public class ImageGridLogin extends JFrame {
 													currentImages.add(imageList[P2.x][i]);
 												}
 											}
-											
 											ArrayList<BufferedImage> matches = new ArrayList<BufferedImage>();
 											for (int i = 0; i < currentImages.size(); i++) {
 												for (int j = 0; j < possibleImages.size(); j++) {
 													if (buffImgsEqual(currentImages.get(i),possibleImages.get(j))) {
 														matches.add(possibleImages.get(j));
-														//continue;
 													}
 												}
 											}
 											possibleImages.clear();
 											possibleImages = matches;
 											if (possibleImages.size() <= 2) {
-												System.out.println("Found our images");
-												Welcome welcome = new Welcome();
+												Welcome welcome = new Welcome(dbRunner);
 												welcome.setVisible(true);
 												recreate = false;
 												dispose();
 											}
 										}
-										
 										surfer.updateSurfer(possibleImages);
 										gridPanel.removeAll();
 										gridPanel.revalidate();
@@ -326,27 +289,23 @@ public class ImageGridLogin extends JFrame {
 											makeGrid();											
 										}
 										contentPane.add(gridPanel, BorderLayout.CENTER);
-										System.out.println(possibleImages.size());
 									}
 								}
 							}
 						}
 					}
 				});
-				
 				labelList[x][y] = imgLabel;
 				imageList[x][y] = randImg;
-				
 				gridPanel.add(imgLabel);
 				randImg.flush();
 				bufImages.remove(randNum);
 			}
-			
 			gridLayout = new GridLayout(gridSize, gridSize);
 			gridPanel.setLayout(gridLayout);
-			System.out.println("Grid made.");
-			
+			System.out.println("Grid made.\n");
 		} catch (Exception e) {
+			System.err.println("Error: Grid could not be made.\n");
 			e.printStackTrace();
 		}
 	}

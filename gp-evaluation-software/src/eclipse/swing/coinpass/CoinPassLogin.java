@@ -29,16 +29,17 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.lang3.StringUtils;
 
+import eclipse.sql.DatabaseRunner;
 import eclipse.swing.InitialLogin;
 import eclipse.swing.Method;
 
 public class CoinPassLogin extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 7037648802373260841L;
+	private DatabaseRunner dbRunner;
 	private JPanel contentPane, headerPanel, coinPanel, buttonPanel;
 	private JLabel headerLabel;
 	private JButton loginBtn, backBtn;
-	private JPasswordField passEntryField;
 	private String coinPass, passEntry;
 	private ArrayList<String> coinPassElements;
 	private ArrayList<Color> colourArray;
@@ -47,13 +48,14 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 	private ArrayList<ImageIcon> iconArray;
 	private ArrayList<Integer> numArray;
 
-	public CoinPassLogin(String coinPass) {
+	public CoinPassLogin(DatabaseRunner dbRunner, String coinPass) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 550, 550);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		this.dbRunner = dbRunner;
 
 		coinPassElements = new ArrayList<String>();
 		setCoinPass(coinPass);
@@ -182,13 +184,12 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		JButton btn = (JButton) e.getSource();
 		
 		if (btn.equals(loginBtn)) {
-			// TODO login checks whether pass field is same as entered stuff
 			if (passEntry.equals(getCoinPass())) {
 				JOptionPane.showMessageDialog(loginBtn, "Successfully logged in.");
 			}
 			
 		} else if (btn.equals(backBtn)) {
-			new InitialLogin(Method.COIN).setVisible(true);
+			new InitialLogin(dbRunner, Method.COIN).setVisible(true);
 			dispose();
 		}
 	}

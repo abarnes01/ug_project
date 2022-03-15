@@ -31,6 +31,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.sql.DatabaseRunner;
 import eclipse.swing.InitialLogin;
 import eclipse.swing.Method;
 import eclipse.swing.Welcome;
@@ -38,6 +39,7 @@ import eclipse.swing.Welcome;
 public class CoinPassRegistration extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 575557513944314476L;
+	private DatabaseRunner dbRunner;
 	private JPanel contentPane, headerPanel, formPanel, buttonPanel, elementsPanel, mainPanel;
 	private JLabel headerLabel, nameLabel, passwordLabel, coinPassLabel;
 	private JButton registerButton, backBtn;
@@ -50,13 +52,14 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 	private ArrayList<ImageIcon> iconArray;
 	
 
-	public CoinPassRegistration() {
+	public CoinPassRegistration(DatabaseRunner dbRunner) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 300, 900);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		this.dbRunner = dbRunner;
 		
 		iconEntered = numEntered = colEntered = false;
 		
@@ -81,7 +84,6 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		backBtn.addActionListener(this);
 		
 		// get element J labels
-		
 		try {
 			
 			colourMap = new HashMap<>();
@@ -172,9 +174,9 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			String username = nameField.getText();
 			String password = String.valueOf(passField.getPassword());
 			String coinpass = coinPassField.getText();
-			String url = "jdbc:mysql://localhost:3306/gp_database";
-			String dbname = "root";
-			String dbpass = "";
+			String url = dbRunner.getDburl();
+			String dbname = dbRunner.getDbname();
+			String dbpass = dbRunner.getDbpass();
 			
 			String[] stringSplit = coinpass.split(":");
 			System.out.println(stringSplit[0] + " " + stringSplit[1]);
@@ -227,7 +229,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 						if(y == 0) {
 							JOptionPane.showMessageDialog(registerButton, "Coin pass method for user already exists. 2nd box");
 						} else {
-							new InitialLogin(Method.COIN).setVisible(true);
+							new InitialLogin(dbRunner, Method.COIN).setVisible(true);
 							dispose();
 						}
 					}
@@ -237,7 +239,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 				}
 			}
 		} else if (btn.equals(backBtn)) {
-			new Welcome().setVisible(true);
+			new Welcome(dbRunner).setVisible(true);
 			dispose();
 		}
 	}

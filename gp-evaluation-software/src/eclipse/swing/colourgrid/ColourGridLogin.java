@@ -24,6 +24,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import eclipse.sql.DatabaseRunner;
 import eclipse.swing.InitialLogin;
 import eclipse.swing.Method;
 import eclipse.swing.Welcome;
@@ -31,6 +32,7 @@ import eclipse.swing.Welcome;
 public class ColourGridLogin extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
+	private DatabaseRunner dbRunner;
 	private JPanel contentPane, formPanel, buttonPanel, gridPanel, mainPanel;
 	private JPanel headerPanel;
 	private JPasswordField pColourField;
@@ -41,14 +43,14 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 	private Color patternPassColour;
 	private long startTime;
 
-	public ColourGridLogin(String pp) {
-		// auto
+	public ColourGridLogin(DatabaseRunner dbRunner, String pp) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		this.dbRunner = dbRunner;
 		
 		// set pattern pass
 		setPatternPass(pp);
@@ -77,7 +79,7 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
-		//setResizable(false);
+		setResizable(false);
 		
 		startTime = System.nanoTime();
 		makeGrid();
@@ -106,14 +108,14 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 				JOptionPane.showMessageDialog(loginButton, "Successfully logged in. Took " + seconds + "s");
 				System.out.println("For a shoulder surfer who knows the colour grid algorithm and spots the colour first letter input they have " + (float)seconds/6 + "s to memorise each letter");
 				System.out.println("For a unknowing shoulder surfer ... \n");
-				Welcome welcome = new Welcome();
+				Welcome welcome = new Welcome(dbRunner);
 				welcome.setVisible(true);
 				dispose();
 			} else {
 				JOptionPane.showMessageDialog(loginButton, "Incorrect password.");
 			}
 		} else if (btn.equals(backBtn)) {
-			new InitialLogin(Method.COLOURGRID).setVisible(true);
+			new InitialLogin(dbRunner, Method.COLOURGRID).setVisible(true);
 			dispose();
 		}
 	}

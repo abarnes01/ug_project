@@ -22,6 +22,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.sql.DatabaseRunner;
 import eclipse.swing.coinpass.CoinPassLogin;
 import eclipse.swing.coinpass.CoinPassRegistration;
 import eclipse.swing.colourgrid.ColourGridLogin;
@@ -34,6 +35,7 @@ import eclipse.swing.imagegrid.ImageGridRegistration;
 public class InitialLogin extends JFrame implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
+	private DatabaseRunner dbRunner;
 	private JPanel contentPane, formPanel, btnPanel;
 	private JTextField textField;
 	private JPasswordField passField;
@@ -41,7 +43,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 	private JLabel usernameLbl, passLbl;
 	private Method method;
 
-	public InitialLogin(Method method) {
+	public InitialLogin(DatabaseRunner dbRunner, Method method) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -49,6 +51,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		setTitle("Initial Login");
+		this.dbRunner = dbRunner;
 		
 		// set graphical password method we are using
 		setMethod(method);
@@ -92,9 +95,9 @@ public class InitialLogin extends JFrame implements ActionListener{
 		if (btn.equals(loginBtn)) {
 			String username = textField.getText();
 			Integer password = String.valueOf(passField.getPassword()).hashCode();
-			String url = "jdbc:mysql://localhost:3306/gp_database";
-			String dbname = "root";
-			String dbpass = "";
+			String url = dbRunner.getDburl();
+			String dbname = dbRunner.getDbname();
+			String dbpass = dbRunner.getDbpass();
 			try {
 				Connection connection = (Connection) DriverManager.getConnection(url,dbname,dbpass);
 				PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select userID from user where username=? and password=?");
@@ -110,7 +113,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 						if (cglRs.next()) {
 							System.out.println("Got grid method details");
 							String patternPass = cglRs.getString("patternPass");
-							new ColourGridLogin(patternPass).setVisible(true);
+							new ColourGridLogin(dbRunner, patternPass).setVisible(true);
 							dispose();
 						} else {
 							JOptionPane.showMessageDialog(loginBtn, "User does not have colour grid method details.");
@@ -125,7 +128,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 							try {
 								BufferedImage imgOne = ImageIO.read(ioIS);
 								BufferedImage imgTwo = ImageIO.read(itIS);
-								new ImageGridLogin(igRs.getInt(1), imgOne, imgTwo, igRs.getString(4)).setVisible(true);
+								new ImageGridLogin(dbRunner, igRs.getInt(1), imgOne, imgTwo, igRs.getString(4)).setVisible(true);
 								dispose();
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -141,7 +144,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 													+ "<p>This provides no shoulder surfing resistance.</p><br>"
 													+ "<p>The keystroke entry and number of keystrokes <br>can be observed to reveal the password. </p>";
 						JOptionPane.showMessageDialog(loginBtn, String.format(simpleLoginResultHtml));
-						Welcome welcome = new Welcome();
+						Welcome welcome = new Welcome(dbRunner);
 						welcome.setVisible(true);
 						dispose();
 					} else if (getMethod() == Method.COIN) {
@@ -151,7 +154,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 						if (cpRs.next()) {
 							System.out.println("Got coin pass method details");
 							String coinPass = cpRs.getString("coinpass");
-							new CoinPassLogin(coinPass).setVisible(true);
+							new CoinPassLogin(dbRunner, coinPass).setVisible(true);
 							dispose();
 						} else {
 							JOptionPane.showMessageDialog(loginBtn, "User does not have coin pass method details.");
@@ -164,7 +167,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 							System.out.println("Got colour wheel method details");
 							String chosenCol = cpRs.getString("chosenColour");
 							String wheelPass = cpRs.getString("wheelPass");
-							new ColourWheelLogin(chosenCol, wheelPass).setVisible(true);
+							new ColourWheelLogin(dbRunner, chosenCol, wheelPass).setVisible(true);
 							dispose();
 						} else {
 							JOptionPane.showMessageDialog(loginBtn, "User does not have coin pass method details.");
@@ -179,19 +182,19 @@ public class InitialLogin extends JFrame implements ActionListener{
 			}
 		} else if (btn.equals(backBtn)) {
 			if (getMethod() == Method.COLOURGRID) {
-				new ColourGridRegistration().setVisible(true);
+				new ColourGridRegistration(dbRunner).setVisible(true);
 				dispose();
 			} else if (getMethod() == Method.IMAGEGRID) {
-				new ImageGridRegistration().setVisible(true);
+				new ImageGridRegistration(dbRunner).setVisible(true);
 				dispose();
 			} else if (getMethod() == Method.SIMPLE) {
-				new SimpleRegistration().setVisible(true);
+				new SimpleRegistration(dbRunner).setVisible(true);
 				dispose();				
 			} else if (getMethod() == Method.COIN) {
-				new CoinPassRegistration().setVisible(true);
+				new CoinPassRegistration(dbRunner).setVisible(true);
 				dispose();
 			} else if (getMethod() == Method.WHEEL) {
-				new ColourWheelRegistration().setVisible(true);
+				new ColourWheelRegistration(dbRunner).setVisible(true);
 				dispose();
 			}
 		}

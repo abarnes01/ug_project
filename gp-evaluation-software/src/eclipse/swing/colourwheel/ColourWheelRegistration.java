@@ -30,12 +30,15 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.sql.DatabaseRunner;
 import eclipse.swing.InitialLogin;
 import eclipse.swing.Method;
 import eclipse.swing.Welcome;
 
 public class ColourWheelRegistration extends JFrame implements ActionListener {
 
+	private static final long serialVersionUID = -5043498498119949928L;
+	private DatabaseRunner dbRunner;
 	private JPanel contentPane, headerPanel, formPanel, buttonPanel, coloursPanel, mainPanel;
 	private JLabel headerLabel, nameLabel, passwordLabel, colChosenTxt, chosenCol, wheelPassLbl;
 	private JButton registerButton, backBtn;
@@ -44,13 +47,14 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 	private Map<Color, String> colourMap;
 	private ArrayList<Color> colourList;
 
-	public ColourWheelRegistration() {
+	public ColourWheelRegistration(DatabaseRunner dbRunner) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		this.dbRunner = dbRunner;
 		
 		headerPanel = new JPanel();
 		formPanel = new JPanel();
@@ -141,14 +145,13 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		JButton btn = (JButton) e.getSource();
 		
 		if (btn.equals(registerButton)) {
-			// TODO check if register button
 			String username = nameField.getText();
 			String password = String.valueOf(passField.getPassword());
 			String colStr = chosenCol.getText();
 			String wheelPass = String.valueOf(wheelPassField.getPassword());
-			String url = "jdbc:mysql://localhost:3306/gp_database";
-			String dbname = "root";
-			String dbpass = "";
+			String url = dbRunner.getDburl();
+			String dbname = dbRunner.getDbname();
+			String dbpass = dbRunner.getDbpass();
 			if (username.isBlank() || password.isBlank() || colStr.isBlank() || wheelPass.isBlank()) {
 				JOptionPane.showMessageDialog(registerButton, "Username, password, selected colour or wheel pass is empty.");
 			} else if (!containsValidChars(wheelPass)) {
@@ -191,7 +194,7 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 						if(y == 0) {
 							JOptionPane.showMessageDialog(registerButton, "Colour wheel method for user already exists.");
 						} else {
-							new InitialLogin(Method.WHEEL).setVisible(true);
+							new InitialLogin(dbRunner, Method.WHEEL).setVisible(true);
 							dispose();
 						}
 					}
@@ -201,7 +204,7 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 				}
 			}
 		} else if (btn.equals(backBtn)) {
-			new Welcome().setVisible(true);
+			new Welcome(dbRunner).setVisible(true);
 			dispose();
 		}
 	}

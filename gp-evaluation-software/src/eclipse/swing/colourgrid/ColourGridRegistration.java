@@ -19,6 +19,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import eclipse.sql.DatabaseRunner;
 import eclipse.swing.InitialLogin;
 import eclipse.swing.Method;
 import eclipse.swing.Welcome;
@@ -26,20 +27,21 @@ import eclipse.swing.Welcome;
 public class ColourGridRegistration extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
+	private DatabaseRunner dbRunner;
 	private JPanel contentPane, headerPanel, formPanel, buttonPanel, mainPanel;
 	private JTextField usernameField;
 	private JPasswordField passwordField, patternPField;
 	private JButton registerButton, backBtn;
 	private JLabel headerLabel, usernameLabel, passwordLabel, patternPLabel;
 
-	public ColourGridRegistration() {
-		// auto
+	public ColourGridRegistration(DatabaseRunner dbRunner) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		this.dbRunner = dbRunner;
 		
 		// create the features
 		headerPanel = new JPanel();
@@ -87,9 +89,9 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 			String username = usernameField.getText();
 			String password = String.valueOf(passwordField.getPassword());
 			String patternPass = String.valueOf(patternPField.getPassword());
-			String url = "jdbc:mysql://localhost:3306/gp_database";
-			String dbname = "root";
-			String dbpass = "";
+			String url = dbRunner.getDburl();
+			String dbname = dbRunner.getDbname();
+			String dbpass = dbRunner.getDbpass();
 			if (username.isBlank() || password.isBlank() || patternPass.length() != 6) {
 				JOptionPane.showMessageDialog(registerButton, "Username or password is empty or pattern pass does not equal 6.");
 			} else {
@@ -128,7 +130,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 						if(y == 0) {
 							JOptionPane.showMessageDialog(registerButton, "Colour grid method for user already exists.");
 						} else {
-							new InitialLogin(Method.COLOURGRID).setVisible(true);
+							new InitialLogin(dbRunner, Method.COLOURGRID).setVisible(true);
 							dispose();
 						}
 					}
@@ -138,7 +140,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 				}
 			}
 		} else if (btn.equals(backBtn)) {
-			new Welcome().setVisible(true);
+			new Welcome(dbRunner).setVisible(true);
 			dispose();
 		}
 	}

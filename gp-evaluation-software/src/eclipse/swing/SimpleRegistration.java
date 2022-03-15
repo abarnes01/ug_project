@@ -16,19 +16,23 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import eclipse.sql.DatabaseRunner;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 public class SimpleRegistration extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
+	private DatabaseRunner dbRunner;
 	private JPanel contentPane, formPanel, buttonPanel;
 	private JTextField usernameField;
 	private JPasswordField passwordField;
 	private JButton registerBtn, backBtn;
 	private JLabel usernameLbl, passLbl;
 
-	public SimpleRegistration() {
+	public SimpleRegistration(DatabaseRunner dbRunner) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -36,6 +40,7 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		setTitle("Simple Registration Form");
+		this.dbRunner = dbRunner;
 		
 		// Create the features
 		formPanel = new JPanel();
@@ -71,9 +76,9 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 		if (btn.equals(registerBtn)) {
 			String username = usernameField.getText();
 			String password = String.valueOf(passwordField.getPassword());
-			String url = "jdbc:mysql://localhost:3306/gp_database";
-			String dbname = "root";
-			String dbpass = "";
+			String url = dbRunner.getDburl();
+			String dbname = dbRunner.getDbname();
+			String dbpass = dbRunner.getDbpass();
 			if (username.isBlank() || password.isBlank()) {
 				JOptionPane.showMessageDialog(registerBtn, "Username or password is empty.");
 			} else {
@@ -91,7 +96,7 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 						if(x == 0) {
 							JOptionPane.showMessageDialog(registerBtn, "User already exists. 2nd box");
 						} else {
-							new InitialLogin(Method.SIMPLE).setVisible(true);
+							new InitialLogin(dbRunner, Method.SIMPLE).setVisible(true);
 							dispose();
 						}
 					}
@@ -101,9 +106,8 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 				}
 			}
 		} else if (btn.equals(backBtn)) {
-			new Welcome().setVisible(true);
+			new Welcome(dbRunner).setVisible(true);
 			dispose();
 		}
 	}
-
 }
