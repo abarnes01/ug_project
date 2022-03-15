@@ -37,6 +37,7 @@ public class ImageGridLogin extends JFrame {
 	private PassImage P1, P2, I1, I2;
 	//private long startTime;
 	private String randomOrPreset;
+	private ImageGridSurfer surfer;
 
 	public ImageGridLogin(Integer gs, BufferedImage iO, BufferedImage iT, String randomOrPreset) {
 		setGridSize(gs);
@@ -57,6 +58,9 @@ public class ImageGridLogin extends JFrame {
 		contentPane.add(gridPanel, BorderLayout.CENTER);
 		//startTime = System.nanoTime();
 		makeGrid();
+		
+		surfer = new ImageGridSurfer();
+		surfer.setVisible(true);
 	}
 	
 	public void setImages(BufferedImage one, BufferedImage two) {
@@ -250,6 +254,7 @@ public class ImageGridLogin extends JFrame {
 											}
 										}
 										
+										surfer.updateSurfer(possibleImages);
 										gridPanel.removeAll();
 										gridPanel.revalidate();
 										gridPanel.repaint();
@@ -310,6 +315,7 @@ public class ImageGridLogin extends JFrame {
 											}
 										}
 										
+										surfer.updateSurfer(possibleImages);
 										gridPanel.removeAll();
 										gridPanel.revalidate();
 										gridPanel.repaint();
