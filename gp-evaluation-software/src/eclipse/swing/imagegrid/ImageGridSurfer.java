@@ -67,7 +67,6 @@ public class ImageGridSurfer extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton btn = (JButton)e.getSource();
-		
 		if (btn.equals(closeBtn)) {
 			int ans = JOptionPane.showConfirmDialog(closeBtn, "Do you wish to close the shoulder surfer?");
 			if (ans == JOptionPane.YES_OPTION) {

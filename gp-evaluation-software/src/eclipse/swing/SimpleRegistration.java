@@ -22,52 +22,43 @@ import javax.swing.JOptionPane;
 public class SimpleRegistration extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane, headerPanel, formPanel, buttonPanel;
+	private JPanel contentPane, formPanel, buttonPanel;
 	private JTextField usernameField;
 	private JPasswordField passwordField;
-	private JButton registerButton, backBtn;
-	private JLabel headerLabel, usernameLabel, passwordLabel;
+	private JButton registerBtn, backBtn;
+	private JLabel usernameLbl, passLbl;
 
 	public SimpleRegistration() {
-		
-		// Auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		setTitle("Simple Registration Form");
 		
 		// Create the features
-		headerPanel = new JPanel();
-		headerLabel = new JLabel("Simple Registration Form");
 		formPanel = new JPanel();
 		buttonPanel = new JPanel();
-		usernameLabel = new JLabel("Username:");
+		usernameLbl = new JLabel("Username:");
 		usernameField = new JTextField(10);
-		passwordLabel = new JLabel("Password:");
+		passLbl = new JLabel("Password:");
 		passwordField = new JPasswordField(10);
 
-		
 		// Create buttons
-		registerButton = new JButton("Register");
-		registerButton.addActionListener(this);
-		backBtn = new JButton("<");
+		registerBtn = new JButton("Register");
+		registerBtn.addActionListener(this);
+		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
 		
-		// Set layout of form and grid constraints
-		formPanel.setLayout(new GridLayout(3,1,10,10));
-		
 		// Set the features to the panels
-		headerPanel.add(backBtn);
-		headerPanel.add(headerLabel);
-		formPanel.add(usernameLabel);
+		formPanel.add(usernameLbl);
 		formPanel.add(usernameField);
-		formPanel.add(passwordLabel);
+		formPanel.add(passLbl);
 		formPanel.add(passwordField);
-		buttonPanel.add(registerButton);
+		buttonPanel.add(backBtn);
+		buttonPanel.add(registerBtn);
 		
-		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(formPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 		setResizable(false);
@@ -77,14 +68,14 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
 
-		if (btn.equals(registerButton)) {
+		if (btn.equals(registerBtn)) {
 			String username = usernameField.getText();
 			String password = String.valueOf(passwordField.getPassword());
 			String url = "jdbc:mysql://localhost:3306/gp_database";
 			String dbname = "root";
 			String dbpass = "";
 			if (username.isBlank() || password.isBlank()) {
-				JOptionPane.showMessageDialog(registerButton, "Username or password is empty.");
+				JOptionPane.showMessageDialog(registerBtn, "Username or password is empty.");
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
@@ -92,13 +83,13 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 					st.setString(1, username);
 					ResultSet rs = st.executeQuery();
 					if (rs.next()) {
-						JOptionPane.showMessageDialog(registerButton, "User already exists.");
+						JOptionPane.showMessageDialog(registerBtn, "User already exists.");
 					} else {
 						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
 						Statement statement = connection.createStatement();
 						int x = statement.executeUpdate(query);
 						if(x == 0) {
-							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
+							JOptionPane.showMessageDialog(registerBtn, "User already exists. 2nd box");
 						} else {
 							new InitialLogin(Method.SIMPLE).setVisible(true);
 							dispose();

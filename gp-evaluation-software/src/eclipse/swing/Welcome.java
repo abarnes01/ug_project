@@ -25,10 +25,9 @@ import eclipse.sql.*;
 public class Welcome extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane, title, bottomPane;
+	private JPanel contentPane, bottomPane;
 	private Choice choice;
 	private JEditorPane mainText;
-	private JLabel lblNewLabel;
 	private JScrollPane scrollPane;
 	private JButton registerBtn, loginBtn, resetDbBtn;
 	
@@ -55,13 +54,12 @@ public class Welcome extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		setTitle("Welcome");
 		
-		title = new JPanel();
 		bottomPane = new JPanel();
 		choice = new Choice();
 		mainText = new JEditorPane();
 		mainText.setContentType("text/html");
-		lblNewLabel = new JLabel("Welcome!");
 		scrollPane = new JScrollPane(mainText);
 		registerBtn = new JButton("Register");
 		registerBtn.addActionListener(this);
@@ -69,8 +67,7 @@ public class Welcome extends JFrame implements ActionListener {
 		loginBtn.addActionListener(this);
 		resetDbBtn = new JButton("Reset DB");
 		resetDbBtn.addActionListener(this);
-		
-		title.add(lblNewLabel);
+
 		mainText.setBackground(SystemColor.window);
 		mainText.setEditable(false);
 		String WelcomeHtml = "<html><h1>Adam Barnes - CO3201 Computer Science Project</h1>"
@@ -111,7 +108,6 @@ public class Welcome extends JFrame implements ActionListener {
 		bottomPane.add(loginBtn);
 		bottomPane.add(resetDbBtn);
 		
-		contentPane.add(title, BorderLayout.NORTH);
 		contentPane.add(scrollPane, BorderLayout.CENTER);
 		contentPane.add(bottomPane, BorderLayout.SOUTH);
 		setResizable(false);

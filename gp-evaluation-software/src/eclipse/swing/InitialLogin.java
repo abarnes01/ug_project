@@ -34,64 +34,64 @@ import eclipse.swing.imagegrid.ImageGridRegistration;
 public class InitialLogin extends JFrame implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
-	private JPanel headerPanel;
-	private JPanel contentPane, formPanel, buttonPanel;
+	private JPanel contentPane, formPanel, btnPanel;
 	private JTextField textField;
-	private JPasswordField passwordField;
-	private JButton loginButton, backBtn;
-	private JLabel headerLabel, usernameLabel, passwordLabel;
+	private JPasswordField passField;
+	private JButton loginBtn, backBtn;
+	private JLabel usernameLbl, passLbl;
 	private Method method;
 
 	public InitialLogin(Method method) {
-		// auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		setTitle("Initial Login");
 		
 		// set graphical password method we are using
 		setMethod(method);
 		
 		// create elements
-		headerPanel = new JPanel();
-		headerLabel = new JLabel("Login Form");
 		formPanel = new JPanel();
-		buttonPanel = new JPanel();
-		usernameLabel = new JLabel("Username: ");
+		btnPanel = new JPanel();
+		usernameLbl = new JLabel("Username: ");
 		textField = new JTextField(10);
-		passwordLabel = new JLabel("Password: ");
-		passwordField = new JPasswordField(10);
+		passLbl = new JLabel("Password: ");
+		passField = new JPasswordField(10);
 		
 		// create login button
-		loginButton = new JButton("Login");
-		loginButton.addActionListener(this);
-		backBtn = new JButton("<");
+		loginBtn = new JButton("Login");
+		loginBtn.addActionListener(this);
+		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
 		
-		// add features to window
-		headerPanel.add(backBtn);
-		headerPanel.add(headerLabel);
-		formPanel.setLayout(new GridLayout(3,1,10,10));
-		formPanel.add(usernameLabel);
+		formPanel.add(usernameLbl);
 		formPanel.add(textField);
-		formPanel.add(passwordLabel);
-		formPanel.add(passwordField);	
-		buttonPanel.add(loginButton);
-		contentPane.add(headerPanel, BorderLayout.NORTH);
+		formPanel.add(passLbl);
+		formPanel.add(passField);
+		btnPanel.add(backBtn);
+		btnPanel.add(loginBtn);
 		contentPane.add(formPanel, BorderLayout.CENTER);
-		contentPane.add(buttonPanel, BorderLayout.SOUTH);
+		contentPane.add(btnPanel, BorderLayout.SOUTH);
 		setResizable(false);
+	}
+	
+	public Method getMethod() {
+		return method;
+	}
+	
+	public void setMethod(Method input) {
+		method = input;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
-
-		if (btn.equals(loginButton)) {
+		if (btn.equals(loginBtn)) {
 			String username = textField.getText();
-			Integer password = String.valueOf(passwordField.getPassword()).hashCode();
+			Integer password = String.valueOf(passField.getPassword()).hashCode();
 			String url = "jdbc:mysql://localhost:3306/gp_database";
 			String dbname = "root";
 			String dbpass = "";
@@ -113,7 +113,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 							new ColourGridLogin(patternPass).setVisible(true);
 							dispose();
 						} else {
-							JOptionPane.showMessageDialog(loginButton, "User does not have colour grid method details.");
+							JOptionPane.showMessageDialog(loginBtn, "User does not have colour grid method details.");
 						}
 					} else if (getMethod() == Method.IMAGEGRID) {
 						PreparedStatement igSt = (PreparedStatement) connection.prepareStatement("Select gridSize, imageOne, imageTwo, randomOrPreset from image_grid_method where userID=?");
@@ -133,19 +133,18 @@ public class InitialLogin extends JFrame implements ActionListener{
 							}
 							
 						} else {
-							JOptionPane.showMessageDialog(loginButton, "User does not have image grid method details.");
+							JOptionPane.showMessageDialog(loginBtn, "User does not have image grid method details.");
 						}
 						
 					} else if (getMethod() == Method.SIMPLE) {
 						String simpleLoginResultHtml = "<html><h1>Simple Login</h1>"
 													+ "<p>This provides no shoulder surfing resistance.</p><br>"
 													+ "<p>The keystroke entry and number of keystrokes <br>can be observed to reveal the password. </p>";
-						JOptionPane.showMessageDialog(loginButton, String.format(simpleLoginResultHtml));
+						JOptionPane.showMessageDialog(loginBtn, String.format(simpleLoginResultHtml));
 						Welcome welcome = new Welcome();
 						welcome.setVisible(true);
 						dispose();
 					} else if (getMethod() == Method.COIN) {
-						// TODO Coin login
 						PreparedStatement cpSt = (PreparedStatement) connection.prepareStatement("Select coinpass from coin_pass_method where userID=?");
 						cpSt.setInt(1, userID);
 						ResultSet cpRs = cpSt.executeQuery();
@@ -155,7 +154,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 							new CoinPassLogin(coinPass).setVisible(true);
 							dispose();
 						} else {
-							JOptionPane.showMessageDialog(loginButton, "User does not have coin pass method details.");
+							JOptionPane.showMessageDialog(loginBtn, "User does not have coin pass method details.");
 						}
 					} else if (getMethod() == Method.WHEEL) {
 						PreparedStatement cpSt = (PreparedStatement) connection.prepareStatement("Select chosenColour, wheelPass from colour_wheel_method where userID=?");
@@ -168,11 +167,11 @@ public class InitialLogin extends JFrame implements ActionListener{
 							new ColourWheelLogin(chosenCol, wheelPass).setVisible(true);
 							dispose();
 						} else {
-							JOptionPane.showMessageDialog(loginButton, "User does not have coin pass method details.");
+							JOptionPane.showMessageDialog(loginBtn, "User does not have coin pass method details.");
 						}
 					}
 				} else {
-					JOptionPane.showMessageDialog(loginButton, "Incorrect login details.");
+					JOptionPane.showMessageDialog(loginBtn, "Incorrect login details.");
 				}
 			} catch (SQLException sqlException){
 				sqlException.printStackTrace();
@@ -197,13 +196,4 @@ public class InitialLogin extends JFrame implements ActionListener{
 			}
 		}
 	}
-	
-	public Method getMethod() {
-		return method;
-	}
-	
-	public void setMethod(Method input) {
-		method = input;
-	}
-
 }
