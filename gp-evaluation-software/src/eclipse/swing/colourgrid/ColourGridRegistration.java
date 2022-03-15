@@ -28,11 +28,11 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private DatabaseRunner dbRunner;
-	private JPanel contentPane, headerPanel, formPanel, buttonPanel, mainPanel;
+	private JPanel contentPane, formPanel, buttonPanel, mainPanel;
 	private JTextField usernameField;
 	private JPasswordField passwordField, patternPField;
 	private JButton registerButton, backBtn;
-	private JLabel headerLabel, usernameLabel, passwordLabel, patternPLabel;
+	private JLabel usernameLabel, passwordLabel, patternPLabel;
 
 	public ColourGridRegistration(DatabaseRunner dbRunner) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -41,11 +41,10 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		setTitle("Colour Grid Registration");
 		this.dbRunner = dbRunner;
 		
 		// create the features
-		headerPanel = new JPanel();
-		headerLabel = new JLabel("Colour Grid Registration Form");
 		mainPanel = new JPanel();
 		formPanel = new JPanel();
 		buttonPanel = new JPanel();
@@ -59,27 +58,25 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		// create buttons
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
-		backBtn = new JButton("<");
+		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
 		
 		// set layout of form and grid constraints
 		formPanel.setLayout(new GridLayout(3,1,10,10));
 		
 		// set the features to the panels
-		headerPanel.add(backBtn);
-		headerPanel.add(headerLabel);
 		formPanel.add(usernameLabel);
 		formPanel.add(usernameField);
 		formPanel.add(passwordLabel);
 		formPanel.add(passwordField);
 		formPanel.add(patternPLabel);
 		formPanel.add(patternPField);
+		buttonPanel.add(backBtn);
 		buttonPanel.add(registerButton);
 		mainPanel.add(formPanel);
-		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
-		//setResizable(false);
+		setResizable(false);
 	}
 	
 	@Override
@@ -107,7 +104,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 						Statement statement = connection.createStatement();
 						int x = statement.executeUpdate(query);
 						if(x == 0) {
-							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
+							System.err.println("Error: User already exists. Insertion failed.");
 						}
 					}
 					PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
@@ -128,7 +125,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 						gridst.setString(2, patternPass);
 						int y = gridst.executeUpdate();
 						if(y == 0) {
-							JOptionPane.showMessageDialog(registerButton, "Colour grid method for user already exists.");
+							System.err.println("Error: Colour grid details for user already exists. Insertion failed.");
 						} else {
 							new InitialLogin(dbRunner, Method.COLOURGRID).setVisible(true);
 							dispose();

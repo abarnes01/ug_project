@@ -43,8 +43,8 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private DatabaseRunner dbRunner;
-	private JPanel contentPane, headerPanel, formPanel, buttonPanel, imagesPanel, mainPanel;
-	private JLabel headerLabel, usernameLabel, passwordLabel, gridSizeLabel, imageSelectLabel;
+	private JPanel contentPane, formPanel, buttonPanel, imagesPanel, mainPanel;
+	private JLabel usernameLabel, passwordLabel, gridSizeLabel, imageSelectLabel;
 	private JTextField usernameField, gridSizeField, imageSelectField;
 	private JPasswordField passwordField;
 	private JButton registerButton, backBtn, rndmImgBtn, prstImgBtn;
@@ -59,13 +59,12 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		setTitle("Grid Method Registration");
 		this.dbRunner = dbRunner;
 		
 		genRndmImg = genPrstImg = false;
 		
 		// Create the features
-		headerPanel = new JPanel();
-		headerLabel = new JLabel("Grid Method Registration Form");
 		formPanel = new JPanel();
 		buttonPanel = new JPanel();
 		usernameLabel = new JLabel("Username:");
@@ -91,17 +90,13 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		// Register Button
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
-		backBtn = new JButton("<");
+		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
 		
 		// Set layout of form and grid constraints
 		formPanel.setLayout(new GridLayout(0,2));
 		
 		// Set the features to the panels
-		contentPane.add(headerPanel, BorderLayout.NORTH);
-		
-		headerPanel.add(backBtn);
-		headerPanel.add(headerLabel);
 		formPanel.add(usernameLabel);
 		formPanel.add(usernameField);
 		formPanel.add(passwordLabel);
@@ -116,6 +111,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		mainPanel.add(formPanel);
 		mainPanel.add(imagesPanel);
 		
+		buttonPanel.add(backBtn);
 		buttonPanel.add(registerButton);
 		
 		contentPane.add(mainPanel, BorderLayout.CENTER);
@@ -165,7 +161,6 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
-
 		if (btn.equals(registerButton)) {
 			String username = usernameField.getText();
 			String password = String.valueOf(passwordField.getPassword());

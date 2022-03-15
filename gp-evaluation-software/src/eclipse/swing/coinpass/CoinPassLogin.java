@@ -37,8 +37,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 7037648802373260841L;
 	private DatabaseRunner dbRunner;
-	private JPanel contentPane, headerPanel, coinPanel, buttonPanel;
-	private JLabel headerLabel;
+	private JPanel contentPane, coinPanel, buttonPanel;
 	private JButton loginBtn, backBtn;
 	private String coinPass, passEntry;
 	private ArrayList<String> coinPassElements;
@@ -55,20 +54,18 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		setTitle("Coin Pass Login");
 		this.dbRunner = dbRunner;
 
 		coinPassElements = new ArrayList<String>();
 		setCoinPass(coinPass);
 		setCoinPassElements(coinPass);
 		
-		headerPanel = new JPanel();
 		coinPanel = new JPanel();
 		buttonPanel = new JPanel();
-		
-		headerLabel = new JLabel("Coin Password Login");
 		loginBtn = new JButton("Login");
 		loginBtn.addActionListener(this);
-		backBtn = new JButton("<");
+		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
 		
 		passEntry = "";
@@ -76,21 +73,16 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		makeCoins();
 		coinPanel.setLayout(new GridLayout(0, 3, 20, 20));
 		
-		headerPanel.add(backBtn);
-		headerPanel.add(headerLabel);
-		
+		buttonPanel.add(backBtn);
 		buttonPanel.add(loginBtn);
 		
-		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(coinPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 	}
 	
 	
 	public void makeCoins() {
-		// TODO 10 j labels, each with 1 of 10 icons, 1 of 10 numbers, 1 of 10 colours
-		
-		System.out.println("Creating coins.");
+		System.out.println("Creating coins...");
 		try {
 			colourMap = new HashMap<>();
 			colourMap.put("red", Color.RED);
@@ -161,9 +153,6 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 								setCoinPassElements(coinPass);
 								JOptionPane.showMessageDialog(coin, "Incorrect: Try again.");
 							}
-
-							System.out.println("Currently looking at element: " + str);
-							System.out.println(passEntry);
 						}
 						coinPanel.removeAll();
 						coinPanel.revalidate();
@@ -173,6 +162,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 				});
 				coinPanel.add(coin);
 			}
+			System.out.println("Coins created.");
 		} catch (Exception e) {
 			System.err.println("Error: Could not create coins.");
 			e.printStackTrace();

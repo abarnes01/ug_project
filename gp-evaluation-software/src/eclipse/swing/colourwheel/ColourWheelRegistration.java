@@ -39,8 +39,8 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = -5043498498119949928L;
 	private DatabaseRunner dbRunner;
-	private JPanel contentPane, headerPanel, formPanel, buttonPanel, coloursPanel, mainPanel;
-	private JLabel headerLabel, nameLabel, passwordLabel, colChosenTxt, chosenCol, wheelPassLbl;
+	private JPanel contentPane, formPanel, buttonPanel, coloursPanel, mainPanel;
+	private JLabel nameLabel, passwordLabel, colChosenTxt, chosenCol, wheelPassLbl;
 	private JButton registerButton, backBtn;
 	private JTextField nameField;
 	private JPasswordField passField, wheelPassField;
@@ -54,15 +54,14 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		setTitle("Colour Wheel Registration");
 		this.dbRunner = dbRunner;
 		
-		headerPanel = new JPanel();
 		formPanel = new JPanel();
 		coloursPanel = new JPanel();
 		buttonPanel = new JPanel();
 		mainPanel = new JPanel();
 		
-		headerLabel = new JLabel("Colour Wheel Registration");
 		formPanel.setLayout(new GridLayout(3, 0));
 		nameLabel = new JLabel("Username: ");
 		passwordLabel = new JLabel("Password: ");
@@ -74,11 +73,8 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		wheelPassField = new JPasswordField(10);
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
-		backBtn = new JButton("<");
+		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
-		
-		headerPanel.add(backBtn);
-		headerPanel.add(headerLabel);
 		
 		formPanel.add(nameLabel);
 		formPanel.add(nameField);
@@ -129,9 +125,8 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		coloursPanel.setLayout(new GridLayout(2, 4));
 		mainPanel.add(formPanel);
 		mainPanel.add(coloursPanel);
+		buttonPanel.add(backBtn);
 		buttonPanel.add(registerButton);
-		
-		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 	}
@@ -143,7 +138,6 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton btn = (JButton) e.getSource();
-		
 		if (btn.equals(registerButton)) {
 			String username = nameField.getText();
 			String password = String.valueOf(passField.getPassword());
@@ -169,7 +163,7 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 						Statement statement = connection.createStatement();
 						int x = statement.executeUpdate(query);
 						if(x == 0) {
-							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
+							System.err.println("Error: User already exists.");
 						}
 					}
 					
@@ -192,7 +186,7 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 						gridst.setString(3, wheelPass);
 						int y = gridst.executeUpdate();
 						if(y == 0) {
-							JOptionPane.showMessageDialog(registerButton, "Colour wheel method for user already exists.");
+							System.err.println("Error: Colour wheel method for user already exists.");
 						} else {
 							new InitialLogin(dbRunner, Method.WHEEL).setVisible(true);
 							dispose();

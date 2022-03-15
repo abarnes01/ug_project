@@ -40,8 +40,8 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 575557513944314476L;
 	private DatabaseRunner dbRunner;
-	private JPanel contentPane, headerPanel, formPanel, buttonPanel, elementsPanel, mainPanel;
-	private JLabel headerLabel, nameLabel, passwordLabel, coinPassLabel;
+	private JPanel contentPane, formPanel, buttonPanel, elementsPanel, mainPanel;
+	private JLabel nameLabel, passwordLabel, coinPassLabel;
 	private JButton registerButton, backBtn;
 	private JTextField nameField, coinPassField;
 	private JPasswordField passField;
@@ -54,22 +54,21 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 
 	public CoinPassRegistration(DatabaseRunner dbRunner) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 300, 900);
+		setBounds(100, 100, 300, 800);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		setTitle("Coin Password Registration");
 		this.dbRunner = dbRunner;
 		
 		iconEntered = numEntered = colEntered = false;
 		
-		headerPanel = new JPanel();
 		formPanel = new JPanel();
 		elementsPanel = new JPanel();
 		buttonPanel = new JPanel();
 		mainPanel = new JPanel();
 		
-		headerLabel = new JLabel("Coin Password Registration");
 		formPanel.setLayout(new GridLayout(3, 0));
 		nameLabel = new JLabel("Username: ");
 		passwordLabel = new JLabel("Password: ");
@@ -80,12 +79,11 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		coinPassField.setEditable(false);
 		registerButton = new JButton("Register");
 		registerButton.addActionListener(this);
-		backBtn = new JButton("<");
+		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
 		
 		// get element J labels
 		try {
-			
 			colourMap = new HashMap<>();
 			colourMap.put(Color.RED, "red");
 			colourMap.put(Color.BLUE, "blue");
@@ -129,7 +127,6 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 				});
 				elementsPanel.add(numberLabel);
 				
-				
 				JLabel colourLabel = new JLabel(colourMap.get(colourList.get(i)));
 				colourLabel.setForeground(colourList.get(i));
 				colourLabel.addMouseListener(new MouseAdapter() {
@@ -140,16 +137,12 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 				});
 				elementsPanel.add(colourLabel);
 			}
-			
 			elementsPanel.setLayout(new GridLayout(10, 3));
 			
 		} catch (Exception e) {
 			System.err.println("Unable to get elements");
 			e.printStackTrace();
 		}
-		
-		headerPanel.add(backBtn);
-		headerPanel.add(headerLabel);
 		formPanel.add(nameLabel);
 		formPanel.add(nameField);
 		formPanel.add(passwordLabel);
@@ -158,9 +151,8 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		formPanel.add(coinPassField);
 		mainPanel.add(formPanel);
 		mainPanel.add(elementsPanel);
+		buttonPanel.add(backBtn);
 		buttonPanel.add(registerButton);
-		
-		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 	}
@@ -169,7 +161,6 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton btn = (JButton) e.getSource();
-		
 		if (btn.equals(registerButton)) {
 			String username = nameField.getText();
 			String password = String.valueOf(passField.getPassword());
@@ -177,9 +168,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			String url = dbRunner.getDburl();
 			String dbname = dbRunner.getDbname();
 			String dbpass = dbRunner.getDbpass();
-			
 			String[] stringSplit = coinpass.split(":");
-			System.out.println(stringSplit[0] + " " + stringSplit[1]);
 			
 			if (username.isBlank() || password.isBlank() || coinpass.isBlank()) {
 				JOptionPane.showMessageDialog(registerButton, "Error: Username, password or Coin pass is empty.");
@@ -192,9 +181,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
-					
 					PreparedStatement st = (PreparedStatement)connection.prepareStatement("Select username from user where username=?");
-					
 					st.setString(1, username);
 					ResultSet rs = st.executeQuery();
 					
@@ -205,7 +192,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 						Statement statement = connection.createStatement();
 						int x = statement.executeUpdate(query);
 						if(x == 0) {
-							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
+							System.err.println("Error: User already exists.");
 						} 
 					}
 					PreparedStatement useridst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
@@ -222,12 +209,11 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 					} else {
 						String gridQuery = "INSERT INTO coin_pass_method(userID,coinpass) values(?, ?)";
 						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
-						
 						gridst.setInt(1, userID);
 						gridst.setString(2, coinpass);
 						int y = gridst.executeUpdate();
 						if(y == 0) {
-							JOptionPane.showMessageDialog(registerButton, "Coin pass method for user already exists. 2nd box");
+							System.err.println("Error: Coin pass method for user exists.");
 						} else {
 							new InitialLogin(dbRunner, Method.COIN).setVisible(true);
 							dispose();

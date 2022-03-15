@@ -34,10 +34,9 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private DatabaseRunner dbRunner;
 	private JPanel contentPane, formPanel, buttonPanel, gridPanel, mainPanel;
-	private JPanel headerPanel;
 	private JPasswordField pColourField;
 	private JButton loginButton, backBtn;
-	private JLabel headerLabel, pColourLabel;
+	private JLabel pColourLabel;
 	private GridLayout gridLayout;
 	private String patternPass;
 	private Color patternPassColour;
@@ -50,14 +49,13 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		setTitle("Colour Grid Login");
 		this.dbRunner = dbRunner;
 		
 		// set pattern pass
 		setPatternPass(pp);
 		
 		// create elements
-		headerPanel = new JPanel();
-		headerLabel = new JLabel("Login Form");
 		formPanel = new JPanel();
 		buttonPanel = new JPanel();
 		pColourLabel = new JLabel("Enter: ");
@@ -65,18 +63,16 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		mainPanel = new JPanel();
 		loginButton = new JButton("Login");
 		loginButton.addActionListener(this);
-		backBtn = new JButton("<");
+		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
 		
 		// add elements to window
-		headerPanel.add(backBtn);
-		headerPanel.add(headerLabel);
 		formPanel.setLayout(new GridLayout(3,1,10,10));
 		formPanel.add(pColourLabel);
 		formPanel.add(pColourField);
+		buttonPanel.add(backBtn);
 		buttonPanel.add(loginButton);
 		mainPanel.add(formPanel);
-		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 		setResizable(false);
@@ -107,7 +103,6 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 				long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
 				JOptionPane.showMessageDialog(loginButton, "Successfully logged in. Took " + seconds + "s");
 				System.out.println("For a shoulder surfer who knows the colour grid algorithm and spots the colour first letter input they have " + (float)seconds/6 + "s to memorise each letter");
-				System.out.println("For a unknowing shoulder surfer ... \n");
 				Welcome welcome = new Welcome(dbRunner);
 				welcome.setVisible(true);
 				dispose();

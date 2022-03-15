@@ -27,15 +27,16 @@ import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
 import eclipse.sql.DatabaseRunner;
+import eclipse.swing.InitialLogin;
+import eclipse.swing.Method;
 import eclipse.swing.Welcome;
 
 public class ColourWheelLogin extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = -6168526356154212099L;
 	private DatabaseRunner dbRunner;
-	private JPanel contentPane, headerPanel, formPanel;
-	private JLabel headerLbl;
-	private JButton rotLftBtn, rotRgtBtn, loginBtn, entryBtn;
+	private JPanel contentPane, formPanel;
+	private JButton rotLftBtn, rotRgtBtn, loginBtn, entryBtn, backBtn;
 	private int width, height;
 	private String chosenCol;
 	private List<Color> colourList;
@@ -56,6 +57,7 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		setTitle("Colour Wheel Login");
 		this.dbRunner = dbRunner;
 		
 		this.chosenCol = chosenCol;
@@ -64,10 +66,6 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		passCount = 0;
 		passLength = wpLetters.length;
 		warningCount = 0;
-		
-		headerPanel = new JPanel();
-		headerLbl = new JLabel("Colour Wheel");
-		headerPanel.add(headerLbl);
 		
 		// get rotate icons
 		try {
@@ -82,12 +80,15 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		}
 		
 		formPanel = new JPanel();
+		backBtn = new JButton("\u2190");
+		backBtn.addActionListener(this);
 		rotLftBtn.addActionListener(this);
 		rotRgtBtn.addActionListener(this);
 		entryBtn = new JButton("Confirm");
 		entryBtn.addActionListener(this);
 		loginBtn = new JButton("Login");
 		loginBtn.addActionListener(this);
+		formPanel.add(backBtn);
 		formPanel.add(rotLftBtn);
 		formPanel.add(rotRgtBtn);
 		formPanel.add(entryBtn);
@@ -122,7 +123,6 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		}
 		
 		wc = new WheelCanvas(width, height, colourList, charLists);
-		contentPane.add(headerPanel, BorderLayout.NORTH);
 		contentPane.add(wc, BorderLayout.CENTER);
 		contentPane.add(formPanel, BorderLayout.SOUTH);
 	}
@@ -169,9 +169,9 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 			} else {
 				JOptionPane.showMessageDialog(loginBtn, "Incorrect password.");
 			}
+		} else if (btn.equals(backBtn)) {
+			new InitialLogin(dbRunner, Method.WHEEL).setVisible(true);
+			dispose();
 		}
 	}
-
-	
-	
 }
