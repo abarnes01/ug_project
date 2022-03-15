@@ -116,7 +116,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 							JOptionPane.showMessageDialog(loginButton, "User does not have colour grid method details.");
 						}
 					} else if (getMethod() == Method.IMAGEGRID) {
-						PreparedStatement igSt = (PreparedStatement) connection.prepareStatement("Select gridSize, imageOne, imageTwo from image_grid_method where userID=?");
+						PreparedStatement igSt = (PreparedStatement) connection.prepareStatement("Select gridSize, imageOne, imageTwo, randomOrPreset from image_grid_method where userID=?");
 						igSt.setInt(1, userID);
 						ResultSet igRs = igSt.executeQuery();
 						if (igRs.next()) {
@@ -125,7 +125,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 							try {
 								BufferedImage imgOne = ImageIO.read(ioIS);
 								BufferedImage imgTwo = ImageIO.read(itIS);
-								new ImageGridLogin(igRs.getInt(1), imgOne, imgTwo).setVisible(true);
+								new ImageGridLogin(igRs.getInt(1), imgOne, imgTwo, igRs.getString(4)).setVisible(true);
 								dispose();
 							} catch (Exception e) {
 								e.printStackTrace();

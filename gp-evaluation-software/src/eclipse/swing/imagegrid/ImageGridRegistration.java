@@ -1,6 +1,7 @@
 package eclipse.swing.imagegrid;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -68,8 +69,10 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		imageSelectLabel = new JLabel("PassImages ('x y')");
 		imageSelectField = new JTextField(10);
 		rndmImgBtn = new JButton("Random Images");
+		rndmImgBtn.setOpaque(true);
 		rndmImgBtn.addActionListener(this);
 		prstImgBtn = new JButton("Preset Images");
+		prstImgBtn.setOpaque(true);
 		prstImgBtn.addActionListener(this);
 		imagesPanel = new JPanel();
 		mainPanel = new JPanel();
@@ -110,6 +113,8 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
+		
+		genRandomImages();
 	}
 	
 	public void genRandomImages() {
@@ -124,30 +129,6 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 				JLabel imgLabel = new JLabel(new ImageIcon(image));
 				imgLabel.setText(String.valueOf(i));
 				imagesPanel.add(imgLabel);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void genPresetImages() {
-		// add images to array and print out
-		bufImages = new ArrayList<BufferedImage>();
-		try {
-			// add 6 images to array
-			int oldInt = -1;
-			for (int i = 1; i <= 6; i++) {
-				Random random = new Random();
-				int randInt = random.nextInt(64);
-				while (randInt == oldInt) {
-					randInt = random.nextInt(64);
-				}
-				BufferedImage image = ImageIO.read(new File("Images/" + Integer.toString(randInt) + ".jpg"));			
-				bufImages.add(image);
-				JLabel imgLabel = new JLabel(new ImageIcon(image));
-				imgLabel.setText(String.valueOf(i));
-				imagesPanel.add(imgLabel);
-				oldInt = randInt;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -250,24 +231,15 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 			new Welcome().setVisible(true);
 			dispose();
 		} else if (btn.equals(rndmImgBtn)) {
-			if (!genRndmImg && !genPrstImg) {
-				genRndmImg = true;
-				genRandomImages();
-				System.out.println("ping2");
-				imagesPanel.revalidate();
-				imagesPanel.repaint();
-				contentPane.revalidate();
-				contentPane.repaint();
-			}
+			genRndmImg = true;
+			genPrstImg = false;
+			rndmImgBtn.setBackground(Color.PINK);
+			prstImgBtn.setBackground(null);
 		} else if (btn.equals(prstImgBtn)) {
-			if (!genRndmImg && !genPrstImg) {
-				genPrstImg = true;
-				genPresetImages();
-				imagesPanel.revalidate();
-				imagesPanel.repaint();
-				contentPane.revalidate();
-				contentPane.repaint();
-			}
+			genRndmImg = false;
+			genPrstImg = true;
+			rndmImgBtn.setBackground(null);
+			prstImgBtn.setBackground(Color.PINK);
 		}
 	}
 	

@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -32,11 +33,13 @@ public class ImageGridLogin extends JFrame {
 	private ArrayList<BufferedImage> possibleImages;
 	private PassImage P1, P2, I1, I2;
 	//private long startTime;
+	private String randomOrPreset;
 
-	public ImageGridLogin(Integer gs, BufferedImage iO, BufferedImage iT) {
+	public ImageGridLogin(Integer gs, BufferedImage iO, BufferedImage iT, String randomOrPreset) {
 		setGridSize(gs);
 		setImages(iO, iT);
 		possibleImages = new ArrayList<BufferedImage>();
+		this.randomOrPreset = randomOrPreset;
 		
 		// auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -100,18 +103,35 @@ public class ImageGridLogin extends JFrame {
 			
 			Integer gridSizeSqr = gridSize*gridSize;
 			
-			// fill array with more random images
-			for (int i = 0; i < gridSizeSqr-2; i++) {
-				URL url = new URL("https://picsum.photos/50");
-				BufferedImage randImg = ImageIO.read(url.openStream());
-				for (int j = 0; j < bufImages.size(); j++) {					
-					while (buffImgsEqual(bufImages.get(j), randImg)) {
-						URL temp = new URL("https://picsum.photos/50");
-						randImg = ImageIO.read(temp.openStream());
-						System.err.println("Duplicate");
+			if (randomOrPreset.equals("preset")) {
+				
+				for (int i = 0; i < gridSizeSqr-2; i++) {
+					URL url = new File("Images/"+Integer.toString(i)+".jpg").toURI().toURL();
+					BufferedImage prstImg = ImageIO.read(url.openStream());
+					for (int j = 0; j < bufImages.size(); j++) {					
+						while (buffImgsEqual(bufImages.get(j), prstImg)) {
+							URL temp = new File("Images/"+Integer.toString(new Random().nextInt(gridSizeSqr-2))+".jpg").toURI().toURL();
+							prstImg = ImageIO.read(temp.openStream());
+							System.err.println("Duplicate");
+						}
 					}
+					bufImages.add(prstImg);
 				}
-				bufImages.add(randImg);
+				
+			} else {
+				// fill array with more random images
+				for (int i = 0; i < gridSizeSqr-2; i++) {
+					URL url = new URL("https://picsum.photos/50");
+					BufferedImage randImg = ImageIO.read(url.openStream());
+					for (int j = 0; j < bufImages.size(); j++) {					
+						while (buffImgsEqual(bufImages.get(j), randImg)) {
+							URL temp = new URL("https://picsum.photos/50");
+							randImg = ImageIO.read(temp.openStream());
+							System.err.println("Duplicate");
+						}
+					}
+					bufImages.add(randImg);
+				}
 			}
 			
 			labelList = new JLabel[gridSize][gridSize];
