@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -130,6 +131,10 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 	}
+	
+	public Boolean containsValidChars(String input) {
+		return input.matches("[a-zA-Z0-9./]*$");
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -146,6 +151,8 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 			String dbpass = "";
 			if (username.isBlank() || password.isBlank() || colStr.isBlank() || wheelPass.isBlank()) {
 				JOptionPane.showMessageDialog(registerButton, "Username, password, selected colour or wheel pass is empty.");
+			} else if (!containsValidChars(wheelPass)) {
+				JOptionPane.showMessageDialog(registerButton, "Wheel pass must not contain special characters apart from . and /");
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
