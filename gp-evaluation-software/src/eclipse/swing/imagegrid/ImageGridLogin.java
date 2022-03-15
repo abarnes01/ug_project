@@ -74,6 +74,17 @@ public class ImageGridLogin extends JFrame {
 		return gridSize;
 	}
 	
+	public Boolean buffImgsEqual(BufferedImage a, BufferedImage b) {
+		for (int x = 0; x < a.getWidth(); x++) {
+			for (int y = 0; y < a.getHeight(); y++) {
+				if (a.getRGB(x,y) != b.getRGB(x, y)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 	public void makeGrid() {
 		System.out.println("Making grid...");
 		
@@ -93,6 +104,13 @@ public class ImageGridLogin extends JFrame {
 			for (int i = 0; i < gridSizeSqr-2; i++) {
 				URL url = new URL("https://picsum.photos/50");
 				BufferedImage randImg = ImageIO.read(url.openStream());
+				for (int j = 0; j < bufImages.size(); j++) {					
+					while (buffImgsEqual(bufImages.get(j), randImg)) {
+						URL temp = new URL("https://picsum.photos/50");
+						randImg = ImageIO.read(temp.openStream());
+						System.err.println("Duplicate");
+					}
+				}
 				bufImages.add(randImg);
 			}
 			
@@ -115,6 +133,7 @@ public class ImageGridLogin extends JFrame {
 				imgLabel.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
+						Boolean recreate = true;
 						JLabel label = (JLabel)e.getSource();
 						for (int x = 0; x < gridSize; x++) {
 							for (int y = 0; y < gridSize; y++) {
@@ -192,7 +211,7 @@ public class ImageGridLogin extends JFrame {
 											ArrayList<BufferedImage> matches = new ArrayList<BufferedImage>();
 											for (int i = 0; i < currentImages.size(); i++) {
 												for (int j = 0; j < possibleImages.size(); j++) {
-													if (currentImages.get(i) == possibleImages.get(j)) {
+													if (buffImgsEqual(currentImages.get(i),possibleImages.get(j))) {
 														matches.add(possibleImages.get(j));
 														//continue;
 													}
@@ -204,6 +223,7 @@ public class ImageGridLogin extends JFrame {
 												System.out.println("Shoulder surfer found images.");
 												Welcome welcome = new Welcome();
 												welcome.setVisible(true);
+												recreate = false;
 												dispose();
 											}
 										}
@@ -215,7 +235,9 @@ public class ImageGridLogin extends JFrame {
 										contentPane.revalidate();
 										contentPane.repaint();
 										
-										makeGrid();
+										if (recreate) {
+											makeGrid();											
+										}
 										contentPane.add(gridPanel, BorderLayout.CENTER);
 										
 										
@@ -249,7 +271,7 @@ public class ImageGridLogin extends JFrame {
 											ArrayList<BufferedImage> matches = new ArrayList<BufferedImage>();
 											for (int i = 0; i < currentImages.size(); i++) {
 												for (int j = 0; j < possibleImages.size(); j++) {
-													if (currentImages.get(i) == possibleImages.get(j)) {
+													if (buffImgsEqual(currentImages.get(i),possibleImages.get(j))) {
 														matches.add(possibleImages.get(j));
 														//continue;
 													}
@@ -261,6 +283,7 @@ public class ImageGridLogin extends JFrame {
 												System.out.println("Found our images");
 												Welcome welcome = new Welcome();
 												welcome.setVisible(true);
+												recreate = false;
 												dispose();
 											}
 										}
@@ -271,7 +294,9 @@ public class ImageGridLogin extends JFrame {
 										contentPane.removeAll();
 										contentPane.revalidate();
 										contentPane.repaint();
-										makeGrid();
+										if (recreate) {
+											makeGrid();											
+										}
 										contentPane.add(gridPanel, BorderLayout.CENTER);
 										System.out.println(possibleImages.size());
 									}
