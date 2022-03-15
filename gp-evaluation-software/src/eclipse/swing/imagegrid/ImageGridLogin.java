@@ -1,6 +1,7 @@
 package eclipse.swing.imagegrid;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -12,10 +13,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import eclipse.swing.Welcome;
@@ -43,7 +46,7 @@ public class ImageGridLogin extends JFrame {
 		
 		// auto
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 800, 800);
+		setBounds(100, 100, gridSize*50, gridSize*50);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -94,7 +97,6 @@ public class ImageGridLogin extends JFrame {
 		bufImages = new ArrayList<BufferedImage>();
 		
 		try {
-			
 			// add our two images to an array of random images. Save these coordinates
 			// display all images randomly in JLabels. Add a clicker
 			
@@ -104,7 +106,7 @@ public class ImageGridLogin extends JFrame {
 			Integer gridSizeSqr = gridSize*gridSize;
 			
 			if (randomOrPreset.equals("preset")) {
-				
+				// use local preset images
 				for (int i = 0; i < gridSizeSqr-2; i++) {
 					URL url = new File("Images/"+Integer.toString(i)+".jpg").toURI().toURL();
 					BufferedImage prstImg = ImageIO.read(url.openStream());

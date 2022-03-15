@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -28,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import eclipse.swing.InitialLogin;
@@ -44,6 +48,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 	private JButton registerButton, backBtn, rndmImgBtn, prstImgBtn;
 	private ArrayList<BufferedImage> bufImages;
 	private Boolean genRndmImg, genPrstImg;
+	private BufferedImage imageOne, imageTwo;
 
 	public ImageGridRegistration() {
 		
@@ -66,8 +71,9 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		usernameField = new JTextField(10);
 		passwordLabel = new JLabel("Password:");
 		passwordField = new JPasswordField(10);
-		imageSelectLabel = new JLabel("PassImages ('x y')");
+		imageSelectLabel = new JLabel("Pass Images: ");
 		imageSelectField = new JTextField(10);
+		imageSelectField.setEditable(false);
 		rndmImgBtn = new JButton("Random Images");
 		rndmImgBtn.setOpaque(true);
 		rndmImgBtn.addActionListener(this);
@@ -128,6 +134,26 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 				bufImages.add(image);
 				JLabel imgLabel = new JLabel(new ImageIcon(image));
 				imgLabel.setText(String.valueOf(i));
+				Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
+				imgLabel.setBorder(border);
+				imgLabel.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent me) {
+						if (imageOne == null) {
+							imageOne = image;
+							imageSelectField.setText(imgLabel.getText());
+						} else if (imageTwo == null) {
+							imageTwo = image;
+							imageSelectField.setText(imageSelectField.getText() + " and " + imgLabel.getText());
+						} else {
+							int ans = JOptionPane.showConfirmDialog(imgLabel, "Reset chosen images and use this as image one?");
+							if (ans == JOptionPane.YES_OPTION) {
+								imageOne = image;
+								imageTwo = null;
+								imageSelectField.setText(imgLabel.getText());
+							}
+						}
+					}
+				});
 				imagesPanel.add(imgLabel);
 			}
 		} catch (Exception e) {
@@ -188,10 +214,6 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 					} else {
 						String gridQuery = "INSERT INTO image_grid_method(userID,gridSize,imageOne,imageTwo,randomOrPreset) values(?, ?, ?, ?, ?)";
 						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
-						
-						String[] split = imageSelectField.getText().split("\\s+");
-						BufferedImage imageOne = bufImages.get(Integer.parseInt(split[0])-1);
-						BufferedImage imageTwo = bufImages.get(Integer.parseInt(split[1])-1);
 						
 						ByteArrayOutputStream baosOne = new ByteArrayOutputStream();
 						ImageIO.write(imageOne, "jpg", baosOne);
