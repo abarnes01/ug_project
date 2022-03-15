@@ -137,7 +137,10 @@ public class InitialLogin extends JFrame implements ActionListener{
 						}
 						
 					} else if (getMethod() == Method.SIMPLE) {
-						JOptionPane.showMessageDialog(loginButton, "Successfully logged in.");
+						String simpleLoginResultHtml = "<html><h1>Simple Login</h1>"
+													+ "<p>This provides no shoulder surfing resistance.</p><br>"
+													+ "<p>The keystroke entry and number of keystrokes <br>can be observed to reveal the password. </p>";
+						JOptionPane.showMessageDialog(loginButton, String.format(simpleLoginResultHtml));
 						Welcome welcome = new Welcome();
 						welcome.setVisible(true);
 						dispose();
