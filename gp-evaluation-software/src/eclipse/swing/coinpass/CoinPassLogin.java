@@ -46,6 +46,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 	private Map<String, Color> colourMap;
 	private ArrayList<BufferedImage> iconArray;
 	private ArrayList<Integer> numArray;
+	private CoinPassSurfer surfer;
 
 	public CoinPassLogin(DatabaseRunner dbRunner, String coinPass) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,6 +79,9 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		
 		contentPane.add(coinPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
+		
+		surfer = new CoinPassSurfer(getX(), getWidth(), getY());
+		surfer.setVisible(true);
 	}
 	
 	
@@ -117,14 +121,6 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 				int randNum = rand.nextInt(10-i);
 				int randCol = rand.nextInt(10-i);
 				CoinCanvas coin = new CoinCanvas(20,20,iconArray.get(randIcon),colourArray.get(randCol),numArray.get(randNum));
-//				JLabel coin = new JLabel(iconArray.get(randIcon));
-//				coin.setText(Integer.toString(numArray.get(randNum)));
-//				Border border = BorderFactory.createLineBorder(colourArray.get(randCol), 5);
-//				coin.setForeground(colourArray.get(randCol));
-//				coin.setBorder(border);
-//				coin.setBackground(Color.LIGHT_GRAY);
-//				coin.setOpaque(true);
-//				coin.setSize(5, 5);
 				BufferedImage iconViewed = iconArray.get(randIcon);
 				String numViewed = Integer.toString(numArray.get(randNum));
 				Color colViewed = colourArray.get(randCol);
@@ -137,17 +133,21 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 							if (str.contains(".png") && iconMap.get(str) == iconViewed) {
 								passEntry += ":" + str;
 								coinPassElements.remove(0);
+								surfer.updateSurfer(iconViewed, numViewed, colViewed);
 							} else if (colourMap.containsKey(str) && colourMap.get(str) == colViewed) {
 								passEntry += ":" + str;
 								coinPassElements.remove(0);
+								surfer.updateSurfer(iconViewed, numViewed, colViewed);
 							} else if (str.equals(numViewed)) {
 								passEntry += ":" + str;
 								coinPassElements.remove(0);
+								surfer.updateSurfer(iconViewed, numViewed, colViewed);
 							} else {
 								passEntry = "";
 								coinPassElements = new ArrayList<String>();
 								setCoinPassElements(coinPass);
 								JOptionPane.showMessageDialog(coin, "Incorrect: Try again.");
+								surfer.restartSurfer();
 							}
 						}
 						coinPanel.removeAll();
