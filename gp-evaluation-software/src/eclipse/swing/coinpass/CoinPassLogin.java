@@ -42,14 +42,14 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 	private String coinPass, passEntry;
 	private ArrayList<String> coinPassElements;
 	private ArrayList<Color> colourArray;
-	private Map<String, ImageIcon> iconMap;
+	private Map<String, BufferedImage> iconMap;
 	private Map<String, Color> colourMap;
-	private ArrayList<ImageIcon> iconArray;
+	private ArrayList<BufferedImage> iconArray;
 	private ArrayList<Integer> numArray;
 
 	public CoinPassLogin(DatabaseRunner dbRunner, String coinPass) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 550, 550);
+		setBounds(100, 100, 340, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -71,7 +71,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		passEntry = "";
 		
 		makeCoins();
-		coinPanel.setLayout(new GridLayout(0, 3, 20, 20));
+		coinPanel.setLayout(new GridLayout(0, 3, 0, 0));
 		
 		buttonPanel.add(backBtn);
 		buttonPanel.add(loginBtn);
@@ -101,15 +101,14 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 			
 			iconMap = new HashMap<>();
 			
-			iconArray = new ArrayList<ImageIcon>();
+			iconArray = new ArrayList<BufferedImage>();
 			
 			numArray = new ArrayList<Integer>( Arrays.asList(1,2,3,4,5,6,7,8,9,10));
 			
 			for (int i = 0; i < 10; i++) {
 				BufferedImage img = ImageIO.read(new File("Icons/" + Integer.toString(i) + ".png"));
-				ImageIcon imgIcon = new ImageIcon(img);
-				iconArray.add(imgIcon);
-				iconMap.put(Integer.toString(i) + ".png",imgIcon);
+				iconArray.add(img);
+				iconMap.put(Integer.toString(i) + ".png",img);
 			}
 			
 			for (int i = 0; i < 10; i++) {
@@ -117,26 +116,23 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 				int randIcon = rand.nextInt(10-i);
 				int randNum = rand.nextInt(10-i);
 				int randCol = rand.nextInt(10-i);
-				JLabel coin = new JLabel(iconArray.get(randIcon));
-				coin.setText(Integer.toString(numArray.get(randNum)));
-				Border border = BorderFactory.createLineBorder(colourArray.get(randCol), 5);
-				coin.setForeground(colourArray.get(randCol));
-				iconArray.remove(randIcon);
-				numArray.remove(randNum);
-				colourArray.remove(randCol);
-				coin.setBorder(border);
-				coin.setBackground(Color.LIGHT_GRAY);
-				coin.setOpaque(true);
-				coin.setSize(5, 5);
+				CoinCanvas coin = new CoinCanvas(20,20,iconArray.get(randIcon),colourArray.get(randCol),numArray.get(randNum));
+//				JLabel coin = new JLabel(iconArray.get(randIcon));
+//				coin.setText(Integer.toString(numArray.get(randNum)));
+//				Border border = BorderFactory.createLineBorder(colourArray.get(randCol), 5);
+//				coin.setForeground(colourArray.get(randCol));
+//				coin.setBorder(border);
+//				coin.setBackground(Color.LIGHT_GRAY);
+//				coin.setOpaque(true);
+//				coin.setSize(5, 5);
+				BufferedImage iconViewed = iconArray.get(randIcon);
+				String numViewed = Integer.toString(numArray.get(randNum));
+				Color colViewed = colourArray.get(randCol);
 				coin.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
 						
 						if (!coinPassElements.isEmpty()) {
 							String str = coinPassElements.get(0);
-							
-							ImageIcon iconViewed = (ImageIcon)coin.getIcon();
-							String numViewed = coin.getText();
-							Color colViewed = coin.getForeground();
 							
 							if (str.contains(".png") && iconMap.get(str) == iconViewed) {
 								passEntry += ":" + str;
@@ -160,6 +156,9 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 						makeCoins();
 					}
 				});
+				iconArray.remove(randIcon);
+				numArray.remove(randNum);
+				colourArray.remove(randCol);
 				coinPanel.add(coin);
 			}
 			System.out.println("Coins created.");
