@@ -3,13 +3,17 @@ package eclipse.swing.coinpass;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -25,7 +29,6 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 7491248350836673542L;
 	private JPanel contentPane, mainPane, bottomPane;
-	private JLabel shoulderSurferImg;
 	private JButton closeBtn;
 	private Map<Color, String> colourToStrMap;
 	private Integer passLength;
@@ -51,6 +54,11 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 		closeBtn.addActionListener(this);
 		
 		bottomPane.add(closeBtn);
+		try {
+			bottomPane.add(generateSurferImg());
+		} catch (Exception e) {
+			System.err.println("Error: Could not retrieve surfer image.");
+		}
 		
 		contentPane.add(mainPane, BorderLayout.CENTER);
 		contentPane.add(bottomPane, BorderLayout.SOUTH);
@@ -112,6 +120,14 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 		mainPane.add(Box.createRigidArea(new Dimension(0,5)));
 		mainPane.revalidate();
 		mainPane.repaint();
+	}
+	
+	public JLabel generateSurferImg() throws Exception {
+		URL url = new File("Images/shouldersurfer.png").toURI().toURL();
+		BufferedImage shoSurBI = ImageIO.read(url.openStream());
+		Image img = shoSurBI.getScaledInstance(100, 45, java.awt.Image.SCALE_SMOOTH);
+		JLabel shoulderSurferLbl = new JLabel(new ImageIcon(img));
+		return shoulderSurferLbl;
 	}
 
 	@Override

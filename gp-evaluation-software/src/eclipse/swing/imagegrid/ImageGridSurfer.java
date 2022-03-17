@@ -2,12 +2,16 @@ package eclipse.swing.imagegrid;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.URL;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -47,6 +51,11 @@ public class ImageGridSurfer extends JFrame implements ActionListener {
 		closeBtn.addActionListener(this);
 		
 		bottomPane.add(closeBtn);
+		try {
+			bottomPane.add(generateSurferImg());
+		} catch (Exception e) {
+			System.err.println("Error: Could not retrieve surfer image.");
+		}
 		
 		contentPane.add(mainPane, BorderLayout.CENTER);
 		contentPane.add(bottomPane, BorderLayout.SOUTH);
@@ -87,6 +96,14 @@ public class ImageGridSurfer extends JFrame implements ActionListener {
 		mainPane.add(Box.createRigidArea(new Dimension(0,5)));
 		mainPane.revalidate();
 		mainPane.repaint();
+	}
+	
+	public JLabel generateSurferImg() throws Exception {
+		URL url = new File("Images/shouldersurfer.png").toURI().toURL();
+		BufferedImage shoSurBI = ImageIO.read(url.openStream());
+		Image img = shoSurBI.getScaledInstance(100, 45, java.awt.Image.SCALE_SMOOTH);
+		JLabel shoulderSurferLbl = new JLabel(new ImageIcon(img));
+		return shoulderSurferLbl;
 	}
 
 	@Override
