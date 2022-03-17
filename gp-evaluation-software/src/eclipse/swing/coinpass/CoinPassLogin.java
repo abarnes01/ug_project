@@ -32,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import eclipse.sql.DatabaseRunner;
 import eclipse.swing.InitialLogin;
 import eclipse.swing.Method;
+import eclipse.swing.Welcome;
 
 public class CoinPassLogin extends JFrame implements ActionListener {
 
@@ -175,6 +176,9 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		if (btn.equals(loginBtn)) {
 			if (passEntry.equals(getCoinPass())) {
 				JOptionPane.showMessageDialog(loginBtn, "Successfully logged in.");
+				surfer.surferEvaluate();
+				new Welcome(dbRunner).setVisible(true);
+				dispose();
 			}
 			
 		} else if (btn.equals(backBtn)) {
