@@ -25,35 +25,31 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 7491248350836673542L;
 	private JPanel contentPane, mainPane, bottomPane;
-	private JLabel shoulderSurferImg, passLenLbl;
+	private JLabel shoulderSurferImg;
 	private JButton closeBtn;
 	private Map<Color, String> colourToStrMap;
 	private Integer passLength;
 	private Integer errorCount;
 
-	public CoinPassSurfer(int x, int y, int width) {
+	public CoinPassSurfer() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 300, 600);
+		setBounds(100, 100, 450, 450);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		setLocation((int)(2.5*(x+width)), (int)(y/2.5));
+		setLocation(800, 100);
 		setTitle("Coin Pass Shoulder Surfer");
 		
 		mainPane = new JPanel();
-		mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.PAGE_AXIS));
-		mainPane.add(Box.createRigidArea(new Dimension(0,5)));
 		bottomPane = new JPanel();
 		
-		passLenLbl = new JLabel("K length: ");
 		passLength = 0;
 		errorCount = 0;
 
 		closeBtn = new JButton("Close");
 		closeBtn.addActionListener(this);
 		
-		mainPane.add(passLenLbl);
 		bottomPane.add(closeBtn);
 		
 		contentPane.add(mainPane, BorderLayout.CENTER);
@@ -82,17 +78,14 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 		viewedElements.add(num);
 		viewedElements.add(col);
 		passLength += 1;
-		passLenLbl.setText("K length: " + Integer.toString(passLength));
 		mainPane.add(viewedElements);
 		mainPane.revalidate();
 		mainPane.repaint();
 	}
 	
 	public void restartSurfer() {
-		// TODO other elements reset
 		errorCount += 1;
 		passLength = 0;
-		passLenLbl.setText("K length: ");
 		mainPane.removeAll();
 		mainPane.revalidate();
 		mainPane.repaint();
@@ -115,6 +108,8 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 		evaPane.setBackground(SystemColor.window);
 		evaPane.setEditable(false);
 		mainPane.add(evaPane);
+		mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.PAGE_AXIS));
+		mainPane.add(Box.createRigidArea(new Dimension(0,5)));
 		mainPane.revalidate();
 		mainPane.repaint();
 	}

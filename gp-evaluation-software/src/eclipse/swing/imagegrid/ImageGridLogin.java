@@ -57,7 +57,7 @@ public class ImageGridLogin extends JFrame {
 		contentPane.add(gridPanel, BorderLayout.CENTER);
 		makeGrid();
 		
-		surfer = new ImageGridSurfer();
+		surfer = new ImageGridSurfer(randomOrPreset);
 		surfer.setVisible(true);
 	}
 	
@@ -239,6 +239,8 @@ public class ImageGridLogin extends JFrame {
 										contentPane.repaint();		
 										if (recreate) {
 											makeGrid();											
+										} else {
+											surfer.surferEvaluate();
 										}
 										contentPane.add(gridPanel, BorderLayout.CENTER);
 									} else if ((x == P2.x) && (y == P2.y)) {
@@ -287,6 +289,9 @@ public class ImageGridLogin extends JFrame {
 										contentPane.repaint();
 										if (recreate) {
 											makeGrid();											
+										} else {
+											surfer.surferEvaluate();
+
 										}
 										contentPane.add(gridPanel, BorderLayout.CENTER);
 									}

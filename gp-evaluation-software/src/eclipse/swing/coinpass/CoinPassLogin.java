@@ -81,7 +81,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		contentPane.add(coinPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 		
-		surfer = new CoinPassSurfer(getX(), getWidth(), getY());
+		surfer = new CoinPassSurfer();
 		surfer.setVisible(true);
 	}
 	

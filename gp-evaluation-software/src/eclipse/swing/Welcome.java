@@ -1,4 +1,4 @@
-package eclipse.swing;
+	package eclipse.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Choice;
@@ -56,7 +56,7 @@ public class Welcome extends JFrame implements ActionListener {
 
 		mainText.setBackground(SystemColor.window);
 		mainText.setEditable(false);
-		String WelcomeHtml = "<html><h1>Adam Barnes - CO3201 Computer Science Project</h1>"
+		String WelcomeHtml = "<html><h1>ab1049 - CO3201 Computer Science Project</h1>"
 				+ "<h3>Avoiding Shoulder Surfing via Graphical Passwords</h3>"
 				+ "<p>In this application, you can test out 4 different graphical password approaches,"
 				+ "to observe their effectiveness in avoiding shoulder surfing.</p>"
