@@ -165,9 +165,16 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 			}
 		} else if (btn.equals(loginBtn)) {
 			if (passCount == passLength) {
-				JOptionPane.showMessageDialog(loginBtn, "Successfully logged in.");
+				String colWheelLoginResultHtml = "<html><h1>Colour Wheel Login</h1>"
+						+ "<p>If the shoulder surfer knows the algorithm, they would still first need to know the users selected colour, <br>"
+						+ " and even then would need to brute force clicking confirm on the right selections of random text each time.</p>";
+				JOptionPane.showMessageDialog(loginBtn, String.format(colWheelLoginResultHtml));
+				new Welcome(dbRunner).setVisible(true);
+				dispose();
 			} else {
 				JOptionPane.showMessageDialog(loginBtn, "Incorrect password.");
+				new InitialLogin(dbRunner, Method.WHEEL).setVisible(true);
+				dispose();
 			}
 		} else if (btn.equals(backBtn)) {
 			new InitialLogin(dbRunner, Method.WHEEL).setVisible(true);
