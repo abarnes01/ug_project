@@ -28,11 +28,11 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private DatabaseRunner dbRunner;
-	private JPanel contentPane, formPanel, buttonPanel, mainPanel;
+	private JPanel contentPane, formPanel, BtnPanel, mainPanel;
 	private JTextField usernameField;
 	private JPasswordField passwordField, patternPField;
-	private JButton registerButton, backBtn;
-	private JLabel usernameLabel, passwordLabel, patternPLabel;
+	private JButton registerBtn, backBtn;
+	private JLabel usernameLbl, passwordLbl, patternPLbl;
 
 	public ColourGridRegistration(DatabaseRunner dbRunner) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,17 +47,17 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		// create the features
 		mainPanel = new JPanel();
 		formPanel = new JPanel();
-		buttonPanel = new JPanel();
-		usernameLabel = new JLabel("Username:");
+		BtnPanel = new JPanel();
+		usernameLbl = new JLabel("Username:");
 		usernameField = new JTextField(10);
-		passwordLabel = new JLabel("Password:");
+		passwordLbl = new JLabel("Password:");
 		passwordField = new JPasswordField(10);
-		patternPLabel = new JLabel("Pattern Pass (6 chars):");
+		patternPLbl = new JLabel("Pattern Pass (6 chars):");
 		patternPField = new JPasswordField(6);
 		
-		// create buttons
-		registerButton = new JButton("Register");
-		registerButton.addActionListener(this);
+		// create Btns
+		registerBtn = new JButton("Register");
+		registerBtn.addActionListener(this);
 		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
 		
@@ -65,24 +65,24 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		formPanel.setLayout(new GridLayout(3,1,10,10));
 		
 		// set the features to the panels
-		formPanel.add(usernameLabel);
+		formPanel.add(usernameLbl);
 		formPanel.add(usernameField);
-		formPanel.add(passwordLabel);
+		formPanel.add(passwordLbl);
 		formPanel.add(passwordField);
-		formPanel.add(patternPLabel);
+		formPanel.add(patternPLbl);
 		formPanel.add(patternPField);
-		buttonPanel.add(backBtn);
-		buttonPanel.add(registerButton);
+		BtnPanel.add(backBtn);
+		BtnPanel.add(registerBtn);
 		mainPanel.add(formPanel);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
-		contentPane.add(buttonPanel, BorderLayout.SOUTH);
+		contentPane.add(BtnPanel, BorderLayout.SOUTH);
 		setResizable(false);
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
-		if (btn.equals(registerButton)) {
+		if (btn.equals(registerBtn)) {
 			String username = usernameField.getText();
 			String password = String.valueOf(passwordField.getPassword());
 			String patternPass = String.valueOf(patternPField.getPassword());
@@ -90,7 +90,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 			String dbname = dbRunner.getDbname();
 			String dbpass = dbRunner.getDbpass();
 			if (username.isBlank() || password.isBlank() || patternPass.length() != 6) {
-				JOptionPane.showMessageDialog(registerButton, "Username or password is empty or pattern pass does not equal 6.");
+				JOptionPane.showMessageDialog(registerBtn, "Username or password is empty or pattern pass does not equal 6.");
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
@@ -98,7 +98,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 					st.setString(1, username);
 					ResultSet rs = st.executeQuery();
 					if (rs.next()) {
-						JOptionPane.showMessageDialog(registerButton, "User already exists.");
+						JOptionPane.showMessageDialog(registerBtn, "User already exists.");
 					} else {
 						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
 						Statement statement = connection.createStatement();
@@ -117,7 +117,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 					checkdbst.setInt(1, userID);
 					ResultSet checkdbrs = checkdbst.executeQuery();
 					if (checkdbrs.next()) {
-						JOptionPane.showMessageDialog(registerButton, "Colour grid method for user already exists.");
+						JOptionPane.showMessageDialog(registerBtn, "Colour grid method for user already exists.");
 					} else {
 						String gridQuery = "INSERT INTO colour_grid_method(userID,patternPass) values(?, ?)";
 						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);

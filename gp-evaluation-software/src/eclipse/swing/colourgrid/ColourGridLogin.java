@@ -33,13 +33,13 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private DatabaseRunner dbRunner;
-	private JPanel contentPane, formPanel, buttonPanel, gridPanel, mainPanel;
-	private JPasswordField pColourField;
-	private JButton loginButton, backBtn;
-	private JLabel pColourLabel;
+	private JPanel contentPane, formPanel, BtnPanel, gridPanel, mainPanel;
+	private JPasswordField pColField;
+	private JButton loginBtn, backBtn;
+	private JLabel pColLbl;
 	private GridLayout gridLayout;
 	private String patternPass;
-	private Color patternPassColour;
+	private Color patternPassCol;
 	private long startTime;
 
 	public ColourGridLogin(DatabaseRunner dbRunner, String pp) {
@@ -57,24 +57,24 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		
 		// create elements
 		formPanel = new JPanel();
-		buttonPanel = new JPanel();
-		pColourLabel = new JLabel("Enter: ");
-		pColourField = new JPasswordField(10);
+		BtnPanel = new JPanel();
+		pColLbl = new JLabel("Enter: ");
+		pColField = new JPasswordField(10);
 		mainPanel = new JPanel();
-		loginButton = new JButton("Login");
-		loginButton.addActionListener(this);
+		loginBtn = new JButton("Login");
+		loginBtn.addActionListener(this);
 		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
 		
 		// add elements to window
 		formPanel.setLayout(new GridLayout(3,1,10,10));
-		formPanel.add(pColourLabel);
-		formPanel.add(pColourField);
-		buttonPanel.add(backBtn);
-		buttonPanel.add(loginButton);
+		formPanel.add(pColLbl);
+		formPanel.add(pColField);
+		BtnPanel.add(backBtn);
+		BtnPanel.add(loginBtn);
 		mainPanel.add(formPanel);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
-		contentPane.add(buttonPanel, BorderLayout.SOUTH);
+		contentPane.add(BtnPanel, BorderLayout.SOUTH);
 		setResizable(false);
 		
 		startTime = System.nanoTime();
@@ -84,30 +84,32 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
-		if (btn.equals(loginButton)) {
+		if (btn.equals(loginBtn)) {
 			// value of user input
-			String ppInput = String.valueOf(pColourField.getPassword());
+			String ppInput = String.valueOf(pColField.getPassword());
 			
-			// mapping all the colours to their first letter
-			Map<Color, String> colourMap = new HashMap<>();
-			colourMap.put(Color.RED, "R");
-			colourMap.put(Color.BLUE, "B");
-			colourMap.put(Color.PINK, "P");
-			colourMap.put(Color.WHITE, "W");
-			colourMap.put(Color.GREEN, "G");
-			colourMap.put(Color.YELLOW, "Y");
+			// mapping all the Cols to their first letter
+			Map<Color, String> ColMap = new HashMap<>();
+			ColMap.put(Color.RED, "R");
+			ColMap.put(Color.BLUE, "B");
+			ColMap.put(Color.PINK, "P");
+			ColMap.put(Color.WHITE, "W");
+			ColMap.put(Color.GREEN, "G");
+			ColMap.put(Color.YELLOW, "Y");
 			
-			// if user input equals the first letter of the colour their pattern pass lies in
-			if (ppInput.toUpperCase().equals(colourMap.get(patternPassColour))) {
+			// if user input equals the first letter of the Col their pattern pass lies in
+			if (ppInput.toUpperCase().equals(ColMap.get(patternPassCol))) {
 				long stopTime = System.nanoTime()-startTime;
 				long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
-				JOptionPane.showMessageDialog(loginButton, "Successfully logged in. Took " + seconds + "s");
-				System.out.println("For a shoulder surfer who knows the colour grid algorithm and spots the colour first letter input they have " + (float)seconds/6 + "s to memorise each letter");
+				String colGridLoginResultHtml = "<html><h1>Colour Grid Login</h1>"
+						+ "<p> For a shoulder surfer who knows the algorithm and can see the entry of the colour (first letter), <br>"
+						+ " for this example they have less than " + (float)seconds/6 + " seconds to memorise each letter of the users password.</p>";
+				JOptionPane.showMessageDialog(loginBtn, String.format(colGridLoginResultHtml));
 				Welcome welcome = new Welcome(dbRunner);
 				welcome.setVisible(true);
 				dispose();
 			} else {
-				JOptionPane.showMessageDialog(loginButton, "Incorrect password.");
+				JOptionPane.showMessageDialog(loginBtn, "Incorrect password.");
 			}
 		} else if (btn.equals(backBtn)) {
 			new InitialLogin(dbRunner, Method.COLOURGRID).setVisible(true);
@@ -124,8 +126,8 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		gridPanel = new JPanel();
 		gridLayout = new GridLayout(6,6);
 		
-		// array of all the colour tiles that need to be placed on the grid
-		List<Color> coloursOnGrid = new ArrayList<Color>( Arrays.asList(Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED,
+		// array of all the Col tiles that need to be placed on the grid
+		List<Color> ColsOnGrid = new ArrayList<Color>( Arrays.asList(Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED,
 								Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE,
 								Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK,
 								Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE,
@@ -140,18 +142,18 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 			ppCharArray.addAll(Arrays.asList(ArrayUtils.toObject(rawPPCharArray)));
 			// random generator
 			Random rand = new Random();
-			int randColourIndex = rand.nextInt(coloursOnGrid.size());
-			// the colour the password will lie in
-			patternPassColour = coloursOnGrid.get(randColourIndex);
+			int randColIndex = rand.nextInt(ColsOnGrid.size());
+			// the Col the password will lie in
+			patternPassCol = ColsOnGrid.get(randColIndex);
 			
 			gridPanel.setLayout(gridLayout);
 			for (int i = 1; i <= 36; i++) {
-				// for each element, create text field and assign random colour
+				// for each element, create text field and assign random Col
 				JTextField tf = new JTextField(null, 2);
-				randColourIndex = rand.nextInt(coloursOnGrid.size());
-				tf.setBackground(coloursOnGrid.get(randColourIndex));
-				// add pattern password letters if it is the correct colour
-				if (coloursOnGrid.get(randColourIndex) == patternPassColour) {
+				randColIndex = rand.nextInt(ColsOnGrid.size());
+				tf.setBackground(ColsOnGrid.get(randColIndex));
+				// add pattern password letters if it is the correct Col
+				if (ColsOnGrid.get(randColIndex) == patternPassCol) {
 					// set to random character of pattern pass and remove from pattern pass array
 					int randPPIndex = rand.nextInt(ppCharArray.size());
 					tf.setText(Character.toString(ppCharArray.get(randPPIndex)));
@@ -160,14 +162,14 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 					// otherwise set random letter from the alphabet
 					tf.setText((Character.toString((char)rand.nextInt(26) + 'a')));
 				}
-				// set to white text if colour is blue. Accessibility
-				if (coloursOnGrid.get(randColourIndex) == Color.BLUE) {
+				// set to white text if Col is blue. Accessibility
+				if (ColsOnGrid.get(randColIndex) == Color.BLUE) {
 					tf.setForeground(Color.WHITE);
 				}
 				tf.setEditable(false);
 				gridPanel.add(tf);
-				// to make sure all colours are evenly distributed
-				coloursOnGrid.remove(randColourIndex);
+				// to make sure all Cols are evenly distributed
+				ColsOnGrid.remove(randColIndex);
 			}
 		// IF no pattern pass, which is also dealt with in simple login
 		} catch (NullPointerException e) {
