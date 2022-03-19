@@ -41,15 +41,15 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 575557513944314476L;
 	private DatabaseRunner dbRunner;
 	private JPanel contentPane, formPanel, buttonPanel, elementsPanel, mainPanel;
-	private JLabel nameLabel, passwordLabel, coinPassLabel;
-	private JButton registerButton, backBtn;
+	private JLabel nameLbl, passwordLbl, coinPassLbl;
+	private JButton registerBtn, backBtn;
 	private JTextField nameField, coinPassField;
 	private JPasswordField passField;
 	private Boolean iconEntered, numEntered, colEntered;
-	private List<Color> colourList;
+	private ArrayList<Color> colArr;
 	private Map<ImageIcon, String> iconMap;
-	private Map<Color, String> colourMap;
-	private ArrayList<ImageIcon> iconArray;
+	private Map<Color, String> colToStrMap;
+	private ArrayList<ImageIcon> iconArr;
 	
 
 	public CoinPassRegistration(DatabaseRunner dbRunner) {
@@ -70,44 +70,44 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		mainPanel = new JPanel();
 		
 		formPanel.setLayout(new GridLayout(3, 0));
-		nameLabel = new JLabel("Username: ");
-		passwordLabel = new JLabel("Password: ");
-		coinPassLabel = new JLabel("Coin Pass: ");
+		nameLbl = new JLabel("Username: ");
+		passwordLbl = new JLabel("Password: ");
+		coinPassLbl = new JLabel("Coin Pass: ");
 		nameField = new JTextField(10);
 		passField = new JPasswordField(10);
 		coinPassField = new JTextField(10);
 		coinPassField.setEditable(false);
-		registerButton = new JButton("Register");
-		registerButton.addActionListener(this);
+		registerBtn = new JButton("Register");
+		registerBtn.addActionListener(this);
 		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
 		
 		// get element J labels
 		try {
-			colourMap = new HashMap<>();
-			colourMap.put(Color.RED, "red");
-			colourMap.put(Color.BLUE, "blue");
-			colourMap.put(Color.PINK, "pink");
-			colourMap.put(Color.WHITE, "white");
-			colourMap.put(Color.GREEN, "green");
-			colourMap.put(Color.YELLOW, "yellow");
-			colourMap.put(Color.BLACK, "black");
-			colourMap.put(Color.ORANGE, "orange");
-			colourMap.put(Color.CYAN, "cyan");
-			colourMap.put(Color.MAGENTA, "magenta");
+			colToStrMap = new HashMap<>();
+			colToStrMap.put(Color.RED, "red");
+			colToStrMap.put(Color.BLUE, "blue");
+			colToStrMap.put(Color.PINK, "pink");
+			colToStrMap.put(Color.WHITE, "white");
+			colToStrMap.put(Color.GREEN, "green");
+			colToStrMap.put(Color.YELLOW, "yellow");
+			colToStrMap.put(Color.BLACK, "black");
+			colToStrMap.put(Color.ORANGE, "orange");
+			colToStrMap.put(Color.CYAN, "cyan");
+			colToStrMap.put(Color.MAGENTA, "magenta");
 			
-			colourList = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK, Color.WHITE,
+			colArr = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK, Color.WHITE,
 					Color.GREEN, Color.YELLOW, Color.BLACK, Color.ORANGE, Color.CYAN, Color.MAGENTA));
 			
 			iconMap = new HashMap<>();
 			
-			iconArray = new ArrayList<ImageIcon>();
+			iconArr = new ArrayList<ImageIcon>();
 			for (int i = 0; i < 10; i++) {
 				//File pathToFile = new File("./Icons/" + Integer.toString(i) + ".png");
 				BufferedImage img = ImageIO.read(new File("Icons/" + Integer.toString(i) + ".png"));
 				ImageIcon imgIcon = new ImageIcon(img);
 				JLabel iconLabel = new JLabel(imgIcon);
-				iconArray.add(imgIcon);
+				iconArr.add(imgIcon);
 				iconMap.put(imgIcon, Integer.toString(i));
 				iconLabel.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
@@ -127,8 +127,8 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 				});
 				elementsPanel.add(numberLabel);
 				
-				JLabel colourLabel = new JLabel(colourMap.get(colourList.get(i)));
-				colourLabel.setForeground(colourList.get(i));
+				JLabel colourLabel = new JLabel(colToStrMap.get(colArr.get(i)));
+				colourLabel.setForeground(colArr.get(i));
 				colourLabel.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
 						coinPassField.setText(coinPassField.getText() + ":" + colourLabel.getText());
@@ -143,16 +143,16 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			System.err.println("Unable to get elements");
 			e.printStackTrace();
 		}
-		formPanel.add(nameLabel);
+		formPanel.add(nameLbl);
 		formPanel.add(nameField);
-		formPanel.add(passwordLabel);
+		formPanel.add(passwordLbl);
 		formPanel.add(passField);
-		formPanel.add(coinPassLabel);
+		formPanel.add(coinPassLbl);
 		formPanel.add(coinPassField);
 		mainPanel.add(formPanel);
 		mainPanel.add(elementsPanel);
 		buttonPanel.add(backBtn);
-		buttonPanel.add(registerButton);
+		buttonPanel.add(registerBtn);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 	}
@@ -161,7 +161,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton btn = (JButton) e.getSource();
-		if (btn.equals(registerButton)) {
+		if (btn.equals(registerBtn)) {
 			String username = nameField.getText();
 			String password = String.valueOf(passField.getPassword());
 			String coinpass = coinPassField.getText();
@@ -171,13 +171,13 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			String[] stringSplit = coinpass.split(":");
 			
 			if (username.isBlank() || password.isBlank() || coinpass.isBlank()) {
-				JOptionPane.showMessageDialog(registerButton, "Error: Username, password or Coin pass is empty.");
+				JOptionPane.showMessageDialog(registerBtn, "Error: Username, password or Coin pass is empty.");
 			} else if (stringSplit.length > 7) {
-				JOptionPane.showMessageDialog(registerButton, "Error: Coin pass is too long.");
+				JOptionPane.showMessageDialog(registerBtn, "Error: Coin pass is too long.");
 				coinPassField.setText("");
 				iconEntered = numEntered = colEntered = false;
 			} else if (!iconEntered || !numEntered || !colEntered) {
-				JOptionPane.showMessageDialog(registerButton, "Error: One of each coin pass element needed.");
+				JOptionPane.showMessageDialog(registerBtn, "Error: One of each coin pass element needed.");
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
@@ -186,7 +186,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 					ResultSet rs = st.executeQuery();
 					
 					if (rs.next()) {
-						JOptionPane.showMessageDialog(registerButton, "User already exists. Inserting coin pass details only.");
+						JOptionPane.showMessageDialog(registerBtn, "User already exists. Inserting coin pass details only.");
 					} else {
 						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
 						Statement statement = connection.createStatement();
@@ -205,7 +205,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 					checkdbst.setInt(1, userID);
 					ResultSet checkdbrs = checkdbst.executeQuery();
 					if (checkdbrs.next()) {
-						JOptionPane.showMessageDialog(registerButton, "Coin pass method for user already exists.");
+						JOptionPane.showMessageDialog(registerBtn, "Coin pass method for user already exists.");
 					} else {
 						String gridQuery = "INSERT INTO coin_pass_method(userID,coinpass) values(?, ?)";
 						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);

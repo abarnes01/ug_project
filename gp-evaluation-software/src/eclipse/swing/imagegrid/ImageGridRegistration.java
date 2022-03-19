@@ -44,10 +44,10 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private DatabaseRunner dbRunner;
 	private JPanel contentPane, formPanel, buttonPanel, imagesPanel, mainPanel;
-	private JLabel usernameLabel, passwordLabel, gridSizeLabel, imageSelectLabel;
+	private JLabel usernameLbl, passwordLbl, gridSizeLbl, imageSelectLbl;
 	private JTextField usernameField, gridSizeField, imageSelectField;
 	private JPasswordField passwordField;
-	private JButton registerButton, backBtn, rndmImgBtn, prstImgBtn;
+	private JButton registerBtn, backBtn, rndmImgBtn, prstImgBtn;
 	private ArrayList<BufferedImage> bufImages;
 	private Boolean genRndmImg, genPrstImg;
 	private BufferedImage imageOne, imageTwo;
@@ -59,7 +59,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		setTitle("Grid Method Registration");
+		setTitle("(Digraph) Image Grid Method Registration");
 		this.dbRunner = dbRunner;
 		
 		genRndmImg = genPrstImg = false;
@@ -67,11 +67,11 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		// Create the features
 		formPanel = new JPanel();
 		buttonPanel = new JPanel();
-		usernameLabel = new JLabel("Username:");
+		usernameLbl = new JLabel("Username:");
 		usernameField = new JTextField(10);
-		passwordLabel = new JLabel("Password:");
+		passwordLbl = new JLabel("Password:");
 		passwordField = new JPasswordField(10);
-		imageSelectLabel = new JLabel("Pass Images: ");
+		imageSelectLbl = new JLabel("Pass Images: ");
 		imageSelectField = new JTextField(10);
 		imageSelectField.setEditable(false);
 		rndmImgBtn = new JButton("Random Images");
@@ -84,12 +84,12 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		mainPanel = new JPanel();
 		
 		// Grid Size select
-		gridSizeLabel = new JLabel("Grid Size (3-8)");
+		gridSizeLbl = new JLabel("Grid Size (3-8)");
 		gridSizeField = new JTextField(10);
 		
 		// Register Button
-		registerButton = new JButton("Register");
-		registerButton.addActionListener(this);
+		registerBtn = new JButton("Register");
+		registerBtn.addActionListener(this);
 		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
 		
@@ -97,13 +97,13 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		formPanel.setLayout(new GridLayout(0,2));
 		
 		// Set the features to the panels
-		formPanel.add(usernameLabel);
+		formPanel.add(usernameLbl);
 		formPanel.add(usernameField);
-		formPanel.add(passwordLabel);
+		formPanel.add(passwordLbl);
 		formPanel.add(passwordField);
-		formPanel.add(gridSizeLabel);
+		formPanel.add(gridSizeLbl);
 		formPanel.add(gridSizeField);
-		formPanel.add(imageSelectLabel);
+		formPanel.add(imageSelectLbl);
 		formPanel.add(imageSelectField);
 		formPanel.add(rndmImgBtn);
 		formPanel.add(prstImgBtn);
@@ -112,7 +112,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		mainPanel.add(imagesPanel);
 		
 		buttonPanel.add(backBtn);
-		buttonPanel.add(registerButton);
+		buttonPanel.add(registerBtn);
 		
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
@@ -161,7 +161,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
-		if (btn.equals(registerButton)) {
+		if (btn.equals(registerBtn)) {
 			String username = usernameField.getText();
 			String password = String.valueOf(passwordField.getPassword());
 			String gridSizeStr = gridSizeField.getText();
@@ -170,11 +170,11 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 			String dbname = dbRunner.getDbname();
 			String dbpass = dbRunner.getDbpass();
 			if (username.isBlank() || password.isBlank() || gridSizeStr.isBlank() || imageSelectField.getText().isBlank() || (!genRndmImg && !genPrstImg)) {
-				JOptionPane.showMessageDialog(registerButton, "Error: Username, password, image or grid size is empty.");
+				JOptionPane.showMessageDialog(registerBtn, "Error: Username, password, image or grid size is empty.");
 			} else if (!testProperInt(gridSizeStr)) {
-				JOptionPane.showMessageDialog(registerButton, "Error: Grid Size is not a number.");
+				JOptionPane.showMessageDialog(registerBtn, "Error: Grid Size is not a number.");
 			} else if ((Integer.parseInt(gridSizeStr) < 3) || (Integer.parseInt(gridSizeStr) > 8)) {
-				JOptionPane.showMessageDialog(registerButton, "Error: Grid Size is smaller than 3 or bigger than 8.");
+				JOptionPane.showMessageDialog(registerBtn, "Error: Grid Size is smaller than 3 or bigger than 8.");
 			} else {
 				try {
 					gridSize = Integer.parseInt(gridSizeStr);
@@ -187,13 +187,13 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 					ResultSet rs = st.executeQuery();
 					
 					if (rs.next()) {
-						JOptionPane.showMessageDialog(registerButton, "User already exists. Inserting image grid details only.");
+						JOptionPane.showMessageDialog(registerBtn, "User already exists. Inserting image grid details only.");
 					} else {
 						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
 						Statement statement = connection.createStatement();
 						int x = statement.executeUpdate(query);
 						if(x == 0) {
-							JOptionPane.showMessageDialog(registerButton, "User already exists. 2nd box");
+							JOptionPane.showMessageDialog(registerBtn, "User already exists. 2nd box");
 						} 
 					}
 					PreparedStatement useridst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
@@ -206,7 +206,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 					checkdbst.setInt(1, userID);
 					ResultSet checkdbrs = checkdbst.executeQuery();
 					if (checkdbrs.next()) {
-						JOptionPane.showMessageDialog(registerButton, "Image grid method for user already exists.");
+						JOptionPane.showMessageDialog(registerBtn, "Image grid method for user already exists.");
 					} else {
 						String gridQuery = "INSERT INTO image_grid_method(userID,gridSize,imageOne,imageTwo,randomOrPreset) values(?, ?, ?, ?, ?)";
 						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
@@ -234,7 +234,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 						
 						int y = gridst.executeUpdate();
 						if(y == 0) {
-							JOptionPane.showMessageDialog(registerButton, "Image grid method for user already exists. 2nd box");
+							JOptionPane.showMessageDialog(registerBtn, "Image grid method for user already exists. 2nd box");
 						} else {
 							new InitialLogin(dbRunner, Method.IMAGEGRID).setVisible(true);
 							dispose();

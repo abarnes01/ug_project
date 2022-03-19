@@ -42,11 +42,11 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 	private JButton loginBtn, backBtn;
 	private String coinPass, passEntry;
 	private ArrayList<String> coinPassElements;
-	private ArrayList<Color> colourArray;
+	private ArrayList<Color> colArr;
 	private Map<String, BufferedImage> iconMap;
-	private Map<String, Color> colourMap;
-	private ArrayList<BufferedImage> iconArray;
-	private ArrayList<Integer> numArray;
+	private Map<String, Color> strToColMap;
+	private ArrayList<BufferedImage> iconArr;
+	private ArrayList<Integer> numArr;
 	private CoinPassSurfer surfer;
 
 	public CoinPassLogin(DatabaseRunner dbRunner, String coinPass) {
@@ -89,30 +89,30 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 	public void makeCoins() {
 		System.out.println("Creating coins...");
 		try {
-			colourMap = new HashMap<>();
-			colourMap.put("red", Color.RED);
-			colourMap.put("blue", Color.BLUE);
-			colourMap.put("pink", Color.PINK);
-			colourMap.put("white", Color.WHITE);
-			colourMap.put("green", Color.GREEN);
-			colourMap.put("yellow", Color.YELLOW);
-			colourMap.put("black", Color.BLACK);
-			colourMap.put("orange", Color.ORANGE);
-			colourMap.put("cyan", Color.CYAN);
-			colourMap.put("magenta", Color.MAGENTA);
+			strToColMap = new HashMap<>();
+			strToColMap.put("red", Color.RED);
+			strToColMap.put("blue", Color.BLUE);
+			strToColMap.put("pink", Color.PINK);
+			strToColMap.put("white", Color.WHITE);
+			strToColMap.put("green", Color.GREEN);
+			strToColMap.put("yellow", Color.YELLOW);
+			strToColMap.put("black", Color.BLACK);
+			strToColMap.put("orange", Color.ORANGE);
+			strToColMap.put("cyan", Color.CYAN);
+			strToColMap.put("magenta", Color.MAGENTA);
 			
-			colourArray = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK, Color.WHITE,
+			colArr = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK, Color.WHITE,
 					Color.GREEN, Color.YELLOW, Color.BLACK, Color.ORANGE, Color.CYAN, Color.MAGENTA));
 			
 			iconMap = new HashMap<>();
 			
-			iconArray = new ArrayList<BufferedImage>();
+			iconArr = new ArrayList<BufferedImage>();
 			
-			numArray = new ArrayList<Integer>( Arrays.asList(1,2,3,4,5,6,7,8,9,10));
+			numArr = new ArrayList<Integer>( Arrays.asList(1,2,3,4,5,6,7,8,9,10));
 			
 			for (int i = 0; i < 10; i++) {
 				BufferedImage img = ImageIO.read(new File("Icons/" + Integer.toString(i) + ".png"));
-				iconArray.add(img);
+				iconArr.add(img);
 				iconMap.put(Integer.toString(i) + ".png",img);
 			}
 			
@@ -121,10 +121,10 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 				int randIcon = rand.nextInt(10-i);
 				int randNum = rand.nextInt(10-i);
 				int randCol = rand.nextInt(10-i);
-				CoinCanvas coin = new CoinCanvas(20,20,iconArray.get(randIcon),colourArray.get(randCol),numArray.get(randNum));
-				BufferedImage iconViewed = iconArray.get(randIcon);
-				String numViewed = Integer.toString(numArray.get(randNum));
-				Color colViewed = colourArray.get(randCol);
+				CoinCanvas coin = new CoinCanvas(20,20,iconArr.get(randIcon),colArr.get(randCol),numArr.get(randNum));
+				BufferedImage iconViewed = iconArr.get(randIcon);
+				String numViewed = Integer.toString(numArr.get(randNum));
+				Color colViewed = colArr.get(randCol);
 				coin.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
 						
@@ -135,7 +135,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 								passEntry += ":" + str;
 								coinPassElements.remove(0);
 								surfer.updateSurfer(iconViewed, numViewed, colViewed);
-							} else if (colourMap.containsKey(str) && colourMap.get(str) == colViewed) {
+							} else if (strToColMap.containsKey(str) && strToColMap.get(str) == colViewed) {
 								passEntry += ":" + str;
 								coinPassElements.remove(0);
 								surfer.updateSurfer(iconViewed, numViewed, colViewed);
@@ -157,9 +157,9 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 						makeCoins();
 					}
 				});
-				iconArray.remove(randIcon);
-				numArray.remove(randNum);
-				colourArray.remove(randCol);
+				iconArr.remove(randIcon);
+				numArr.remove(randNum);
+				colArr.remove(randCol);
 				coinPanel.add(coin);
 			}
 			System.out.println("Coins created.");

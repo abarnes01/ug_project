@@ -64,6 +64,11 @@ public class WheelCanvas extends JComponent {
 			g2d.translate(-100, 0);
 		}
 		
+		// if section is blue turn text white
+		if (colour.equals(Color.BLUE)) {
+			g2d.setColor(Color.WHITE);
+		}
+		
 		// draw out each letter
 		for (int j = 0; j < 8; j++) {
 			g2d.drawString(chars.get(j), 0, 0);

@@ -40,12 +40,12 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 	private static final long serialVersionUID = -5043498498119949928L;
 	private DatabaseRunner dbRunner;
 	private JPanel contentPane, formPanel, buttonPanel, coloursPanel, mainPanel;
-	private JLabel nameLabel, passwordLabel, colChosenTxt, chosenCol, wheelPassLbl;
-	private JButton registerButton, backBtn;
+	private JLabel nameLbl, passwordLbl, colChosenTxt, chosenCol, wheelPassLbl;
+	private JButton registerBtn, backBtn;
 	private JTextField nameField;
 	private JPasswordField passField, wheelPassField;
-	private Map<Color, String> colourMap;
-	private ArrayList<Color> colourList;
+	private Map<Color, String> colToStrMap;
+	private ArrayList<Color> colList;
 
 	public ColourWheelRegistration(DatabaseRunner dbRunner) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -63,22 +63,22 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		mainPanel = new JPanel();
 		
 		formPanel.setLayout(new GridLayout(3, 0));
-		nameLabel = new JLabel("Username: ");
-		passwordLabel = new JLabel("Password: ");
+		nameLbl = new JLabel("Username: ");
+		passwordLbl = new JLabel("Password: ");
 		colChosenTxt = new JLabel("Selected colour: ");
 		wheelPassLbl = new JLabel("Wheel Pass: ");
 		chosenCol = new JLabel();
 		nameField = new JTextField(10);
 		passField = new JPasswordField(10);
 		wheelPassField = new JPasswordField(10);
-		registerButton = new JButton("Register");
-		registerButton.addActionListener(this);
+		registerBtn = new JButton("Register");
+		registerBtn.addActionListener(this);
 		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
 		
-		formPanel.add(nameLabel);
+		formPanel.add(nameLbl);
 		formPanel.add(nameField);
-		formPanel.add(passwordLabel);
+		formPanel.add(passwordLbl);
 		formPanel.add(passField);
 		formPanel.add(wheelPassLbl);
 		formPanel.add(wheelPassField);
@@ -86,26 +86,26 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		formPanel.add(chosenCol);
 		formPanel.setLayout(new GridLayout(4, 1));
 		
-		colourMap = new HashMap<>();
-		colourMap.put(Color.RED, "red");
-		colourMap.put(Color.BLUE, "blue");
-		colourMap.put(Color.PINK, "pink");
-		colourMap.put(Color.GREEN, "green");
-		colourMap.put(Color.YELLOW, "yellow");
-		colourMap.put(Color.ORANGE, "orange");
-		colourMap.put(Color.CYAN, "cyan");
-		colourMap.put(Color.MAGENTA, "magenta");
+		colToStrMap = new HashMap<>();
+		colToStrMap.put(Color.RED, "red");
+		colToStrMap.put(Color.BLUE, "blue");
+		colToStrMap.put(Color.PINK, "pink");
+		colToStrMap.put(Color.GREEN, "green");
+		colToStrMap.put(Color.YELLOW, "yellow");
+		colToStrMap.put(Color.ORANGE, "orange");
+		colToStrMap.put(Color.CYAN, "cyan");
+		colToStrMap.put(Color.MAGENTA, "magenta");
 		
-		colourList = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK,
+		colList = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK,
 				Color.GREEN, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.MAGENTA));
 		
-		int max = colourList.size();
+		int max = colList.size();
 		
 		for (int i = 0; i < max; i++) {
-			String colourStr = colourMap.get(colourList.get(i));
+			String colourStr = colToStrMap.get(colList.get(i));
 			JLabel colourLbl = new JLabel(colourStr);
-			colourLbl.setForeground(colourList.get(i));
-			Border border = BorderFactory.createLineBorder(colourList.get(i), 5);
+			colourLbl.setForeground(colList.get(i));
+			Border border = BorderFactory.createLineBorder(colList.get(i), 5);
 			colourLbl.setBorder(border);
 			colourLbl.setBackground(Color.BLACK);
 			colourLbl.setOpaque(true);
@@ -126,7 +126,7 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		mainPanel.add(formPanel);
 		mainPanel.add(coloursPanel);
 		buttonPanel.add(backBtn);
-		buttonPanel.add(registerButton);
+		buttonPanel.add(registerBtn);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 	}
@@ -138,7 +138,7 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton btn = (JButton) e.getSource();
-		if (btn.equals(registerButton)) {
+		if (btn.equals(registerBtn)) {
 			String username = nameField.getText();
 			String password = String.valueOf(passField.getPassword());
 			String colStr = chosenCol.getText();
@@ -147,9 +147,9 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 			String dbname = dbRunner.getDbname();
 			String dbpass = dbRunner.getDbpass();
 			if (username.isBlank() || password.isBlank() || colStr.isBlank() || wheelPass.isBlank()) {
-				JOptionPane.showMessageDialog(registerButton, "Username, password, selected colour or wheel pass is empty.");
+				JOptionPane.showMessageDialog(registerBtn, "Username, password, selected colour or wheel pass is empty.");
 			} else if (!containsValidChars(wheelPass)) {
-				JOptionPane.showMessageDialog(registerButton, "Wheel pass must not contain special characters apart from . and /");
+				JOptionPane.showMessageDialog(registerBtn, "Wheel pass must not contain special characters apart from . and /");
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
@@ -157,7 +157,7 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 					st.setString(1, username);
 					ResultSet rs = st.executeQuery();
 					if (rs.next()) {
-						JOptionPane.showMessageDialog(registerButton, "User already exists: registering colour wheel details only.");
+						JOptionPane.showMessageDialog(registerBtn, "User already exists: registering colour wheel details only.");
 					} else {
 						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
 						Statement statement = connection.createStatement();
@@ -177,7 +177,7 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 					checkdbst.setInt(1, userID);
 					ResultSet checkdbrs = checkdbst.executeQuery();
 					if (checkdbrs.next()) {
-						JOptionPane.showMessageDialog(registerButton, "Colour wheel method for user already exists.");
+						JOptionPane.showMessageDialog(registerBtn, "Colour wheel method for user already exists.");
 					} else {
 						String gridQuery = "INSERT INTO colour_wheel_method(userID,chosenColour,wheelPass) values(?, ?, ?)";
 						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);

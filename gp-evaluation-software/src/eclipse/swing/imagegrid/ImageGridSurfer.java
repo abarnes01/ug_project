@@ -25,8 +25,8 @@ import javax.swing.border.EmptyBorder;
 
 public class ImageGridSurfer extends JFrame implements ActionListener {
 
+	private static final long serialVersionUID = 8175558208810106053L;
 	private JPanel contentPane, mainPane, bottomPane;
-	private JLabel shoulderSurferImg;
 	private JButton closeBtn;
 	private Integer entryCount;
 	private String randomOrPreset;

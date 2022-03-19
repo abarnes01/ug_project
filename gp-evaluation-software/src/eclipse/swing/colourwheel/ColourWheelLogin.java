@@ -39,10 +39,10 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 	private JButton rotLftBtn, rotRgtBtn, loginBtn, entryBtn, backBtn;
 	private int width, height;
 	private String chosenCol;
-	private List<Color> colourList;
+	private List<Color> colList;
 	private List<List<String>> charLists;
 	private WheelCanvas wc;
-	private Map<String, Color> colourMap;
+	private Map<String, Color> strToColMap;
 	private String[] wpLetters;
 	private int passCount;
 	private int passLength;
@@ -94,21 +94,21 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		formPanel.add(entryBtn);
 		formPanel.add(loginBtn);
 		
-		colourMap = new HashMap<>();
-		colourMap.put("red", Color.RED);
-		colourMap.put("blue", Color.BLUE);
-		colourMap.put("pink", Color.PINK);
-		colourMap.put("white", Color.WHITE);
-		colourMap.put("green", Color.GREEN);
-		colourMap.put("yellow", Color.YELLOW);
-		colourMap.put("black", Color.BLACK);
-		colourMap.put("orange", Color.ORANGE);
-		colourMap.put("cyan", Color.CYAN);
-		colourMap.put("magenta", Color.MAGENTA);
+		strToColMap = new HashMap<>();
+		strToColMap.put("red", Color.RED);
+		strToColMap.put("blue", Color.BLUE);
+		strToColMap.put("pink", Color.PINK);
+		strToColMap.put("white", Color.WHITE);
+		strToColMap.put("green", Color.GREEN);
+		strToColMap.put("yellow", Color.YELLOW);
+		strToColMap.put("black", Color.BLACK);
+		strToColMap.put("orange", Color.ORANGE);
+		strToColMap.put("cyan", Color.CYAN);
+		strToColMap.put("magenta", Color.MAGENTA);
 		
-		colourList = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK,
+		colList = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK,
 	    		  Color.GREEN, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.MAGENTA));
-		Collections.shuffle(colourList, new Random());
+		Collections.shuffle(colList, new Random());
 		
 		charLists = new ArrayList<List<String>>();
 		
@@ -122,7 +122,7 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 			charLists.add(currentChars);
 		}
 		
-		wc = new WheelCanvas(width, height, colourList, charLists);
+		wc = new WheelCanvas(width, height, colList, charLists);
 		contentPane.add(wc, BorderLayout.CENTER);
 		contentPane.add(formPanel, BorderLayout.SOUTH);
 	}
@@ -132,14 +132,14 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		JButton btn = (JButton) e.getSource();
 		
 		if (btn.equals(rotLftBtn)) {
-			Collections.rotate(colourList, 1);
+			Collections.rotate(colList, 1);
 			wc.repaint();
 		} else if (btn.equals(rotRgtBtn)) {
-			Collections.rotate(colourList, -1);
+			Collections.rotate(colList, -1);
 			wc.repaint();
 		} else if (btn.equals(entryBtn)) {
 			for (int i = 0; i < 8; i++) {
-				if (colourMap.get(chosenCol) == colourList.get(i)) {
+				if (strToColMap.get(chosenCol) == colList.get(i)) {
 					Boolean isCorrect = false;
 					if (passCount < passLength) {
 						for (int j = 0; j < 8; j++) {
@@ -165,7 +165,7 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 			}
 		} else if (btn.equals(loginBtn)) {
 			if (passCount == passLength) {
-				String colWheelLoginResultHtml = "<html><h1>Colour Wheel Login</h1>"
+				String colWheelLoginResultHtml = "<html><h1>Colour Wheel Login (Successful Login)</h1>"
 						+ "<p>If the shoulder surfer knows the algorithm, they would still first need to know the users selected colour, <br>"
 						+ " and even then would need to brute force clicking confirm on the right selections of random text each time.</p>";
 				JOptionPane.showMessageDialog(loginBtn, String.format(colWheelLoginResultHtml));

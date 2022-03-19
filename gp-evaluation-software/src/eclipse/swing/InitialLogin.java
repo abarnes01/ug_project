@@ -11,6 +11,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -42,6 +44,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 	private JButton loginBtn, backBtn;
 	private JLabel usernameLbl, passLbl;
 	private Method method;
+	private Map<Method, String> methodToStrMap;
 
 	public InitialLogin(DatabaseRunner dbRunner, Method method) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,7 +53,15 @@ public class InitialLogin extends JFrame implements ActionListener{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		setTitle("Initial Login");
+		
+		methodToStrMap = new HashMap<>();
+		methodToStrMap.put(Method.SIMPLE, "Simple Login");
+		methodToStrMap.put(Method.COLOURGRID, "Colour Grid Initial Login");
+		methodToStrMap.put(Method.IMAGEGRID, "(Digraph) Image Grid Initial Login");
+		methodToStrMap.put(Method.COIN, "Coin Pass Initial Login");
+		methodToStrMap.put(Method.WHEEL, "Colour Wheel Initial Login");
+		setTitle(methodToStrMap.get(method));
+		
 		this.dbRunner = dbRunner;
 		
 		// set graphical password method we are using
@@ -140,7 +151,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 						}
 						
 					} else if (getMethod() == Method.SIMPLE) {
-						String simpleLoginResultHtml = "<html><h1>Simple Login</h1>"
+						String simpleLoginResultHtml = "<html><h1>Simple Login (Successful Login)</h1>"
 													+ "<p>This provides no shoulder surfing resistance.</p><br>"
 													+ "<p>The keystroke entry and number of keystrokes <br>can be observed to reveal the password. </p>";
 						JOptionPane.showMessageDialog(loginBtn, String.format(simpleLoginResultHtml));
