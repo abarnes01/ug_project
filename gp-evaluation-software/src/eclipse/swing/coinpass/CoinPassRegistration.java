@@ -28,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
@@ -45,7 +46,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 	private JButton registerBtn, backBtn;
 	private JTextField nameField, coinPassField;
 	private JPasswordField passField;
-	private Boolean iconEntered, numEntered, colEntered;
+	private Integer iconEntered, numEntered, colEntered;
 	private ArrayList<Color> colArr;
 	private Map<ImageIcon, String> iconMap;
 	private Map<Color, String> colToStrMap;
@@ -62,7 +63,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		setTitle("Coin Password Registration");
 		this.dbRunner = dbRunner;
 		
-		iconEntered = numEntered = colEntered = false;
+		iconEntered = numEntered = colEntered = 0;
 		
 		formPanel = new JPanel();
 		elementsPanel = new JPanel();
@@ -112,7 +113,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 				iconLabel.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
 						coinPassField.setText(coinPassField.getText() + ":" + iconMap.get(imgIcon) + ".png");
-						iconEntered = true;
+						iconEntered += 1;
 					}
 				});
 				elementsPanel.add(iconLabel);
@@ -122,7 +123,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 				numberLabel.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
 						coinPassField.setText(coinPassField.getText() + ":" + numberLabel.getText());
-						numEntered = true;
+						numEntered += 1;
 					}
 				});
 				elementsPanel.add(numberLabel);
@@ -132,7 +133,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 				colourLabel.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
 						coinPassField.setText(coinPassField.getText() + ":" + colourLabel.getText());
-						colEntered = true;
+						colEntered += 1;
 					}
 				});
 				elementsPanel.add(colourLabel);
@@ -172,12 +173,14 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			
 			if (username.isBlank() || password.isBlank() || coinpass.isBlank()) {
 				JOptionPane.showMessageDialog(registerBtn, "Error: Username, password or Coin pass is empty.");
-			} else if (stringSplit.length > 7) {
+			} else if (stringSplit.length > 16) {
 				JOptionPane.showMessageDialog(registerBtn, "Error: Coin pass is too long.");
 				coinPassField.setText("");
-				iconEntered = numEntered = colEntered = false;
-			} else if (!iconEntered || !numEntered || !colEntered) {
-				JOptionPane.showMessageDialog(registerBtn, "Error: One of each coin pass element needed.");
+				iconEntered = numEntered = colEntered = 0;
+			} else if (iconEntered < 2 || numEntered < 2 || colEntered < 2) {
+				JOptionPane.showMessageDialog(registerBtn, "Error: Two of each coin pass element needed.");
+				coinPassField.setText("");
+				iconEntered = numEntered = colEntered = 0;
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
