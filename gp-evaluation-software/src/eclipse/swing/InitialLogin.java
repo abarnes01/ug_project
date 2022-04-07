@@ -1,6 +1,8 @@
 package eclipse.swing;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -37,6 +39,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
 	private DatabaseRunner dbRunner;
+	private GridBagConstraints gbc = new GridBagConstraints();
 	private JPanel contentPane, formPanel, btnPanel;
 	private JTextField textField;
 	private JPasswordField passField;
@@ -60,7 +63,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 
 	public InitialLogin(DatabaseRunner dbRunner, Method method) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 150);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -84,13 +87,19 @@ public class InitialLogin extends JFrame implements ActionListener{
 		// create login button
 		loginBtn = new JButton("Login");
 		loginBtn.addActionListener(this);
-		backBtn = new JButton("\u2190");
+		backBtn = new JButton("Registration");
 		backBtn.addActionListener(this);
 		
-		formPanel.add(usernameLbl);
-		formPanel.add(textField);
-		formPanel.add(passLbl);
-		formPanel.add(passField);
+		formPanel.setLayout(new GridBagLayout());
+		gbc.gridx = 0; gbc.gridy = 0;
+		formPanel.add(usernameLbl, gbc);
+		gbc.gridx = 1; gbc.gridy = 0;
+		formPanel.add(textField, gbc);
+		gbc.gridx = 0; gbc.gridy = 1;
+		formPanel.add(passLbl, gbc);
+		gbc.gridx = 1; gbc.gridy = 1;
+		formPanel.add(passField, gbc);
+		
 		btnPanel.add(backBtn);
 		btnPanel.add(loginBtn);
 		contentPane.add(formPanel, BorderLayout.CENTER);

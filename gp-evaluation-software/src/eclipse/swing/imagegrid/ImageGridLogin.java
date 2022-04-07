@@ -2,6 +2,8 @@ package eclipse.swing.imagegrid;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -12,6 +14,7 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,9 +23,10 @@ import javax.swing.border.EmptyBorder;
 import eclipse.sql.DatabaseRunner;
 import eclipse.swing.Welcome;
 
-public class ImageGridLogin extends JFrame {
+public class ImageGridLogin extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
+	private JButton cancelBtn;
 	private DatabaseRunner dbRunner;
 	private BufferedImage imageOne, imageTwo;
 	private Integer gridSize;
@@ -44,16 +48,20 @@ public class ImageGridLogin extends JFrame {
 		this.dbRunner = dbRunner;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, (gridSize*50)+10, (gridSize*50)+10);
+		setBounds(100, 100, (gridSize*75), (gridSize*75)+100);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		setTitle("(Digraph) Image Grid Login");
 		
+		cancelBtn = new JButton("Cancel");
+		cancelBtn.addActionListener(this);
+		
 		// create initial grid
 		gridPanel = new JPanel();
 		contentPane.add(gridPanel, BorderLayout.CENTER);
+		contentPane.add(cancelBtn, BorderLayout.NORTH);
 		makeGrid();
 		
 		surfer = new ImageGridSurfer(randomOrPreset);
@@ -107,7 +115,6 @@ public class ImageGridLogin extends JFrame {
 					BufferedImage prstImg = ImageIO.read(ImageGridLogin.class.getResource("/Images/"+Integer.toString(i)+".jpg"));;
 					for (int j = 0; j < bufImages.size(); j++) {					
 						while (buffImgsEqual(bufImages.get(j), prstImg)) {
-							//URL temp = new File("Images/"+Integer.toString(new Random().nextInt(gridSizeSqr-2))+".jpg").toURI().toURL();
 							prstImg = ImageIO.read(ImageGridLogin.class.getResource("/Images/"+Integer.toString(new Random().nextInt(gridSizeSqr-2))+".jpg"));
 							System.err.println("Duplicate image. Refetching...");
 						}
@@ -268,6 +275,17 @@ public class ImageGridLogin extends JFrame {
 			surfer.surferEvaluate();
 		}
 		contentPane.add(gridPanel, BorderLayout.CENTER);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		JButton btn = (JButton) e.getSource();
+		if (btn.equals(cancelBtn)) {
+			Welcome welcome = new Welcome(dbRunner);
+			welcome.setVisible(true);
+			surfer.dispose();
+			dispose();
+		}
 	}
 	
 }

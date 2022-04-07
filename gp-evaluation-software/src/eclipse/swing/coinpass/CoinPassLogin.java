@@ -31,7 +31,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 7037648802373260841L;
 	private DatabaseRunner dbRunner;
 	private JPanel contentPane, coinPanel, buttonPanel;
-	private JButton loginBtn, backBtn;
+	private JButton loginBtn, backBtn, cancelBtn;
 	private String coinPass, passEntry;
 	private ArrayList<String> coinPassElements;
 	private ArrayList<Color> colArr;
@@ -57,7 +57,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 	
 	public CoinPassLogin(DatabaseRunner dbRunner, String coinPass) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 340, 500);
+		setBounds(100, 100, 340, 520);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -75,6 +75,8 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		loginBtn.addActionListener(this);
 		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
+		cancelBtn = new JButton("Cancel");
+		cancelBtn.addActionListener(this);
 		
 		passEntry = "";
 		
@@ -86,6 +88,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		
 		contentPane.add(coinPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
+		contentPane.add(cancelBtn, BorderLayout.NORTH);
 		
 		surfer = new CoinPassSurfer();
 		surfer.setVisible(true);
@@ -175,10 +178,20 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 				surfer.surferEvaluate();
 				new Welcome(dbRunner).setVisible(true);
 				dispose();
+			} else {
+				JOptionPane.showMessageDialog(loginBtn, "Successfully logged in.");
+				new InitialLogin(dbRunner, Method.COIN).setVisible(true);
+				surfer.dispose();
+				dispose();
 			}
-			
 		} else if (btn.equals(backBtn)) {
 			new InitialLogin(dbRunner, Method.COIN).setVisible(true);
+			surfer.dispose();
+			dispose();
+		} else if (btn.equals(cancelBtn)) {
+			Welcome welcome = new Welcome(dbRunner);
+			welcome.setVisible(true);
+			surfer.dispose();
 			dispose();
 		}
 	}

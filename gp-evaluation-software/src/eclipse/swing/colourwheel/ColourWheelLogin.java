@@ -32,7 +32,7 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 	private static final long serialVersionUID = -6168526356154212099L;
 	private DatabaseRunner dbRunner;
 	private JPanel contentPane, formPanel;
-	private JButton rotLftBtn, rotRgtBtn, loginBtn, entryBtn, backBtn;
+	private JButton rotLftBtn, rotRgtBtn, loginBtn, entryBtn, backBtn, cancelBtn;
 	private int width, height;
 	private String chosenCol;
 	private List<Color> colList = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK,
@@ -103,6 +103,8 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		entryBtn.addActionListener(this);
 		loginBtn = new JButton("Login");
 		loginBtn.addActionListener(this);
+		cancelBtn = new JButton("Cancel");
+		cancelBtn.addActionListener(this);
 		formPanel.add(backBtn);
 		formPanel.add(rotLftBtn);
 		formPanel.add(rotRgtBtn);
@@ -124,6 +126,7 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		wc = new WheelCanvas(width, colList, charLists);
 		contentPane.add(wc, BorderLayout.CENTER);
 		contentPane.add(formPanel, BorderLayout.SOUTH);
+		contentPane.add(cancelBtn, BorderLayout.NORTH);
 	}
 
 	@Override
@@ -174,6 +177,10 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 			}
 		} else if (btn.equals(backBtn)) {
 			new InitialLogin(dbRunner, Method.WHEEL).setVisible(true);
+			dispose();
+		} else if (btn.equals(cancelBtn)) {
+			Welcome welcome = new Welcome(dbRunner);
+			welcome.setVisible(true);
 			dispose();
 		}
 	}

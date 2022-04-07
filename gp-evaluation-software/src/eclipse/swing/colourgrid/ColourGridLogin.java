@@ -35,7 +35,7 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 	private DatabaseRunner dbRunner;
 	private JPanel contentPane, formPanel, BtnPanel, gridPanel, mainPanel;
 	private JPasswordField pColField;
-	private JButton loginBtn, backBtn;
+	private JButton loginBtn, backBtn, cancelBtn;
 	private JLabel pColLbl;
 	private GridLayout gridLayout;
 	private String patternPass;
@@ -84,6 +84,8 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		loginBtn.addActionListener(this);
 		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
+		cancelBtn = new JButton("Cancel");
+		cancelBtn.addActionListener(this);
 		
 		// add elements to window
 		formPanel.setLayout(new GridLayout(3,1,10,10));
@@ -94,6 +96,7 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		mainPanel.add(formPanel);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(BtnPanel, BorderLayout.SOUTH);
+		contentPane.add(cancelBtn, BorderLayout.NORTH);
 		
 		startTime = System.nanoTime();
 		makeGrid();
@@ -121,6 +124,10 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 			}
 		} else if (btn.equals(backBtn)) {
 			new InitialLogin(dbRunner, Method.COLOURGRID).setVisible(true);
+			dispose();
+		} else if (btn.equals(cancelBtn)) {
+			Welcome welcome = new Welcome(dbRunner);
+			welcome.setVisible(true);
 			dispose();
 		}
 	}

@@ -2,6 +2,8 @@ package eclipse.swing;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,6 +20,7 @@ import eclipse.sql.DatabaseRunner;
 public class DatabaseSetup extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = -4272288257272974729L;
+	private GridBagConstraints gbc = new GridBagConstraints();
 	private JPanel contentPane, formPanel, btnPanel;
 	private JLabel dbUrlLbl, dbNameLbl, dbPassLbl;
 	private JTextField dbUrlField, dbNameField;
@@ -39,7 +42,7 @@ public class DatabaseSetup extends JFrame implements ActionListener {
 
 	public DatabaseSetup() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 400, 250);
+		setBounds(100, 100, 550, 400);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -53,20 +56,27 @@ public class DatabaseSetup extends JFrame implements ActionListener {
 		dbNameLbl = new JLabel("DB Name: ");
 		dbPassLbl = new JLabel("DB Password: ");
 		dbUrlField = new JTextField(25);
-		dbNameField = new JTextField(20);
-		dbPassField = new JPasswordField(20);
+		dbNameField = new JTextField(25);
+		dbPassField = new JPasswordField(25);
 		
 		// example text to help user
 		dbUrlField.setText("jdbc:mysql://localhost:3306/gp_database");
 		dbNameField.setText("root");
 		dbPassField.setText("");
 		
-		formPanel.add(dbUrlLbl);
-		formPanel.add(dbUrlField);
-		formPanel.add(dbNameLbl);
-		formPanel.add(dbNameField);
-		formPanel.add(dbPassLbl);
-		formPanel.add(dbPassField);
+		formPanel.setLayout(new GridBagLayout());
+		gbc.gridx = 0; gbc.gridy = 0;
+		formPanel.add(dbUrlLbl, gbc);
+		gbc.gridx = 1; gbc.gridy = 0;
+		formPanel.add(dbUrlField, gbc);
+		gbc.gridx = 0; gbc.gridy = 1;
+		formPanel.add(dbNameLbl, gbc);
+		gbc.gridx = 1; gbc.gridy = 1;
+		formPanel.add(dbNameField, gbc);
+		gbc.gridx = 0; gbc.gridy = 2;
+		formPanel.add(dbPassLbl, gbc);
+		gbc.gridx = 1; gbc.gridy = 2;
+		formPanel.add(dbPassField, gbc);
 		
 		confirmBtn = new JButton("Confirm");
 		confirmBtn.addActionListener(this);
