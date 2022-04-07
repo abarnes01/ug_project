@@ -224,7 +224,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 			Statement statement = connection.createStatement();
 			int x = statement.executeUpdate(query);
 			if(x == 0) {
-				JOptionPane.showMessageDialog(registerBtn, "User already exists. 2nd box");
+				JOptionPane.showMessageDialog(registerBtn, "User already exists.");
 			} 
 		}
 		PreparedStatement useridst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");

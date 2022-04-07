@@ -33,6 +33,7 @@ public class Welcome extends JFrame implements ActionListener {
 			+ "<h3>Avoiding Shoulder Surfing via Graphical Passwords</h3>"
 			+ "<p>In this application, you can test out 4 different graphical password approaches,"
 			+ "to observe their effectiveness in avoiding shoulder surfing.</p>"
+			+ "<p><i>Warning: Do not use any real passwords. This is an experiment.</i></p>"
 			+ "<h2>(Digraph) Image Grid Approach</h2>"
 			+ "<p>The user selects two images for their password. In the login stage, there are different scenarios for login.</p>"
 			+ "<p><strong>Scenario A:</strong> Both password images are diagonal to each other -> select either image with is of (P1x, P2y) or (P2x, P1y).</p>"
@@ -47,7 +48,7 @@ public class Welcome extends JFrame implements ActionListener {
 			+ "<p>The user selects a colour and a password that is of any letters, numbers, or '/' '.' characters.</p>"
 			+ "<p>In the login stage, the user spins the wheel so that their colour is on the current character of their password, clicking confirm. There are 3 warnings given for incorrect entry.</p><br>"
 			+ "<p>Each registered user can be connected one login of each graphical password.</p>"
-			+ "<p>Please use the drop down to select the approach below.";
+			+ "<p>Please use the drop down to select an approach below.";
 
 	public Welcome(DatabaseRunner dbRunner) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

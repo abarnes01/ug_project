@@ -139,7 +139,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			elementsPanel.setLayout(new GridLayout(10, 3));
 			
 		} catch (Exception e) {
-			System.err.println("Unable to get elements");
+			System.err.println("Unable to get elements.");
 			e.printStackTrace();
 		}
 		formPanel.add(nameLbl);

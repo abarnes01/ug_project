@@ -168,7 +168,7 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		st.setString(1, username);
 		ResultSet rs = st.executeQuery();
 		if (rs.next()) {
-			JOptionPane.showMessageDialog(registerBtn, "User already exists: registering colour wheel details only.");
+			JOptionPane.showMessageDialog(registerBtn, "User already exists: Registering colour wheel details only.");
 		} else {
 			String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
 			Statement statement = connection.createStatement();
