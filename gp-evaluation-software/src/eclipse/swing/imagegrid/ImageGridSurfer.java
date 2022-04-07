@@ -99,8 +99,7 @@ public class ImageGridSurfer extends JFrame implements ActionListener {
 	}
 	
 	public JLabel generateSurferImg() throws Exception {
-		URL url = new File("Images/shouldersurfer.png").toURI().toURL();
-		BufferedImage shoSurBI = ImageIO.read(url.openStream());
+		BufferedImage shoSurBI = ImageIO.read(ImageGridSurfer.class.getResource("/Images/shouldersurfer.png"));
 		Image img = shoSurBI.getScaledInstance(100, 45, java.awt.Image.SCALE_SMOOTH);
 		JLabel shoulderSurferLbl = new JLabel(new ImageIcon(img));
 		return shoulderSurferLbl;

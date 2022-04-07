@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,8 +84,8 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		
 		// get rotate icons
 		try {
-			BufferedImage rotRgt = ImageIO.read(new File("Icons/clockwise.png"));
-			BufferedImage rotLft = ImageIO.read(new File("Icons/anticlockwise.png"));
+			BufferedImage rotRgt = ImageIO.read(ColourWheelLogin.class.getResource("/Icons/clockwise.png"));
+			BufferedImage rotLft = ImageIO.read(ColourWheelLogin.class.getResource("/Icons/anticlockwise.png"));
 			rotLftBtn = new JButton(new ImageIcon(rotLft));
 			rotRgtBtn = new JButton(new ImageIcon(rotRgt));
 		} catch (IOException e) {
@@ -122,7 +121,7 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 			charLists.add(currentChars);
 		}
 		
-		wc = new WheelCanvas(width, height, colList, charLists);
+		wc = new WheelCanvas(width, colList, charLists);
 		contentPane.add(wc, BorderLayout.CENTER);
 		contentPane.add(formPanel, BorderLayout.SOUTH);
 	}

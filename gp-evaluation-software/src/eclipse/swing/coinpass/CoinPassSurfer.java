@@ -8,8 +8,6 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,9 +28,23 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 7491248350836673542L;
 	private JPanel contentPane, mainPane, bottomPane;
 	private JButton closeBtn;
-	private Map<Color, String> colourToStrMap;
 	private Integer passLength;
 	private Integer errorCount;
+	
+	private static Map<Color, String> colourToStrMap;
+	static {
+		colourToStrMap = new HashMap<>();
+		colourToStrMap.put(Color.RED, "red");
+		colourToStrMap.put(Color.BLUE, "blue");
+		colourToStrMap.put(Color.PINK, "pink");
+		colourToStrMap.put(Color.WHITE, "white");
+		colourToStrMap.put(Color.GREEN, "green");
+		colourToStrMap.put(Color.YELLOW, "yellow");
+		colourToStrMap.put(Color.BLACK, "black");
+		colourToStrMap.put(Color.ORANGE, "orange");
+		colourToStrMap.put(Color.CYAN, "cyan");
+		colourToStrMap.put(Color.MAGENTA, "magenta");
+	}
 
 	public CoinPassSurfer() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,18 +74,6 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 		
 		contentPane.add(mainPane, BorderLayout.CENTER);
 		contentPane.add(bottomPane, BorderLayout.SOUTH);
-		
-		colourToStrMap = new HashMap<>();
-		colourToStrMap.put(Color.RED, "red");
-		colourToStrMap.put(Color.BLUE, "blue");
-		colourToStrMap.put(Color.PINK, "pink");
-		colourToStrMap.put(Color.WHITE, "white");
-		colourToStrMap.put(Color.GREEN, "green");
-		colourToStrMap.put(Color.YELLOW, "yellow");
-		colourToStrMap.put(Color.BLACK, "black");
-		colourToStrMap.put(Color.ORANGE, "orange");
-		colourToStrMap.put(Color.CYAN, "cyan");
-		colourToStrMap.put(Color.MAGENTA, "magenta");
 	}
 	
 	public void updateSurfer(BufferedImage viewedImg, String viewedNum, Color viewedCol) {
@@ -123,8 +123,7 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 	}
 	
 	public JLabel generateSurferImg() throws Exception {
-		URL url = new File("Images/shouldersurfer.png").toURI().toURL();
-		BufferedImage shoSurBI = ImageIO.read(url.openStream());
+		BufferedImage shoSurBI = ImageIO.read(CoinPassSurfer.class.getResource("/Images/shouldersurfer.png"));
 		Image img = shoSurBI.getScaledInstance(100, 45, java.awt.Image.SCALE_SMOOTH);
 		JLabel shoulderSurferLbl = new JLabel(new ImageIcon(img));
 		return shoulderSurferLbl;

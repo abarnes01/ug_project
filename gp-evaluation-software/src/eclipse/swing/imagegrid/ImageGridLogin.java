@@ -5,7 +5,6 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -105,12 +104,11 @@ public class ImageGridLogin extends JFrame {
 			if (randomOrPreset.equals("preset")) {
 				// use local preset images
 				for (int i = 0; i < gridSizeSqr-2; i++) {
-					URL url = new File("Images/"+Integer.toString(i)+".jpg").toURI().toURL();
-					BufferedImage prstImg = ImageIO.read(url.openStream());
+					BufferedImage prstImg = ImageIO.read(ImageGridLogin.class.getResource("/Images/"+Integer.toString(i)+".jpg"));;
 					for (int j = 0; j < bufImages.size(); j++) {					
 						while (buffImgsEqual(bufImages.get(j), prstImg)) {
-							URL temp = new File("Images/"+Integer.toString(new Random().nextInt(gridSizeSqr-2))+".jpg").toURI().toURL();
-							prstImg = ImageIO.read(temp.openStream());
+							//URL temp = new File("Images/"+Integer.toString(new Random().nextInt(gridSizeSqr-2))+".jpg").toURI().toURL();
+							prstImg = ImageIO.read(ImageGridLogin.class.getResource("/Images/"+Integer.toString(new Random().nextInt(gridSizeSqr-2))+".jpg"));
 							System.err.println("Duplicate image. Refetching...");
 						}
 					}

@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -17,7 +16,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -28,7 +26,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
@@ -103,7 +100,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			iconMap = new HashMap<>();
 			iconArr = new ArrayList<ImageIcon>();
 			for (int i = 0; i < 10; i++) {
-				BufferedImage img = ImageIO.read(new File("Icons/" + Integer.toString(i) + ".png"));
+				BufferedImage img = ImageIO.read(CoinPassRegistration.class.getResource("/Icons/" + Integer.toString(i) + ".png"));
 				ImageIcon imgIcon = new ImageIcon(img);
 				JLabel iconLabel = new JLabel(imgIcon);
 				iconArr.add(imgIcon);

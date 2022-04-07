@@ -2,22 +2,19 @@ package eclipse.swing.colourwheel;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.*;
 
 public class WheelCanvas extends JComponent {
 	
-	private int width, height;
+	private static final long serialVersionUID = 3344140439295479481L;
+	private int width;
 	private List<Color> colourList;
 	private List<List<String>> charLists;
-	private AffineTransform at;
 	
-	public WheelCanvas(int w, int h, List<Color> cols, List<List<String>> chls) {
+	public WheelCanvas(int w, List<Color> cols, List<List<String>> chls) {
 		width = w;
-		height = h;
 		colourList = cols;
 		charLists = chls;
 	}
@@ -28,9 +25,6 @@ public class WheelCanvas extends JComponent {
 		
 		// smoothen graphic
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		
-		// keep hold of original transform
-		at = g2d.getTransform();
 		
 		for (int i = 0; i < 8; i++) {
 			drawCircle(g2d, i, colourList.get(i), charLists.get(i));

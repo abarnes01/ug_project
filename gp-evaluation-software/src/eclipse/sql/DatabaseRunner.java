@@ -1,7 +1,7 @@
 package eclipse.sql;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -54,8 +54,9 @@ public class DatabaseRunner {
 		
 		ScriptRunner sr = new ScriptRunner(con);
 		
-		Reader rd = new BufferedReader(new FileReader("/Users/adamjbarnes/Documents/gp-project/ab1049/SQL Dependencies/gpscript.sql"));
+		InputStream inputStream = DatabaseRunner.class.getResourceAsStream("/Scripts/gpscript.sql");
 		
+		Reader rd = new InputStreamReader(inputStream);	
 		sr.runScript(rd);
 		rd.close();
 		sr.closeConnection();
@@ -76,7 +77,9 @@ public class DatabaseRunner {
 		
 		ScriptRunner sr = new ScriptRunner(con);
 		
-		Reader rd = new BufferedReader(new FileReader("/Users/adamjbarnes/Documents/gp-project/ab1049/SQL Dependencies/dropdb.sql"));
+		InputStream inputStream = DatabaseRunner.class.getResourceAsStream("/Scripts/dropdb.sql");
+		
+		Reader rd = new InputStreamReader(inputStream);
 		
 		sr.runScript(rd);
 		rd.close();
