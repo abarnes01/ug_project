@@ -2,8 +2,6 @@ package eclipse.swing;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,12 +17,12 @@ import eclipse.sql.DatabaseRunner;
 
 public class DatabaseSetup extends JFrame implements ActionListener {
 
+	private static final long serialVersionUID = -4272288257272974729L;
 	private JPanel contentPane, formPanel, btnPanel;
 	private JLabel dbUrlLbl, dbNameLbl, dbPassLbl;
 	private JTextField dbUrlField, dbNameField;
 	private JPasswordField dbPassField;
 	private JButton confirmBtn;
-	private String dburl, dbname, dbpass;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -41,7 +39,7 @@ public class DatabaseSetup extends JFrame implements ActionListener {
 
 	public DatabaseSetup() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 370, 200);
+		setBounds(100, 100, 400, 250);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -58,7 +56,7 @@ public class DatabaseSetup extends JFrame implements ActionListener {
 		dbNameField = new JTextField(20);
 		dbPassField = new JPasswordField(20);
 		
-		// temp for testing
+		// example text to help user
 		dbUrlField.setText("jdbc:mysql://localhost:3306/gp_database");
 		dbNameField.setText("root");
 		dbPassField.setText("");

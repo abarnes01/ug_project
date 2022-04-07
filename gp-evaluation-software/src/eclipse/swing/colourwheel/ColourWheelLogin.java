@@ -2,7 +2,6 @@ package eclipse.swing.colourwheel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -20,10 +19,8 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
 import eclipse.sql.DatabaseRunner;
@@ -39,14 +36,33 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 	private JButton rotLftBtn, rotRgtBtn, loginBtn, entryBtn, backBtn;
 	private int width, height;
 	private String chosenCol;
-	private List<Color> colList;
+	private List<Color> colList = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK,
+  		  Color.GREEN, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.MAGENTA));
 	private List<List<String>> charLists;
 	private WheelCanvas wc;
-	private Map<String, Color> strToColMap;
 	private String[] wpLetters;
 	private int passCount;
 	private int passLength;
 	private int warningCount;
+	
+	private static String colWheelLoginResultHtml = "<html><h1>Colour Wheel Login (Successful Login)</h1>"
+			+ "<p>If the shoulder surfer knows the algorithm, they would still first need to know the users selected colour, <br>"
+			+ " and even then would need to brute force clicking confirm on the right selections of random text each time.</p>";
+	private static String all64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./";
+	private static Map<String, Color> strToColMap;
+	static {
+		strToColMap = new HashMap<>();
+		strToColMap.put("red", Color.RED);
+		strToColMap.put("blue", Color.BLUE);
+		strToColMap.put("pink", Color.PINK);
+		strToColMap.put("white", Color.WHITE);
+		strToColMap.put("green", Color.GREEN);
+		strToColMap.put("yellow", Color.YELLOW);
+		strToColMap.put("black", Color.BLACK);
+		strToColMap.put("orange", Color.ORANGE);
+		strToColMap.put("cyan", Color.CYAN);
+		strToColMap.put("magenta", Color.MAGENTA);
+	}
 
 	public ColourWheelLogin(DatabaseRunner dbRunner, String chosenCol, String wheelPass) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -94,25 +110,9 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		formPanel.add(entryBtn);
 		formPanel.add(loginBtn);
 		
-		strToColMap = new HashMap<>();
-		strToColMap.put("red", Color.RED);
-		strToColMap.put("blue", Color.BLUE);
-		strToColMap.put("pink", Color.PINK);
-		strToColMap.put("white", Color.WHITE);
-		strToColMap.put("green", Color.GREEN);
-		strToColMap.put("yellow", Color.YELLOW);
-		strToColMap.put("black", Color.BLACK);
-		strToColMap.put("orange", Color.ORANGE);
-		strToColMap.put("cyan", Color.CYAN);
-		strToColMap.put("magenta", Color.MAGENTA);
-		
-		colList = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK,
-	    		  Color.GREEN, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.MAGENTA));
 		Collections.shuffle(colList, new Random());
 		
 		charLists = new ArrayList<List<String>>();
-		
-		String all64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./";
 		List<String> charsSplit = new ArrayList<String>(Arrays.asList(all64Chars.split("")));
 		Collections.shuffle(charsSplit, new Random());
 		
@@ -165,9 +165,6 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 			}
 		} else if (btn.equals(loginBtn)) {
 			if (passCount == passLength) {
-				String colWheelLoginResultHtml = "<html><h1>Colour Wheel Login (Successful Login)</h1>"
-						+ "<p>If the shoulder surfer knows the algorithm, they would still first need to know the users selected colour, <br>"
-						+ " and even then would need to brute force clicking confirm on the right selections of random text each time.</p>";
 				JOptionPane.showMessageDialog(loginBtn, String.format(colWheelLoginResultHtml));
 				new Welcome(dbRunner).setVisible(true);
 				dispose();

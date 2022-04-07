@@ -10,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
@@ -19,7 +18,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -74,12 +72,17 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		imageSelectLbl = new JLabel("Pass Images: ");
 		imageSelectField = new JTextField(10);
 		imageSelectField.setEditable(false);
+		
 		rndmImgBtn = new JButton("Random Images");
 		rndmImgBtn.setOpaque(true);
+		rndmImgBtn.setBorderPainted(false);
 		rndmImgBtn.addActionListener(this);
+		
 		prstImgBtn = new JButton("Preset Images");
 		prstImgBtn.setOpaque(true);
+		prstImgBtn.setBorderPainted(false);
 		prstImgBtn.addActionListener(this);
+		
 		imagesPanel = new JPanel();
 		mainPanel = new JPanel();
 		
@@ -170,76 +173,16 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 			String dbname = dbRunner.getDbname();
 			String dbpass = dbRunner.getDbpass();
 			if (username.isBlank() || password.isBlank() || gridSizeStr.isBlank() || imageSelectField.getText().isBlank() || (!genRndmImg && !genPrstImg)) {
-				JOptionPane.showMessageDialog(registerBtn, "Error: Username, password, image or grid size is empty.");
+				JOptionPane.showMessageDialog(registerBtn, "Error: Username, password, image or grid size is empty, or you have not selected to generate random or preset images.");
 			} else if (!testProperInt(gridSizeStr)) {
 				JOptionPane.showMessageDialog(registerBtn, "Error: Grid Size is not a number.");
 			} else if ((Integer.parseInt(gridSizeStr) < 3) || (Integer.parseInt(gridSizeStr) > 8)) {
 				JOptionPane.showMessageDialog(registerBtn, "Error: Grid Size is smaller than 3 or bigger than 8.");
 			} else {
 				try {
-					gridSize = Integer.parseInt(gridSizeStr);
-					
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
-					
-					PreparedStatement st = (PreparedStatement)connection.prepareStatement("Select username from user where username=?");
-					
-					st.setString(1, username);
-					ResultSet rs = st.executeQuery();
-					
-					if (rs.next()) {
-						JOptionPane.showMessageDialog(registerBtn, "User already exists. Inserting image grid details only.");
-					} else {
-						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
-						Statement statement = connection.createStatement();
-						int x = statement.executeUpdate(query);
-						if(x == 0) {
-							JOptionPane.showMessageDialog(registerBtn, "User already exists. 2nd box");
-						} 
-					}
-					PreparedStatement useridst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
-					useridst.setString(1, username);
-					ResultSet useridrs = useridst.executeQuery();
-					useridrs.next();
-					int userID = useridrs.getInt("userID");
-					
-					PreparedStatement checkdbst = (PreparedStatement) connection.prepareStatement("Select userID from image_grid_method where userID=?");
-					checkdbst.setInt(1, userID);
-					ResultSet checkdbrs = checkdbst.executeQuery();
-					if (checkdbrs.next()) {
-						JOptionPane.showMessageDialog(registerBtn, "Image grid method for user already exists.");
-					} else {
-						String gridQuery = "INSERT INTO image_grid_method(userID,gridSize,imageOne,imageTwo,randomOrPreset) values(?, ?, ?, ?, ?)";
-						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
-						
-						ByteArrayOutputStream baosOne = new ByteArrayOutputStream();
-						ImageIO.write(imageOne, "jpg", baosOne);
-						InputStream isOne = new ByteArrayInputStream(baosOne.toByteArray());
-						
-						ByteArrayOutputStream baosTwo = new ByteArrayOutputStream();
-						ImageIO.write(imageTwo, "jpg", baosTwo);
-						InputStream isTwo = new ByteArrayInputStream(baosTwo.toByteArray());
-						
-						gridst.setInt(1, userID);
-						gridst.setInt(2, gridSize);
-						gridst.setBlob(3, isOne);
-						gridst.setBlob(4, isTwo);
-						
-						if (genRndmImg) {
-							gridst.setString(5, "random");
-						} else if (genPrstImg) {
-							gridst.setString(5, "preset");
-						} else {
-							System.err.println("Error. Random or preset not set.");
-						}
-						
-						int y = gridst.executeUpdate();
-						if(y == 0) {
-							JOptionPane.showMessageDialog(registerBtn, "Image grid method for user already exists. 2nd box");
-						} else {
-							new InitialLogin(dbRunner, Method.IMAGEGRID).setVisible(true);
-							dispose();
-						}
-					}
+					gridSize = Integer.parseInt(gridSizeStr);
+					insertImageGridDetails(connection, username, password, gridSize);
 					connection.close();
 				} catch (Exception exception) {
 					exception.printStackTrace();
@@ -270,5 +213,62 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		}
 	}
 	
+	private void insertImageGridDetails(Connection connection, String username, String password, Integer gridSize) throws Exception {
+		PreparedStatement st = (PreparedStatement)connection.prepareStatement("Select username from user where username=?");
+		st.setString(1, username);
+		ResultSet rs = st.executeQuery();
+		if (rs.next()) {
+			JOptionPane.showMessageDialog(registerBtn, "User already exists. Inserting image grid details only.");
+		} else {
+			String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
+			Statement statement = connection.createStatement();
+			int x = statement.executeUpdate(query);
+			if(x == 0) {
+				JOptionPane.showMessageDialog(registerBtn, "User already exists. 2nd box");
+			} 
+		}
+		PreparedStatement useridst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
+		useridst.setString(1, username);
+		ResultSet useridrs = useridst.executeQuery();
+		useridrs.next();
+		int userID = useridrs.getInt("userID");
+		
+		PreparedStatement checkdbst = (PreparedStatement) connection.prepareStatement("Select userID from image_grid_method where userID=?");
+		checkdbst.setInt(1, userID);
+		ResultSet checkdbrs = checkdbst.executeQuery();
+		if (checkdbrs.next()) {
+			JOptionPane.showMessageDialog(registerBtn, "Image grid method for user already exists.");
+		} else {
+			String gridQuery = "INSERT INTO image_grid_method(userID,gridSize,imageOne,imageTwo,randomOrPreset) values(?, ?, ?, ?, ?)";
+			PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
+			
+			ByteArrayOutputStream baosOne = new ByteArrayOutputStream();
+			ImageIO.write(imageOne, "jpg", baosOne);
+			InputStream isOne = new ByteArrayInputStream(baosOne.toByteArray());
+			
+			ByteArrayOutputStream baosTwo = new ByteArrayOutputStream();
+			ImageIO.write(imageTwo, "jpg", baosTwo);
+			InputStream isTwo = new ByteArrayInputStream(baosTwo.toByteArray());
+			
+			gridst.setInt(1, userID);
+			gridst.setInt(2, gridSize);
+			gridst.setBlob(3, isOne);
+			gridst.setBlob(4, isTwo);
+			if (genRndmImg) {
+				gridst.setString(5, "random");
+			} else if (genPrstImg) {
+				gridst.setString(5, "preset");
+			} else {
+				System.err.println("Error. Random or preset not set.");
+			}
+			int y = gridst.executeUpdate();
+			if(y == 0) {
+				JOptionPane.showMessageDialog(registerBtn, "Image grid method for user already exists. 2nd box");
+			} else {
+				new InitialLogin(dbRunner, Method.IMAGEGRID).setVisible(true);
+				dispose();
+			}
+		}
+	}
 	
 }

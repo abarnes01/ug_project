@@ -55,7 +55,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		patternPLbl = new JLabel("Pattern Pass (6 chars):");
 		patternPField = new JPasswordField(6);
 		
-		// create Btns
+		// create buttons
 		registerBtn = new JButton("Register");
 		registerBtn.addActionListener(this);
 		backBtn = new JButton("\u2190");
@@ -76,7 +76,6 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		mainPanel.add(formPanel);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(BtnPanel, BorderLayout.SOUTH);
-		setResizable(false);
 	}
 	
 	@Override
@@ -94,43 +93,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
-					PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username from user where username=?");
-					st.setString(1, username);
-					ResultSet rs = st.executeQuery();
-					if (rs.next()) {
-						JOptionPane.showMessageDialog(registerBtn, "User already exists.");
-					} else {
-						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
-						Statement statement = connection.createStatement();
-						int x = statement.executeUpdate(query);
-						if(x == 0) {
-							System.err.println("Error: User already exists. Insertion failed.");
-						}
-					}
-					PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
-					nextst.setString(1, username);
-					ResultSet newrs = nextst.executeQuery();
-					newrs.next();
-					int userID = newrs.getInt("userID");
-					
-					PreparedStatement checkdbst = (PreparedStatement) connection.prepareStatement("Select userID from colour_grid_method where userID=?");
-					checkdbst.setInt(1, userID);
-					ResultSet checkdbrs = checkdbst.executeQuery();
-					if (checkdbrs.next()) {
-						JOptionPane.showMessageDialog(registerBtn, "Colour grid method for user already exists.");
-					} else {
-						String gridQuery = "INSERT INTO colour_grid_method(userID,patternPass) values(?, ?)";
-						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
-						gridst.setInt(1, userID);
-						gridst.setString(2, patternPass);
-						int y = gridst.executeUpdate();
-						if(y == 0) {
-							System.err.println("Error: Colour grid details for user already exists. Insertion failed.");
-						} else {
-							new InitialLogin(dbRunner, Method.COLOURGRID).setVisible(true);
-							dispose();
-						}
-					}
+					insertColourGridDetails(connection, username, password, patternPass);
 					connection.close();
 				} catch (Exception exception) {
 					exception.printStackTrace();
@@ -139,6 +102,46 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		} else if (btn.equals(backBtn)) {
 			new Welcome(dbRunner).setVisible(true);
 			dispose();
+		}
+	}
+	
+	private void insertColourGridDetails(Connection connection, String username, String password, String patternPass) throws Exception {
+		PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username from user where username=?");
+		st.setString(1, username);
+		ResultSet rs = st.executeQuery();
+		if (rs.next()) {
+			JOptionPane.showMessageDialog(registerBtn, "User already exists.");
+		} else {
+			String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
+			Statement statement = connection.createStatement();
+			int x = statement.executeUpdate(query);
+			if(x == 0) {
+				System.err.println("Error: User already exists. Insertion failed.");
+			}
+		}
+		PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
+		nextst.setString(1, username);
+		ResultSet newrs = nextst.executeQuery();
+		newrs.next();
+		int userID = newrs.getInt("userID");
+		
+		PreparedStatement checkdbst = (PreparedStatement) connection.prepareStatement("Select userID from colour_grid_method where userID=?");
+		checkdbst.setInt(1, userID);
+		ResultSet checkdbrs = checkdbst.executeQuery();
+		if (checkdbrs.next()) {
+			JOptionPane.showMessageDialog(registerBtn, "Colour grid method for user already exists.");
+		} else {
+			String gridQuery = "INSERT INTO colour_grid_method(userID,patternPass) values(?, ?)";
+			PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
+			gridst.setInt(1, userID);
+			gridst.setString(2, patternPass);
+			int y = gridst.executeUpdate();
+			if(y == 0) {
+				System.err.println("Error: Colour grid details for user already exists. Insertion failed.");
+			} else {
+				new InitialLogin(dbRunner, Method.COLOURGRID).setVisible(true);
+				dispose();
+			}
 		}
 	}
 

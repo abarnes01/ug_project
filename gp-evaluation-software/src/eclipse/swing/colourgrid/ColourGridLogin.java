@@ -41,6 +41,25 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 	private String patternPass;
 	private Color patternPassCol;
 	private long startTime;
+	// array of all the colour tiles that need to be placed on the grid
+	private List<Color> ColsOnGrid = new ArrayList<Color>( Arrays.asList(Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED,
+			Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE,
+			Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK,
+			Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE,
+			Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN,
+			Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW));
+	
+	private static Map<Color, String> colMap;
+	static {
+		// mapping all the colours to their first letter
+		colMap = new HashMap<>();
+		colMap.put(Color.RED, "R");
+		colMap.put(Color.BLUE, "B");
+		colMap.put(Color.PINK, "P");
+		colMap.put(Color.WHITE, "W");
+		colMap.put(Color.GREEN, "G");
+		colMap.put(Color.YELLOW, "Y");
+	}
 
 	public ColourGridLogin(DatabaseRunner dbRunner, String pp) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,7 +94,6 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		mainPanel.add(formPanel);
 		contentPane.add(mainPanel, BorderLayout.CENTER);
 		contentPane.add(BtnPanel, BorderLayout.SOUTH);
-		setResizable(false);
 		
 		startTime = System.nanoTime();
 		makeGrid();
@@ -87,18 +105,8 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		if (btn.equals(loginBtn)) {
 			// value of user input
 			String ppInput = String.valueOf(pColField.getPassword());
-			
-			// mapping all the Cols to their first letter
-			Map<Color, String> ColMap = new HashMap<>();
-			ColMap.put(Color.RED, "R");
-			ColMap.put(Color.BLUE, "B");
-			ColMap.put(Color.PINK, "P");
-			ColMap.put(Color.WHITE, "W");
-			ColMap.put(Color.GREEN, "G");
-			ColMap.put(Color.YELLOW, "Y");
-			
 			// if user input equals the first letter of the Col their pattern pass lies in
-			if (ppInput.toUpperCase().equals(ColMap.get(patternPassCol))) {
+			if (ppInput.toUpperCase().equals(colMap.get(patternPassCol))) {
 				long stopTime = System.nanoTime()-startTime;
 				long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
 				String colGridLoginResultHtml = "<html><h1>Colour Grid Login</h1>"
@@ -126,14 +134,6 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		gridPanel = new JPanel();
 		gridLayout = new GridLayout(6,6);
 		
-		// array of all the Col tiles that need to be placed on the grid
-		List<Color> ColsOnGrid = new ArrayList<Color>( Arrays.asList(Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED,
-								Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE,
-								Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK,
-								Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE,
-								Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN,
-								Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW));
-		
 		// in case patternPass exists
 		try {
 			// primitive char array of pattern pass turned into array list with object Character
@@ -143,16 +143,16 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 			// random generator
 			Random rand = new Random();
 			int randColIndex = rand.nextInt(ColsOnGrid.size());
-			// the Col the password will lie in
+			// the colour the password will lie in
 			patternPassCol = ColsOnGrid.get(randColIndex);
 			
 			gridPanel.setLayout(gridLayout);
 			for (int i = 1; i <= 36; i++) {
-				// for each element, create text field and assign random Col
+				// for each element, create text field and assign random colour
 				JTextField tf = new JTextField(null, 2);
 				randColIndex = rand.nextInt(ColsOnGrid.size());
 				tf.setBackground(ColsOnGrid.get(randColIndex));
-				// add pattern password letters if it is the correct Col
+				// add pattern password letters if it is the correct colour
 				if (ColsOnGrid.get(randColIndex) == patternPassCol) {
 					// set to random character of pattern pass and remove from pattern pass array
 					int randPPIndex = rand.nextInt(ppCharArray.size());
@@ -162,13 +162,13 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 					// otherwise set random letter from the alphabet
 					tf.setText((Character.toString((char)rand.nextInt(26) + 'a')));
 				}
-				// set to white text if Col is blue. Accessibility
+				// set to white text if colour is blue. Accessibility
 				if (ColsOnGrid.get(randColIndex) == Color.BLUE) {
 					tf.setForeground(Color.WHITE);
 				}
 				tf.setEditable(false);
 				gridPanel.add(tf);
-				// to make sure all Cols are evenly distributed
+				// to make sure all colour are evenly distributed
 				ColsOnGrid.remove(randColIndex);
 			}
 		// IF no pattern pass, which is also dealt with in simple login

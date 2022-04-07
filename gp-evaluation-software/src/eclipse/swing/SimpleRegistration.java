@@ -1,7 +1,6 @@
 package eclipse.swing;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -66,13 +65,16 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 		
 		contentPane.add(formPanel, BorderLayout.CENTER);
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
-		setResizable(false);
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
-
+		/*
+		 * Connect to database via driver,
+		 * check if user exists,
+		 * if not then insert the values given by the user
+		 */
 		if (btn.equals(registerBtn)) {
 			String username = usernameField.getText();
 			String password = String.valueOf(passwordField.getPassword());
@@ -90,15 +92,7 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 					if (rs.next()) {
 						JOptionPane.showMessageDialog(registerBtn, "User already exists.");
 					} else {
-						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
-						Statement statement = connection.createStatement();
-						int x = statement.executeUpdate(query);
-						if(x == 0) {
-							JOptionPane.showMessageDialog(registerBtn, "User already exists. 2nd box");
-						} else {
-							new InitialLogin(dbRunner, Method.SIMPLE).setVisible(true);
-							dispose();
-						}
+						insertSimpleDetails(connection, username, password);
 					}
 					connection.close();
 				} catch (Exception exception) {
@@ -107,6 +101,18 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 			}
 		} else if (btn.equals(backBtn)) {
 			new Welcome(dbRunner).setVisible(true);
+			dispose();
+		}
+	}
+	
+	private void insertSimpleDetails(Connection connection, String username, String password) throws Exception {
+		String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
+		Statement statement = connection.createStatement();
+		int x = statement.executeUpdate(query);
+		if(x == 0) {
+			JOptionPane.showMessageDialog(registerBtn, "User already exists. 2nd box");
+		} else {
+			new InitialLogin(dbRunner, Method.SIMPLE).setVisible(true);
 			dispose();
 		}
 	}

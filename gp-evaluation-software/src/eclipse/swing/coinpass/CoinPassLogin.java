@@ -16,18 +16,11 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-
-import org.apache.commons.lang3.StringUtils;
 
 import eclipse.sql.DatabaseRunner;
 import eclipse.swing.InitialLogin;
@@ -44,11 +37,25 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 	private ArrayList<String> coinPassElements;
 	private ArrayList<Color> colArr;
 	private Map<String, BufferedImage> iconMap;
-	private Map<String, Color> strToColMap;
 	private ArrayList<BufferedImage> iconArr;
 	private ArrayList<Integer> numArr;
 	private CoinPassSurfer surfer;
 
+	private static Map<String, Color> strToColMap;
+	static {
+		strToColMap = new HashMap<>();
+		strToColMap.put("red", Color.RED);
+		strToColMap.put("blue", Color.BLUE);
+		strToColMap.put("pink", Color.PINK);
+		strToColMap.put("white", Color.WHITE);
+		strToColMap.put("green", Color.GREEN);
+		strToColMap.put("yellow", Color.YELLOW);
+		strToColMap.put("black", Color.BLACK);
+		strToColMap.put("orange", Color.ORANGE);
+		strToColMap.put("cyan", Color.CYAN);
+		strToColMap.put("magenta", Color.MAGENTA);
+	}
+	
 	public CoinPassLogin(DatabaseRunner dbRunner, String coinPass) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 340, 500);
@@ -89,17 +96,6 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 	public void makeCoins() {
 		System.out.println("Creating coins...");
 		try {
-			strToColMap = new HashMap<>();
-			strToColMap.put("red", Color.RED);
-			strToColMap.put("blue", Color.BLUE);
-			strToColMap.put("pink", Color.PINK);
-			strToColMap.put("white", Color.WHITE);
-			strToColMap.put("green", Color.GREEN);
-			strToColMap.put("yellow", Color.YELLOW);
-			strToColMap.put("black", Color.BLACK);
-			strToColMap.put("orange", Color.ORANGE);
-			strToColMap.put("cyan", Color.CYAN);
-			strToColMap.put("magenta", Color.MAGENTA);
 			
 			colArr = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK, Color.WHITE,
 					Color.GREEN, Color.YELLOW, Color.BLACK, Color.ORANGE, Color.CYAN, Color.MAGENTA));
@@ -168,6 +164,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 			e.printStackTrace();
 		}
 	}
+
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

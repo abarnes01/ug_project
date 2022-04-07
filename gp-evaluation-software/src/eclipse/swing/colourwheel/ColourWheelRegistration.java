@@ -2,7 +2,6 @@ package eclipse.swing.colourwheel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -44,8 +42,21 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 	private JButton registerBtn, backBtn;
 	private JTextField nameField;
 	private JPasswordField passField, wheelPassField;
-	private Map<Color, String> colToStrMap;
-	private ArrayList<Color> colList;
+	
+	private static ArrayList<Color> colList = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK,
+			Color.GREEN, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.MAGENTA));
+	private static Map<Color, String> colToStrMap;
+	static {
+		colToStrMap = new HashMap<>();
+		colToStrMap.put(Color.RED, "red");
+		colToStrMap.put(Color.BLUE, "blue");
+		colToStrMap.put(Color.PINK, "pink");
+		colToStrMap.put(Color.GREEN, "green");
+		colToStrMap.put(Color.YELLOW, "yellow");
+		colToStrMap.put(Color.ORANGE, "orange");
+		colToStrMap.put(Color.CYAN, "cyan");
+		colToStrMap.put(Color.MAGENTA, "magenta");
+	}
 
 	public ColourWheelRegistration(DatabaseRunner dbRunner) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -85,19 +96,6 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		formPanel.add(colChosenTxt);
 		formPanel.add(chosenCol);
 		formPanel.setLayout(new GridLayout(4, 1));
-		
-		colToStrMap = new HashMap<>();
-		colToStrMap.put(Color.RED, "red");
-		colToStrMap.put(Color.BLUE, "blue");
-		colToStrMap.put(Color.PINK, "pink");
-		colToStrMap.put(Color.GREEN, "green");
-		colToStrMap.put(Color.YELLOW, "yellow");
-		colToStrMap.put(Color.ORANGE, "orange");
-		colToStrMap.put(Color.CYAN, "cyan");
-		colToStrMap.put(Color.MAGENTA, "magenta");
-		
-		colList = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK,
-				Color.GREEN, Color.YELLOW, Color.ORANGE, Color.CYAN, Color.MAGENTA));
 		
 		int max = colList.size();
 		
@@ -153,45 +151,7 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
-					PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username from user where username=?");
-					st.setString(1, username);
-					ResultSet rs = st.executeQuery();
-					if (rs.next()) {
-						JOptionPane.showMessageDialog(registerBtn, "User already exists: registering colour wheel details only.");
-					} else {
-						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
-						Statement statement = connection.createStatement();
-						int x = statement.executeUpdate(query);
-						if(x == 0) {
-							System.err.println("Error: User already exists.");
-						}
-					}
-					
-					PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
-					nextst.setString(1, username);
-					ResultSet newrs = nextst.executeQuery();
-					newrs.next();
-					int userID = newrs.getInt("userID");
-					
-					PreparedStatement checkdbst = (PreparedStatement) connection.prepareStatement("Select userID from colour_wheel_method where userID=?");
-					checkdbst.setInt(1, userID);
-					ResultSet checkdbrs = checkdbst.executeQuery();
-					if (checkdbrs.next()) {
-						JOptionPane.showMessageDialog(registerBtn, "Colour wheel method for user already exists.");
-					} else {
-						String gridQuery = "INSERT INTO colour_wheel_method(userID,chosenColour,wheelPass) values(?, ?, ?)";
-						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
-						gridst.setInt(1, userID);
-						gridst.setString(2, colStr);
-						gridst.setString(3, wheelPass);
-						int y = gridst.executeUpdate();
-						if(y == 0) {
-							System.err.println("Error: Colour wheel method for user already exists.");
-						} else {
-							new InitialLogin(dbRunner, Method.WHEEL).setVisible(true);
-							dispose();
-						}
-					}
+					insertColourWheelDetails(connection, username, password, wheelPass, colStr);
 					connection.close();
 				} catch (Exception exception) {
 					exception.printStackTrace();
@@ -200,6 +160,47 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		} else if (btn.equals(backBtn)) {
 			new Welcome(dbRunner).setVisible(true);
 			dispose();
+		}
+	}
+	
+	private void insertColourWheelDetails(Connection connection, String username, String password, String wheelPass, String colStr) throws Exception {
+		PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select username from user where username=?");
+		st.setString(1, username);
+		ResultSet rs = st.executeQuery();
+		if (rs.next()) {
+			JOptionPane.showMessageDialog(registerBtn, "User already exists: registering colour wheel details only.");
+		} else {
+			String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
+			Statement statement = connection.createStatement();
+			int x = statement.executeUpdate(query);
+			if(x == 0) {
+				System.err.println("Error: User already exists.");
+			}
+		}
+		PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
+		nextst.setString(1, username);
+		ResultSet newrs = nextst.executeQuery();
+		newrs.next();
+		int userID = newrs.getInt("userID");
+		
+		PreparedStatement checkdbst = (PreparedStatement) connection.prepareStatement("Select userID from colour_wheel_method where userID=?");
+		checkdbst.setInt(1, userID);
+		ResultSet checkdbrs = checkdbst.executeQuery();
+		if (checkdbrs.next()) {
+			JOptionPane.showMessageDialog(registerBtn, "Colour wheel method for user already exists.");
+		} else {
+			String gridQuery = "INSERT INTO colour_wheel_method(userID,chosenColour,wheelPass) values(?, ?, ?)";
+			PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
+			gridst.setInt(1, userID);
+			gridst.setString(2, colStr);
+			gridst.setString(3, wheelPass);
+			int y = gridst.executeUpdate();
+			if(y == 0) {
+				System.err.println("Error: Colour wheel method for user already exists.");
+			} else {
+				new InitialLogin(dbRunner, Method.WHEEL).setVisible(true);
+				dispose();
+			}
 		}
 	}
 

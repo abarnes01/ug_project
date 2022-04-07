@@ -1,7 +1,6 @@
 package eclipse.swing;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -44,7 +43,20 @@ public class InitialLogin extends JFrame implements ActionListener{
 	private JButton loginBtn, backBtn;
 	private JLabel usernameLbl, passLbl;
 	private Method method;
-	private Map<Method, String> methodToStrMap;
+	private int userID;
+	
+	private static String simpleLoginResultHtml = "<html><h1>Simple Login (Successful Login)</h1>"
+			+ "<p>This provides no shoulder surfing resistance.</p><br>"
+			+ "<p>The keystroke entry and number of keystrokes <br>can be observed to reveal the password. </p>";
+	private static Map<Method, String> methodToStrMap;
+	static {
+		methodToStrMap = new HashMap<>();
+		methodToStrMap.put(Method.SIMPLE, "Simple Login");
+		methodToStrMap.put(Method.COLOURGRID, "Colour Grid Initial Login");
+		methodToStrMap.put(Method.IMAGEGRID, "(Digraph) Image Grid Initial Login");
+		methodToStrMap.put(Method.COIN, "Coin Pass Initial Login");
+		methodToStrMap.put(Method.WHEEL, "Colour Wheel Initial Login");
+	}
 
 	public InitialLogin(DatabaseRunner dbRunner, Method method) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,16 +65,10 @@ public class InitialLogin extends JFrame implements ActionListener{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		
-		methodToStrMap = new HashMap<>();
-		methodToStrMap.put(Method.SIMPLE, "Simple Login");
-		methodToStrMap.put(Method.COLOURGRID, "Colour Grid Initial Login");
-		methodToStrMap.put(Method.IMAGEGRID, "(Digraph) Image Grid Initial Login");
-		methodToStrMap.put(Method.COIN, "Coin Pass Initial Login");
-		methodToStrMap.put(Method.WHEEL, "Colour Wheel Initial Login");
-		setTitle(methodToStrMap.get(method));
-		
 		this.dbRunner = dbRunner;
+		
+		// set title based on selected GP method
+		setTitle(methodToStrMap.get(method));
 		
 		// set graphical password method we are using
 		setMethod(method);
@@ -89,7 +95,6 @@ public class InitialLogin extends JFrame implements ActionListener{
 		btnPanel.add(loginBtn);
 		contentPane.add(formPanel, BorderLayout.CENTER);
 		contentPane.add(btnPanel, BorderLayout.SOUTH);
-		setResizable(false);
 	}
 	
 	public Method getMethod() {
@@ -109,6 +114,11 @@ public class InitialLogin extends JFrame implements ActionListener{
 			String url = dbRunner.getDburl();
 			String dbname = dbRunner.getDbname();
 			String dbpass = dbRunner.getDbpass();
+			/*
+			 * Connect to database via driver, 
+			 * for each method do a check to see if user and the method login details exist
+			 * if so then go to selected GP login
+			 */
 			try {
 				Connection connection = (Connection) DriverManager.getConnection(url,dbname,dbpass);
 				PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select userID from user where username=? and password=?");
@@ -116,73 +126,20 @@ public class InitialLogin extends JFrame implements ActionListener{
 				st.setInt(2, password);
 				ResultSet rs = st.executeQuery();
 				if (rs.next()) {
-					int userID = rs.getInt("userID");
-					if (getMethod() == Method.COLOURGRID) {
-						PreparedStatement cglSt = (PreparedStatement) connection.prepareStatement("Select patternPass from colour_grid_method where userID=?");
-						cglSt.setInt(1, userID);
-						ResultSet cglRs = cglSt.executeQuery();
-						if (cglRs.next()) {
-							System.out.println("Got grid method details");
-							String patternPass = cglRs.getString("patternPass");
-							new ColourGridLogin(dbRunner, patternPass).setVisible(true);
-							dispose();
-						} else {
-							JOptionPane.showMessageDialog(loginBtn, "User does not have colour grid method details.");
-						}
-					} else if (getMethod() == Method.IMAGEGRID) {
-						PreparedStatement igSt = (PreparedStatement) connection.prepareStatement("Select gridSize, imageOne, imageTwo, randomOrPreset from image_grid_method where userID=?");
-						igSt.setInt(1, userID);
-						ResultSet igRs = igSt.executeQuery();
-						if (igRs.next()) {
-							InputStream ioIS = igRs.getBinaryStream(2);
-							InputStream itIS = igRs.getBinaryStream(3);
-							try {
-								BufferedImage imgOne = ImageIO.read(ioIS);
-								BufferedImage imgTwo = ImageIO.read(itIS);
-								new ImageGridLogin(dbRunner, igRs.getInt(1), imgOne, imgTwo, igRs.getString(4)).setVisible(true);
-								dispose();
-							} catch (Exception e) {
-								e.printStackTrace();
-								System.err.println("Failed to create login page.");
-							}
-							
-						} else {
-							JOptionPane.showMessageDialog(loginBtn, "User does not have image grid method details.");
-						}
-						
-					} else if (getMethod() == Method.SIMPLE) {
-						String simpleLoginResultHtml = "<html><h1>Simple Login (Successful Login)</h1>"
-													+ "<p>This provides no shoulder surfing resistance.</p><br>"
-													+ "<p>The keystroke entry and number of keystrokes <br>can be observed to reveal the password. </p>";
+					userID = rs.getInt("userID");
+					if (getMethod() == Method.SIMPLE) {
 						JOptionPane.showMessageDialog(loginBtn, String.format(simpleLoginResultHtml));
 						Welcome welcome = new Welcome(dbRunner);
 						welcome.setVisible(true);
 						dispose();
+					} else if (getMethod() == Method.COLOURGRID) {
+						checkColourGridDetails(connection);
+					} else if (getMethod() == Method.IMAGEGRID) {
+						checkImageGridDetails(connection);
 					} else if (getMethod() == Method.COIN) {
-						PreparedStatement cpSt = (PreparedStatement) connection.prepareStatement("Select coinpass from coin_pass_method where userID=?");
-						cpSt.setInt(1, userID);
-						ResultSet cpRs = cpSt.executeQuery();
-						if (cpRs.next()) {
-							System.out.println("Got coin pass method details");
-							String coinPass = cpRs.getString("coinpass");
-							new CoinPassLogin(dbRunner, coinPass).setVisible(true);
-							dispose();
-						} else {
-							JOptionPane.showMessageDialog(loginBtn, "User does not have coin pass method details.");
-						}
+						checkCoinPassDetails(connection);
 					} else if (getMethod() == Method.WHEEL) {
-						PreparedStatement cpSt = (PreparedStatement) connection.prepareStatement("Select chosenColour, wheelPass from colour_wheel_method where userID=?");
-						cpSt.setInt(1, userID);
-						ResultSet cpRs = cpSt.executeQuery();
-						if (cpRs.next()) {
-							System.out.println("Got colour wheel method details");
-							String chosenCol = cpRs.getString("chosenColour");
-							String wheelPass = cpRs.getString("wheelPass");
-							new ColourWheelLogin(dbRunner, chosenCol, wheelPass).setVisible(true);
-							dispose();
-						} else {
-							JOptionPane.showMessageDialog(loginBtn, "User does not have coin pass method details.");
-						}
+						checkColourWheelDetails(connection);
 					}
 				} else {
 					JOptionPane.showMessageDialog(loginBtn, "Incorrect login details.");
@@ -210,4 +167,69 @@ public class InitialLogin extends JFrame implements ActionListener{
 			}
 		}
 	}
+	
+	private void checkImageGridDetails(Connection connection) throws SQLException {
+		PreparedStatement igSt = (PreparedStatement) connection.prepareStatement("Select gridSize, imageOne, imageTwo, randomOrPreset from image_grid_method where userID=?");
+		igSt.setInt(1, userID);
+		ResultSet igRs = igSt.executeQuery();
+		if (igRs.next()) {
+			InputStream ioIS = igRs.getBinaryStream(2);
+			InputStream itIS = igRs.getBinaryStream(3);
+			try {
+				BufferedImage imgOne = ImageIO.read(ioIS);
+				BufferedImage imgTwo = ImageIO.read(itIS);
+				new ImageGridLogin(dbRunner, igRs.getInt(1), imgOne, imgTwo, igRs.getString(4)).setVisible(true);
+				dispose();
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println("Failed to create login page.");
+			}
+		} else {
+			JOptionPane.showMessageDialog(loginBtn, "User does not have image grid method details.");
+		}
+	}
+	
+	private void checkColourGridDetails(Connection connection) throws SQLException {
+		PreparedStatement cglSt = (PreparedStatement) connection.prepareStatement("Select patternPass from colour_grid_method where userID=?");
+		cglSt.setInt(1, userID);
+		ResultSet cglRs = cglSt.executeQuery();
+		if (cglRs.next()) {
+			System.out.println("Got grid method details");
+			String patternPass = cglRs.getString("patternPass");
+			new ColourGridLogin(dbRunner, patternPass).setVisible(true);
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(loginBtn, "User does not have colour grid method details.");
+		}
+	}
+	
+	private void checkCoinPassDetails(Connection connection) throws SQLException {
+		PreparedStatement cpSt = (PreparedStatement) connection.prepareStatement("Select coinpass from coin_pass_method where userID=?");
+		cpSt.setInt(1, userID);
+		ResultSet cpRs = cpSt.executeQuery();
+		if (cpRs.next()) {
+			System.out.println("Got coin pass method details");
+			String coinPass = cpRs.getString("coinpass");
+			new CoinPassLogin(dbRunner, coinPass).setVisible(true);
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(loginBtn, "User does not have coin pass method details.");
+		}
+	}
+	
+	private void checkColourWheelDetails(Connection connection) throws SQLException{
+		PreparedStatement cpSt = (PreparedStatement) connection.prepareStatement("Select chosenColour, wheelPass from colour_wheel_method where userID=?");
+		cpSt.setInt(1, userID);
+		ResultSet cpRs = cpSt.executeQuery();
+		if (cpRs.next()) {
+			System.out.println("Got colour wheel method details");
+			String chosenCol = cpRs.getString("chosenColour");
+			String wheelPass = cpRs.getString("wheelPass");
+			new ColourWheelLogin(dbRunner, chosenCol, wheelPass).setVisible(true);
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(loginBtn, "User does not have colour wheel method details.");
+		}
+	}
 }
+

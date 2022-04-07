@@ -47,10 +47,25 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 	private JTextField nameField, coinPassField;
 	private JPasswordField passField;
 	private Integer iconEntered, numEntered, colEntered;
-	private ArrayList<Color> colArr;
 	private Map<ImageIcon, String> iconMap;
-	private Map<Color, String> colToStrMap;
 	private ArrayList<ImageIcon> iconArr;
+	
+	private static ArrayList<Color> colArr = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK, Color.WHITE,
+			Color.GREEN, Color.YELLOW, Color.BLACK, Color.ORANGE, Color.CYAN, Color.MAGENTA));
+	private static Map<Color, String> colToStrMap;
+	static {
+		colToStrMap = new HashMap<>();
+		colToStrMap.put(Color.RED, "red");
+		colToStrMap.put(Color.BLUE, "blue");
+		colToStrMap.put(Color.PINK, "pink");
+		colToStrMap.put(Color.WHITE, "white");
+		colToStrMap.put(Color.GREEN, "green");
+		colToStrMap.put(Color.YELLOW, "yellow");
+		colToStrMap.put(Color.BLACK, "black");
+		colToStrMap.put(Color.ORANGE, "orange");
+		colToStrMap.put(Color.CYAN, "cyan");
+		colToStrMap.put(Color.MAGENTA, "magenta");
+	}
 	
 
 	public CoinPassRegistration(DatabaseRunner dbRunner) {
@@ -85,26 +100,9 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		
 		// get element J labels
 		try {
-			colToStrMap = new HashMap<>();
-			colToStrMap.put(Color.RED, "red");
-			colToStrMap.put(Color.BLUE, "blue");
-			colToStrMap.put(Color.PINK, "pink");
-			colToStrMap.put(Color.WHITE, "white");
-			colToStrMap.put(Color.GREEN, "green");
-			colToStrMap.put(Color.YELLOW, "yellow");
-			colToStrMap.put(Color.BLACK, "black");
-			colToStrMap.put(Color.ORANGE, "orange");
-			colToStrMap.put(Color.CYAN, "cyan");
-			colToStrMap.put(Color.MAGENTA, "magenta");
-			
-			colArr = new ArrayList<Color>( Arrays.asList(Color.RED, Color.BLUE, Color.PINK, Color.WHITE,
-					Color.GREEN, Color.YELLOW, Color.BLACK, Color.ORANGE, Color.CYAN, Color.MAGENTA));
-			
 			iconMap = new HashMap<>();
-			
 			iconArr = new ArrayList<ImageIcon>();
 			for (int i = 0; i < 10; i++) {
-				//File pathToFile = new File("./Icons/" + Integer.toString(i) + ".png");
 				BufferedImage img = ImageIO.read(new File("Icons/" + Integer.toString(i) + ".png"));
 				ImageIcon imgIcon = new ImageIcon(img);
 				JLabel iconLabel = new JLabel(imgIcon);
@@ -184,44 +182,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
-					PreparedStatement st = (PreparedStatement)connection.prepareStatement("Select username from user where username=?");
-					st.setString(1, username);
-					ResultSet rs = st.executeQuery();
-					
-					if (rs.next()) {
-						JOptionPane.showMessageDialog(registerBtn, "User already exists. Inserting coin pass details only.");
-					} else {
-						String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
-						Statement statement = connection.createStatement();
-						int x = statement.executeUpdate(query);
-						if(x == 0) {
-							System.err.println("Error: User already exists.");
-						} 
-					}
-					PreparedStatement useridst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
-					useridst.setString(1, username);
-					ResultSet useridrs = useridst.executeQuery();
-					useridrs.next();
-					int userID = useridrs.getInt("userID");
-					
-					PreparedStatement checkdbst = (PreparedStatement) connection.prepareStatement("Select userID from coin_pass_method where userID=?");
-					checkdbst.setInt(1, userID);
-					ResultSet checkdbrs = checkdbst.executeQuery();
-					if (checkdbrs.next()) {
-						JOptionPane.showMessageDialog(registerBtn, "Coin pass method for user already exists.");
-					} else {
-						String gridQuery = "INSERT INTO coin_pass_method(userID,coinpass) values(?, ?)";
-						PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
-						gridst.setInt(1, userID);
-						gridst.setString(2, coinpass);
-						int y = gridst.executeUpdate();
-						if(y == 0) {
-							System.err.println("Error: Coin pass method for user exists.");
-						} else {
-							new InitialLogin(dbRunner, Method.COIN).setVisible(true);
-							dispose();
-						}
-					}
+					insertCoinPassDetails(connection, username, password, coinpass);
 					connection.close();
 				} catch (Exception exception) {
 					exception.printStackTrace();
@@ -233,4 +194,44 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		}
 	}
 
+	private void insertCoinPassDetails(Connection connection, String username, String password, String coinpass) throws Exception {
+		PreparedStatement st = (PreparedStatement)connection.prepareStatement("Select username from user where username=?");
+		st.setString(1, username);
+		ResultSet rs = st.executeQuery();
+		
+		if (rs.next()) {
+			JOptionPane.showMessageDialog(registerBtn, "User already exists. Inserting coin pass details only.");
+		} else {
+			String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
+			Statement statement = connection.createStatement();
+			int x = statement.executeUpdate(query);
+			if(x == 0) {
+				System.err.println("Error: User already exists.");
+			} 
+		}
+		PreparedStatement useridst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
+		useridst.setString(1, username);
+		ResultSet useridrs = useridst.executeQuery();
+		useridrs.next();
+		int userID = useridrs.getInt("userID");
+		
+		PreparedStatement checkdbst = (PreparedStatement) connection.prepareStatement("Select userID from coin_pass_method where userID=?");
+		checkdbst.setInt(1, userID);
+		ResultSet checkdbrs = checkdbst.executeQuery();
+		if (checkdbrs.next()) {
+			JOptionPane.showMessageDialog(registerBtn, "Coin pass method for user already exists.");
+		} else {
+			String gridQuery = "INSERT INTO coin_pass_method(userID,coinpass) values(?, ?)";
+			PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
+			gridst.setInt(1, userID);
+			gridst.setString(2, coinpass);
+			int y = gridst.executeUpdate();
+			if(y == 0) {
+				System.err.println("Error: Coin pass method for user exists.");
+			} else {
+				new InitialLogin(dbRunner, Method.COIN).setVisible(true);
+				dispose();
+			}
+		}
+	}
 }
