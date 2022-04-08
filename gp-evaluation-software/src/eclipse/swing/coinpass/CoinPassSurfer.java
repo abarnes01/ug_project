@@ -8,10 +8,12 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -21,15 +23,30 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 public class CoinPassSurfer extends JFrame implements ActionListener {
 
+	class Coin {
+		
+		BufferedImage viewedImg;
+		String viewedNum;
+		Color viewedCol;
+		
+		public Coin(BufferedImage viewedImg, String viewedNum, Color viewedCol) {
+			this.viewedImg = viewedImg;
+			this.viewedNum = viewedNum;
+			this.viewedCol = viewedCol;
+		}
+	}
+	
 	private static final long serialVersionUID = 7491248350836673542L;
 	private JPanel contentPane, mainPane, bottomPane;
 	private JButton closeBtn;
-	private Integer passLength;
+	private Integer passLength, i;
 	private Integer errorCount;
+	private ArrayList<Coin> viewedCoins = new ArrayList<Coin>();
 	
 	private static Map<Color, String> colourToStrMap;
 	static {
@@ -61,6 +78,7 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 		
 		passLength = 0;
 		errorCount = 0;
+		i = 0;
 
 		closeBtn = new JButton("Close");
 		closeBtn.addActionListener(this);
@@ -77,15 +95,65 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 	}
 	
 	public void updateSurfer(BufferedImage viewedImg, String viewedNum, Color viewedCol) {
-		JLabel img = new JLabel(new ImageIcon(viewedImg));
-		JLabel num = new JLabel(viewedNum);
-		JLabel col = new JLabel(colourToStrMap.get(viewedCol));
-		col.setForeground(viewedCol);
 		JPanel viewedElements = new JPanel();
-		viewedElements.add(img);
-		viewedElements.add(num);
-		viewedElements.add(col);
+		Coin coin = new Coin(viewedImg, viewedNum, viewedCol);
+		try {
+			coin = viewedCoins.get(i);
+			System.out.println("got coin " + i);
+			try {
+				if (!buffImgsEqual(coin.viewedImg, viewedImg)) {
+					coin.viewedImg = null;
+					System.out.println("ping1");
+				}
+				System.out.println(coin.viewedNum + " and " + viewedNum);	
+			} catch (NullPointerException e) {
+				System.out.println("null pointer img");
+			}
+			
+			try {
+				if (!(coin.viewedNum.equals(viewedNum))) {
+					coin.viewedNum = null;
+					System.out.println("ping2");
+				} 
+			} catch (NullPointerException e){
+				System.out.println("null pointer num");
+			}
+			try {
+				if (!(coin.viewedCol.equals(viewedCol))) {
+					coin.viewedCol = null;
+					System.out.println("ping3");
+				}
+			} catch (NullPointerException e) {
+				System.out.println("null pointer col");
+			}
+		} catch (IndexOutOfBoundsException e) {
+			viewedCoins.add(coin);
+			System.out.println("add new coin ping4");
+		}
+		try {
+			JLabel img = new JLabel(new ImageIcon(coin.viewedImg));
+			viewedElements.add(img);
+		} catch (Exception e) {
+			
+		}
+		try {
+			JLabel num = new JLabel(coin.viewedNum);
+			viewedElements.add(num);
+		} catch (Exception e) {
+			
+		}
+		try {
+			JLabel col = new JLabel(colourToStrMap.get(coin.viewedCol));
+			col.setForeground(coin.viewedCol);
+			viewedElements.add(col);
+		} catch (Exception e) {
+			
+		}
+		Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
+		viewedElements.setBorder(border);
+		viewedElements.setBackground(Color.LIGHT_GRAY);
 		passLength += 1;
+		i += 1;
 		mainPane.add(viewedElements);
 		mainPane.revalidate();
 		mainPane.repaint();
@@ -93,7 +161,7 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 	
 	public void restartSurfer() {
 		errorCount += 1;
-		passLength = 0;
+		i = 0;
 		mainPane.removeAll();
 		mainPane.revalidate();
 		mainPane.repaint();
@@ -138,5 +206,16 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 				dispose();
 			}
 		}
+	}
+	
+	public Boolean buffImgsEqual(BufferedImage a, BufferedImage b) {
+		for (int x = 0; x < a.getWidth(); x++) {
+			for (int y = 0; y < a.getHeight(); y++) {
+				if (a.getRGB(x,y) != b.getRGB(x, y)) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }
