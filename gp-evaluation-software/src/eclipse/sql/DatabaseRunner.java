@@ -87,4 +87,14 @@ public class DatabaseRunner {
 		con.close();
 		
 	}
+	
+	public Boolean isConnected() {
+		try {
+			Connection connection = DriverManager.getConnection(dburl, dbname, dbpass);
+			connection.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
 }

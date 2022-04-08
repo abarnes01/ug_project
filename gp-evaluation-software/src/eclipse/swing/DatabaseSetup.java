@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -91,8 +92,13 @@ public class DatabaseSetup extends JFrame implements ActionListener {
 		JButton btn = (JButton)e.getSource();
 		if (btn.equals(confirmBtn)) {
 			DatabaseRunner dbRunner = new DatabaseRunner(dbUrlField.getText(), dbNameField.getText(), String.valueOf(dbPassField.getPassword()));
-			new Welcome(dbRunner).setVisible(true);
-			dispose();
+			if (dbRunner.isConnected()) {
+				JOptionPane.showMessageDialog(confirmBtn, "Established connection with database.");
+				new Welcome(dbRunner).setVisible(true);
+				dispose();
+			} else {
+				JOptionPane.showMessageDialog(confirmBtn, "Error: Database connection not established.");
+			}
 		}
 	}
 
