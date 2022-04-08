@@ -11,6 +11,7 @@ import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -39,6 +40,7 @@ public class ImageGridLogin extends JFrame implements ActionListener {
 	private PassImage P1, P2, I1, I2;
 	private String randomOrPreset;
 	private ImageGridSurfer surfer;
+	private long startTime, stopTime;
 
 	public ImageGridLogin(DatabaseRunner dbRunner, Integer gs, BufferedImage iO, BufferedImage iT, String randomOrPreset) {
 		setGridSize(gs);
@@ -55,17 +57,14 @@ public class ImageGridLogin extends JFrame implements ActionListener {
 		setContentPane(contentPane);
 		setTitle("(Digraph) Image Grid Login");
 		
-		cancelBtn = new JButton("Cancel");
-		cancelBtn.addActionListener(this);
-		
 		// create initial grid
 		gridPanel = new JPanel();
 		contentPane.add(gridPanel, BorderLayout.CENTER);
-		contentPane.add(cancelBtn, BorderLayout.NORTH);
 		makeGrid();
 		
 		surfer = new ImageGridSurfer(randomOrPreset);
 		surfer.setVisible(true);
+		startTime = System.nanoTime();
 	}
 	
 	public void setImages(BufferedImage one, BufferedImage two) {
@@ -102,6 +101,9 @@ public class ImageGridLogin extends JFrame implements ActionListener {
 	
 	public void makeGrid() {
 		System.out.println("Making grid...");
+		cancelBtn = new JButton("Cancel");
+		cancelBtn.addActionListener(this);
+		contentPane.add(cancelBtn, BorderLayout.NORTH);
 		bufImages = new ArrayList<BufferedImage>();
 		try {
 			// add our two images to an array of random images. Save these coordinates
@@ -272,7 +274,9 @@ public class ImageGridLogin extends JFrame implements ActionListener {
 		if (recreate) {
 			makeGrid();											
 		} else {
-			surfer.surferEvaluate();
+			stopTime = System.nanoTime()-startTime;
+			long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
+			surfer.surferEvaluate(seconds);
 		}
 		contentPane.add(gridPanel, BorderLayout.CENTER);
 	}

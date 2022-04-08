@@ -7,8 +7,6 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.net.URL;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -33,7 +31,7 @@ public class ImageGridSurfer extends JFrame implements ActionListener {
 
 	public ImageGridSurfer(String randomOrPreset) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 350);
+		setBounds(100, 100, 450, 400);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -72,11 +70,13 @@ public class ImageGridSurfer extends JFrame implements ActionListener {
 		mainPane.repaint();
 	}
 	
-	public void surferEvaluate() {
+	public void surferEvaluate(long secondsTaken) {
 		mainPane.removeAll();
 		JEditorPane evaPane = new JEditorPane();
 		evaPane.setContentType("text/html");
-		String evaText = "<html><h2>What the shoulder surfer can gather</h2>"
+		String evaText = "<html>"
+				+ "<h2>Average time of each login: " + (secondsTaken/entryCount) + " seconds.</h2>"
+				+ "<h2>What the shoulder surfer can gather</h2>"
 				+ "<p>This is mimicking a shoulder surfer who already knows the algorithm."
 				+ " Those who do not know the algorithm could have any idea of what the pass image entry means."
 				+ " In the worst case scenario, the shoulder surfer already knows scenarios A, B and C. </p>"

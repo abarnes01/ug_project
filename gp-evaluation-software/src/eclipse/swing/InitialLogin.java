@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -47,10 +48,8 @@ public class InitialLogin extends JFrame implements ActionListener{
 	private JLabel usernameLbl, passLbl;
 	private Method method;
 	private int userID;
+	private long startTime, stopTime;
 	
-	private static String simpleLoginResultHtml = "<html><h1>Simple Login (Successful Login)</h1>"
-			+ "<p>This provides no shoulder surfing resistance.</p><br>"
-			+ "<p>The keystroke entry and number of keystrokes <br>can be observed to reveal the password. </p>";
 	private static Map<Method, String> methodToStrMap;
 	static {
 		methodToStrMap = new HashMap<>();
@@ -104,6 +103,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 		btnPanel.add(loginBtn);
 		contentPane.add(formPanel, BorderLayout.CENTER);
 		contentPane.add(btnPanel, BorderLayout.SOUTH);
+		startTime = System.nanoTime();
 	}
 	
 	public Method getMethod() {
@@ -137,6 +137,12 @@ public class InitialLogin extends JFrame implements ActionListener{
 				if (rs.next()) {
 					userID = rs.getInt("userID");
 					if (getMethod() == Method.SIMPLE) {
+						stopTime = System.nanoTime()-startTime;
+						long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
+						String simpleLoginResultHtml = "<html><h1>Simple Login</h1>"
+								+ "<p>Time taken to login: " + seconds + " seconds. </p>"
+								+ "<p>This provides no shoulder surfing resistance.</p><br>"
+								+ "<p>The keystroke entry and number of keystrokes <br>can be observed to reveal the password. </p>";
 						JOptionPane.showMessageDialog(loginBtn, String.format(simpleLoginResultHtml));
 						Welcome welcome = new Welcome(dbRunner);
 						welcome.setVisible(true);

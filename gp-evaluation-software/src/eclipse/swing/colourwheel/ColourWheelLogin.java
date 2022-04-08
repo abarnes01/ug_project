@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -43,10 +44,8 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 	private int passCount;
 	private int passLength;
 	private int warningCount;
+	private long startTime, stopTime;
 	
-	private static String colWheelLoginResultHtml = "<html><h1>Colour Wheel Login (Successful Login)</h1>"
-			+ "<p>If the shoulder surfer knows the algorithm, they would still first need to know the users selected colour, <br>"
-			+ " and even then would need to brute force clicking confirm on the right selections of random text each time.</p>";
 	private static String all64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./";
 	private static Map<String, Color> strToColMap;
 	static {
@@ -127,6 +126,7 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 		contentPane.add(wc, BorderLayout.CENTER);
 		contentPane.add(formPanel, BorderLayout.SOUTH);
 		contentPane.add(cancelBtn, BorderLayout.NORTH);
+		startTime = System.nanoTime();
 	}
 
 	@Override
@@ -167,6 +167,12 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 			}
 		} else if (btn.equals(loginBtn)) {
 			if (passCount == passLength) {
+				stopTime = System.nanoTime()-startTime;
+				long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
+				String colWheelLoginResultHtml = "<html><h1>Colour Wheel Login (Successful Login)</h1>"
+						+ "<p> <strong> Total time for login: </strong>" + seconds + " seconds. </p>"
+						+ "<p>If the shoulder surfer knows the algorithm, they would still first need to know the users selected colour, <br>"
+						+ " and even then would need to brute force clicking confirm on the right selections of random text each time.</p>";
 				JOptionPane.showMessageDialog(loginBtn, String.format(colWheelLoginResultHtml));
 				new Welcome(dbRunner).setVisible(true);
 				dispose();

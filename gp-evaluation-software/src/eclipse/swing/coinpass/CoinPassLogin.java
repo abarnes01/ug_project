@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -39,6 +40,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 	private ArrayList<BufferedImage> iconArr;
 	private ArrayList<Integer> numArr;
 	private CoinPassSurfer surfer;
+	private long startTime, stopTime;
 
 	private static Map<String, Color> strToColMap;
 	static {
@@ -92,6 +94,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		
 		surfer = new CoinPassSurfer();
 		surfer.setVisible(true);
+		startTime = System.nanoTime();
 	}
 	
 	
@@ -174,12 +177,14 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 		
 		if (btn.equals(loginBtn)) {
 			if (passEntry.equals(getCoinPass())) {
-				JOptionPane.showMessageDialog(loginBtn, "Successfully logged in.");
+				stopTime = System.nanoTime()-startTime;
+				long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
+				JOptionPane.showMessageDialog(loginBtn, "Successfully logged in. Total Time: " + seconds + " seconds.");
 				surfer.surferEvaluate();
 				new Welcome(dbRunner).setVisible(true);
 				dispose();
 			} else {
-				JOptionPane.showMessageDialog(loginBtn, "Successfully logged in.");
+				JOptionPane.showMessageDialog(loginBtn, "Failed to login.");
 				new InitialLogin(dbRunner, Method.COIN).setVisible(true);
 				surfer.dispose();
 				dispose();

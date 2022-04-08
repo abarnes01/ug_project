@@ -192,19 +192,21 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 	}
 
 	private void insertCoinPassDetails(Connection connection, String username, String password, String coinpass) throws Exception {
-		PreparedStatement st = (PreparedStatement)connection.prepareStatement("Select username from user where username=?");
+		PreparedStatement st = (PreparedStatement)connection.prepareStatement("Select * from user where username=?");
 		st.setString(1, username);
 		ResultSet rs = st.executeQuery();
-		
-		if (rs.next()) {
-			JOptionPane.showMessageDialog(registerBtn, "User already exists. Inserting coin pass details only.");
-		} else {
+		if (!rs.next()) {
 			String query = "INSERT INTO user(username,password) values('" + username + "','" + password.hashCode() + "')";
 			Statement statement = connection.createStatement();
 			int x = statement.executeUpdate(query);
 			if(x == 0) {
 				System.err.println("Error: User already exists.");
-			} 
+			}
+		} else {
+			if (rs.getInt("password") != password.hashCode()) {
+				JOptionPane.showMessageDialog(registerBtn, "Password for existing user is incorrect.");
+				return;
+			}
 		}
 		PreparedStatement useridst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
 		useridst.setString(1, username);
