@@ -1,6 +1,8 @@
 package eclipse.swing;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -24,6 +26,7 @@ import javax.swing.JOptionPane;
 public class SimpleRegistration extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
+	private GridBagConstraints gbc = new GridBagConstraints();
 	private DatabaseRunner dbRunner;
 	private JPanel contentPane, formPanel, buttonPanel;
 	private JTextField usernameField;
@@ -33,7 +36,7 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 
 	public SimpleRegistration(DatabaseRunner dbRunner) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 150);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -55,11 +58,21 @@ public class SimpleRegistration extends JFrame implements ActionListener{
 		backBtn = new JButton("\u2190");
 		backBtn.addActionListener(this);
 		
+		formPanel.setLayout(new GridBagLayout());
+		
 		// Set the features to the panels
-		formPanel.add(usernameLbl);
-		formPanel.add(usernameField);
-		formPanel.add(passLbl);
-		formPanel.add(passwordField);
+		gbc.gridx = 0; gbc.gridy = 0;
+		formPanel.add(usernameLbl, gbc);
+		
+		gbc.gridx = 1; gbc.gridy = 0;
+		formPanel.add(usernameField, gbc);
+		
+		gbc.gridx = 0; gbc.gridy = 1;
+		formPanel.add(passLbl, gbc);
+		
+		gbc.gridx = 1; gbc.gridy = 1;
+		formPanel.add(passwordField, gbc);
+		
 		buttonPanel.add(backBtn);
 		buttonPanel.add(registerBtn);
 		
