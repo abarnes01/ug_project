@@ -9,20 +9,21 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 
 public class DatabaseRunner {
 	
-	private String dburl, dbname, dbpass;
+	private String mySQLurl, dburl, dbname, dbpass;
 	
-	public DatabaseRunner(String dburl, String dbname, String dbpass) {
-		this.dburl = dburl;
+	public DatabaseRunner(String mySQLurl, String dbname, String dbpass) {
+		this.mySQLurl = mySQLurl;
+		this.dburl = mySQLurl+"gp_database";
 		this.dbname = dbname;
 		this.dbpass = dbpass;
 	}
 		
-	public final String getDburl() {
-		return dburl;
+	public final String getmySQLurl() {
+		return mySQLurl;
 	}
 
-	public final void setDburl(String dburl) {
-		this.dburl = dburl;
+	public final void setmySQLurl(String mySQLurl) {
+		this.mySQLurl = mySQLurl;
 	}
 
 	public final String getDbname() {
@@ -40,16 +41,20 @@ public class DatabaseRunner {
 	public final void setDbpass(String dbpass) {
 		this.dbpass = dbpass;
 	}
+	
+	public final String getDburl() {
+		return dburl;
+	}
+
+	public final void setDburl(String dburl) {
+		this.dburl = dburl;
+	}
 
 	public void createDB() throws Exception {
 		
 		DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 		
-		String url = "jdbc:mysql://localhost:3306/";
-		String dbname = "root";
-		String dbpass = "";
-		
-		Connection con = DriverManager.getConnection(url, dbname, dbpass);
+		Connection con = DriverManager.getConnection(mySQLurl, dbname, dbpass);
 		System.out.println("Database connection established...");
 		
 		ScriptRunner sr = new ScriptRunner(con);
@@ -68,11 +73,7 @@ public class DatabaseRunner {
 	
 		DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 		
-		String url = "jdbc:mysql://localhost:3306/";
-		String dbname = "root";
-		String dbpass = "";
-		
-		Connection con = DriverManager.getConnection(url, dbname, dbpass);
+		Connection con = DriverManager.getConnection(mySQLurl, dbname, dbpass);
 		System.out.println("Database connection established...");
 		
 		ScriptRunner sr = new ScriptRunner(con);
@@ -90,7 +91,7 @@ public class DatabaseRunner {
 	
 	public Boolean isConnected() {
 		try {
-			Connection connection = DriverManager.getConnection(dburl, dbname, dbpass);
+			Connection connection = DriverManager.getConnection(mySQLurl, dbname, dbpass);
 			connection.close();
 			return true;
 		} catch (Exception e) {

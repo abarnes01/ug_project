@@ -139,10 +139,15 @@ public class Welcome extends JFrame implements ActionListener {
 		} else if (btn.equals(resetDbBtn)) {
 			try {
 				dbRunner.dropDB();
-				dbRunner.createDB();
 				JOptionPane.showMessageDialog(resetDbBtn, "Database reinitialized.");
 			} catch (Exception e) {
 				System.err.println("Could not drop database.");
+				e.printStackTrace();
+			}
+			try {
+				dbRunner.createDB();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

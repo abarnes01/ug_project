@@ -1,1 +1,1 @@
-drop database gp_database;
+drop database if exists gp_database;

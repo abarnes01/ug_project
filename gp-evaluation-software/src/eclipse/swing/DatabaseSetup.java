@@ -53,7 +53,7 @@ public class DatabaseSetup extends JFrame implements ActionListener {
 		formPanel = new JPanel();
 		btnPanel = new JPanel();
 		
-		dbUrlLbl = new JLabel("DB Url: ");
+		dbUrlLbl = new JLabel("mySQL Url: ");
 		dbNameLbl = new JLabel("DB Name: ");
 		dbPassLbl = new JLabel("DB Password: ");
 		dbUrlField = new JTextField(25);
@@ -61,7 +61,7 @@ public class DatabaseSetup extends JFrame implements ActionListener {
 		dbPassField = new JPasswordField(25);
 		
 		// example text to help user
-		dbUrlField.setText("jdbc:mysql://localhost:3306/gp_database");
+		dbUrlField.setText("jdbc:mysql://localhost:3306/");
 		dbNameField.setText("root");
 		dbPassField.setText("");
 		
