@@ -49,6 +49,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 	private Method method;
 	private int userID;
 	private long startTime, stopTime;
+	private CoinPassLogin cpLogin;
 	
 	private static Map<Method, String> methodToStrMap;
 	static {
@@ -218,17 +219,20 @@ public class InitialLogin extends JFrame implements ActionListener{
 		}
 	}
 	
-	private void checkCoinPassDetails(Connection connection) throws SQLException {
+	public Boolean checkCoinPassDetails(Connection connection) throws SQLException {
 		PreparedStatement cpSt = (PreparedStatement) connection.prepareStatement("Select coinpass from coin_pass_method where userID=?");
 		cpSt.setInt(1, userID);
 		ResultSet cpRs = cpSt.executeQuery();
 		if (cpRs.next()) {
 			System.out.println("Got coin pass method details");
 			String coinPass = cpRs.getString("coinpass");
-			new CoinPassLogin(dbRunner, coinPass).setVisible(true);
+			cpLogin = new CoinPassLogin(dbRunner, coinPass);
+			cpLogin.setVisible(true);
 			dispose();
+			return true;
 		} else {
 			JOptionPane.showMessageDialog(loginBtn, "User does not have coin pass method details.");
+			return false;
 		}
 	}
 	
@@ -246,5 +250,18 @@ public class InitialLogin extends JFrame implements ActionListener{
 			JOptionPane.showMessageDialog(loginBtn, "User does not have colour wheel method details.");
 		}
 	}
+
+	public final int getUserID() {
+		return userID;
+	}
+
+	public final void setUserID(int userID) {
+		this.userID = userID;
+	}
+
+	public final CoinPassLogin getCpLogin() {
+		return cpLogin;
+	}
+	
 }
 

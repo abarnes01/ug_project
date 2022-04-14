@@ -191,7 +191,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		}
 	}
 
-	private void insertCoinPassDetails(Connection connection, String username, String password, String coinpass) throws Exception {
+	public Boolean insertCoinPassDetails(Connection connection, String username, String password, String coinpass) throws Exception {
 		PreparedStatement st = (PreparedStatement)connection.prepareStatement("Select * from user where username=?");
 		st.setString(1, username);
 		ResultSet rs = st.executeQuery();
@@ -205,7 +205,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		} else {
 			if (rs.getInt("password") != password.hashCode()) {
 				JOptionPane.showMessageDialog(registerBtn, "Password for existing user is incorrect.");
-				return;
+				return false;
 			}
 		}
 		PreparedStatement useridst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
@@ -219,6 +219,7 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		ResultSet checkdbrs = checkdbst.executeQuery();
 		if (checkdbrs.next()) {
 			JOptionPane.showMessageDialog(registerBtn, "Coin pass method for user already exists.");
+			return false;
 		} else {
 			String gridQuery = "INSERT INTO coin_pass_method(userID,coinpass) values(?, ?)";
 			PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
@@ -227,10 +228,55 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 			int y = gridst.executeUpdate();
 			if(y == 0) {
 				System.err.println("Error: Coin pass method for user exists.");
+				return false;
 			} else {
 				new InitialLogin(dbRunner, Method.COIN).setVisible(true);
 				dispose();
+				return true;
 			}
-		}
+		}	
 	}
+
+	// for JUnit Testing
+
+	public final JButton getRegisterBtn() {
+		return registerBtn;
+	}
+
+
+	public final void setRegisterBtn(JButton registerBtn) {
+		this.registerBtn = registerBtn;
+	}
+
+
+	public final JTextField getNameField() {
+		return nameField;
+	}
+
+
+	public final void setNameField(JTextField nameField) {
+		this.nameField = nameField;
+	}
+
+
+	public final JTextField getCoinPassField() {
+		return coinPassField;
+	}
+
+
+	public final void setCoinPassField(JTextField coinPassField) {
+		this.coinPassField = coinPassField;
+	}
+
+
+	public final JPasswordField getPassField() {
+		return passField;
+	}
+
+
+	public final void setPassField(JPasswordField passField) {
+		this.passField = passField;
+	}
+	
+	
 }

@@ -98,7 +98,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 	}
 	
 	
-	public void makeCoins() {
+	public Boolean makeCoins() {
 		System.out.println("Creating coins...");
 		try {
 			
@@ -164,9 +164,11 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 				coinPanel.add(coin);
 			}
 			System.out.println("Coins created.");
+			return true;
 		} catch (Exception e) {
 			System.err.println("Error: Could not create coins.");
 			e.printStackTrace();
+			return false;
 		}
 	}
 

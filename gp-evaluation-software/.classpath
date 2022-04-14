@@ -22,5 +22,7 @@
 	<classpathentry kind="lib" path="/Users/adamjbarnes/Documents/gp-project/ab1049/SQL Dependencies/mysql-connector-java-8.0.27.jar"/>
 	<classpathentry kind="lib" path="/Users/adamjbarnes/Documents/gp-project/ab1049/SQL Dependencies/mybatis-3.4.1.jar"/>
 	<classpathentry kind="lib" path="/Users/adamjbarnes/Documents/gp-project/ab1049/Ext Dependencies/commons-lang3-3.12.0.jar"/>
+	<classpathentry kind="lib" path="/Users/adamjbarnes/Documents/gp-project/ab1049/Ext Dependencies/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="/Users/adamjbarnes/Documents/gp-project/ab1049/Ext Dependencies/hamcrest-core-1.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
