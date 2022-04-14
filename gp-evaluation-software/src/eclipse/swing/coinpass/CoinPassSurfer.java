@@ -44,7 +44,7 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 7491248350836673542L;
 	private JPanel contentPane, mainPane, bottomPane;
 	private JButton closeBtn;
-	private Integer passLength, i;
+	private Integer k;
 	private Integer errorCount;
 	private ArrayList<Coin> viewedCoins = new ArrayList<Coin>();
 	
@@ -65,7 +65,7 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 
 	public CoinPassSurfer() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 450);
+		setBounds(100, 100, 450, 550);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -76,9 +76,8 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 		mainPane = new JPanel();
 		bottomPane = new JPanel();
 		
-		passLength = 0;
 		errorCount = 0;
-		i = 0;
+		k = 0;
 
 		closeBtn = new JButton("Close");
 		closeBtn.addActionListener(this);
@@ -98,38 +97,30 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 		JPanel viewedElements = new JPanel();
 		Coin coin = new Coin(viewedImg, viewedNum, viewedCol);
 		try {
-			coin = viewedCoins.get(i);
-			System.out.println("got coin " + i);
+			coin = viewedCoins.get(k);
 			try {
 				if (!buffImgsEqual(coin.viewedImg, viewedImg)) {
 					coin.viewedImg = null;
 					System.out.println("ping1");
 				}
-				System.out.println(coin.viewedNum + " and " + viewedNum);	
-			} catch (NullPointerException e) {
-				System.out.println("null pointer img");
-			}
+			} catch (NullPointerException e) {}
 			
 			try {
 				if (!(coin.viewedNum.equals(viewedNum))) {
 					coin.viewedNum = null;
-					System.out.println("ping2");
 				} 
-			} catch (NullPointerException e){
-				System.out.println("null pointer num");
-			}
+			} catch (NullPointerException e){}
+			
 			try {
 				if (!(coin.viewedCol.equals(viewedCol))) {
 					coin.viewedCol = null;
-					System.out.println("ping3");
 				}
-			} catch (NullPointerException e) {
-				System.out.println("null pointer col");
-			}
+			} catch (NullPointerException e) {}
+			
 		} catch (IndexOutOfBoundsException e) {
 			viewedCoins.add(coin);
-			System.out.println("add new coin ping4");
 		}
+		
 		try {
 			JLabel img = new JLabel(new ImageIcon(coin.viewedImg));
 			viewedElements.add(img);
@@ -152,8 +143,7 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 		Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
 		viewedElements.setBorder(border);
 		viewedElements.setBackground(Color.LIGHT_GRAY);
-		passLength += 1;
-		i += 1;
+		k += 1;
 		mainPane.add(viewedElements);
 		mainPane.revalidate();
 		mainPane.repaint();
@@ -161,7 +151,7 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 	
 	public void restartSurfer() {
 		errorCount += 1;
-		i = 0;
+		k = 0;
 		mainPane.removeAll();
 		mainPane.revalidate();
 		mainPane.repaint();
@@ -175,7 +165,7 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 				+ "<p>Whether they are aware of the algorithm or not, they can see which coin you are pressing and the elements involved.</p>"
 				+ "<p>There are 3 elements for each coin, so for password of length k = 1, there are 3 combinations for the password." 
 				+ " The password must be of length 3 at least however, and the number of combinations for this is 3^3 = 27.</p>"
-				+ "<p>In this example, the password length is k = " + passLength + ". This means the number of combinations is 3^" + passLength + " = " + (int)Math.pow(3, passLength) + ".</p>"
+				+ "<p>In this example, the password length is k = " + k + ". This means the number of combinations is 3^" + k + " = " + (int)Math.pow(3, k) + ".</p>"
 				+ "<h3>Incorrect input</h3>"
 				+ "<p>Multiple login attempts help to uncover the elements one by one of the password. Incorrect input, forcing the user to enter again, means the coins on display will be reshuffled."
 				+ " This gives the shoulder surfer another chance to wittle down the elements being selected.</p>"

@@ -78,7 +78,7 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		passwordLbl = new JLabel("Password: ");
 		colChosenTxt = new JLabel("Selected colour: ");
 		wheelPassLbl = new JLabel("Wheel Pass: ");
-		chosenCol = new JLabel();
+		chosenCol = new JLabel("none");
 		nameField = new JTextField(10);
 		passField = new JPasswordField(10);
 		wheelPassField = new JPasswordField(10);
@@ -102,25 +102,29 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		for (int i = 0; i < max; i++) {
 			String colourStr = colToStrMap.get(colList.get(i));
 			JLabel colourLbl = new JLabel(colourStr);
-			colourLbl.setForeground(colList.get(i));
+			if (colList.get(i).equals(Color.BLUE)) {
+				colourLbl.setForeground(Color.WHITE);
+			}
+			else {
+				colourLbl.setForeground(Color.BLACK);
+			}
 			Border border = BorderFactory.createLineBorder(colList.get(i), 5);
 			colourLbl.setBorder(border);
-			colourLbl.setBackground(Color.BLACK);
+			colourLbl.setBackground(colList.get(i));
 			colourLbl.setOpaque(true);
 			colourLbl.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent me) {
-					System.out.println("clicked");
 					chosenCol.setText(colourStr);
 					chosenCol.setForeground(colourLbl.getForeground());
-					Border border = BorderFactory.createLineBorder(colourLbl.getForeground(), 5);
+					Border border = BorderFactory.createLineBorder(colourLbl.getBackground(), 5);
 					chosenCol.setBorder(border);
-					chosenCol.setBackground(Color.BLACK);
+					chosenCol.setBackground(colourLbl.getBackground());
 					chosenCol.setOpaque(true);
 				}
 			});
 			coloursPanel.add(colourLbl);
 		}
-		coloursPanel.setLayout(new GridLayout(2, 4));
+		coloursPanel.setLayout(new GridLayout(2, 4, 5, 5));
 		mainPanel.add(formPanel);
 		mainPanel.add(coloursPanel);
 		buttonPanel.add(backBtn);

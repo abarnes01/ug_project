@@ -122,6 +122,7 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 			charLists.add(currentChars);
 		}
 		
+		// create wheel with shuffled colours and characters
 		wc = new WheelCanvas(width, colList, charLists);
 		contentPane.add(wc, BorderLayout.CENTER);
 		contentPane.add(formPanel, BorderLayout.SOUTH);

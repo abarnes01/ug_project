@@ -27,11 +27,11 @@ public class WheelCanvas extends JComponent {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		for (int i = 0; i < 8; i++) {
-			drawCircle(g2d, i, colourList.get(i), charLists.get(i));
+			drawCircleSection(g2d, i, colourList.get(i), charLists.get(i));
 		}
 	}
 	
-	private void drawCircle(Graphics2D g2d, int i, Color colour, List<String> chars) {
+	private void drawCircleSection(Graphics2D g2d, int i, Color colour, List<String> chars) {
 		double x = 0;
 		double y = 0;
 		double w = width - 2;

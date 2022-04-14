@@ -36,14 +36,14 @@ public class Welcome extends JFrame implements ActionListener {
 			+ "<p><i>Warning: Do not use any real passwords. This is an experiment.</i></p>"
 			+ "<h2>(Digraph) Image Grid Approach</h2>"
 			+ "<p>The user selects two images for their password. In the login stage, there are different scenarios for login.</p>"
-			+ "<p><strong>Scenario A:</strong> Both password images are diagonal to each other -> select either image with is of (P1x, P2y) or (P2x, P1y).</p>"
-			+ "<p><strong>Scenario B:</strong> Both password images are on vertical vector -> select image below the chosen pass image.</p>"
-			+ "<p><strong>Scenario C:</strong> Both password images are on horizontal vector -> select image to the right of the chosen pass image.</p>"
+			+ "<p><strong>Scenario A:</strong> Both password images are diagonal to each other \u2192 select either image with is of (P1x, P2y) or (P2x, P1y).</p>"
+			+ "<p><strong>Scenario B:</strong> Both password images are on vertical vector \u2192 select image below the chosen pass image.</p>"
+			+ "<p><strong>Scenario C:</strong> Both password images are on horizontal vector \u2192 select image to the right of the chosen pass image.</p>"
 			+ "<h2>Colour Grid Approach</h2>"
-			+ "<p>The user selects a colour and a 6 letter password. In the login stage, type the first letter of the colour the users password falls into.</p>"
+			+ "<p>The user selects a colour and a 6 letter password. In the login stage, the first letter of the colour the users password falls into is entered into the password field.</p>"
 			+ "<h2>Coin Password Approach</h2>"
-			+ "<p>The users password is made up of 3 different elements: icon, number and colour. The user must choose at least one of each, and the password should be within 6 elements long.</p>"
-			+ "<p>In the login stage, the user selects the 'coin' that their current element falls into, clicking confirm. This is done for each element of the password. If incorrect, the user starts again.</p>"
+			+ "<p>The users password is made up of 3 different elements: icon, number and colour. The user must choose at least one of each, and the password should be within 6 elements long (2 of each element).</p>"
+			+ "<p>In the login stage, the user clicks the 'coin' that their current element falls into. This is done for each element of the password. If incorrect, the user starts again.</p>"
 			+ "<h2>Colour Wheel Approach</h2>"
 			+ "<p>The user selects a colour and a password that is of any letters, numbers, or '/' '.' characters.</p>"
 			+ "<p>In the login stage, the user spins the wheel so that their colour is on the current character of their password, clicking confirm. There are 3 warnings given for incorrect entry.</p><br>"
@@ -147,7 +147,6 @@ public class Welcome extends JFrame implements ActionListener {
 			try {
 				dbRunner.createDB();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
