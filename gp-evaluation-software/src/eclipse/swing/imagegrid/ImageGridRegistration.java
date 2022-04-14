@@ -182,7 +182,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
 					gridSize = Integer.parseInt(gridSizeStr);
-					insertImageGridDetails(connection, username, password, gridSize);
+					insertImageGridDetails(connection, username, password, gridSize, imageOne, imageTwo);
 					connection.close();
 				} catch (Exception exception) {
 					exception.printStackTrace();
@@ -213,7 +213,7 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 		}
 	}
 	
-	private void insertImageGridDetails(Connection connection, String username, String password, Integer gridSize) throws Exception {
+	public Boolean insertImageGridDetails(Connection connection, String username, String password, Integer gridSize, BufferedImage imgOne, BufferedImage imgTwo) throws Exception {
 		PreparedStatement st = (PreparedStatement)connection.prepareStatement("Select * from user where username=?");
 		st.setString(1, username);
 		ResultSet rs = st.executeQuery();
@@ -223,11 +223,12 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 			int x = statement.executeUpdate(query);
 			if(x == 0) {
 				JOptionPane.showMessageDialog(registerBtn, "User already exists.");
+				return false;
 			} 
 		} else {
 			if (rs.getInt("password") != password.hashCode()) {
 				JOptionPane.showMessageDialog(registerBtn, "Password for existing user is incorrect.");
-				return;
+				return false;
 			}
 		}
 		PreparedStatement useridst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
@@ -246,11 +247,11 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 			PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
 			
 			ByteArrayOutputStream baosOne = new ByteArrayOutputStream();
-			ImageIO.write(imageOne, "jpg", baosOne);
+			ImageIO.write(imgOne, "jpg", baosOne);
 			InputStream isOne = new ByteArrayInputStream(baosOne.toByteArray());
 			
 			ByteArrayOutputStream baosTwo = new ByteArrayOutputStream();
-			ImageIO.write(imageTwo, "jpg", baosTwo);
+			ImageIO.write(imgTwo, "jpg", baosTwo);
 			InputStream isTwo = new ByteArrayInputStream(baosTwo.toByteArray());
 			
 			gridst.setInt(1, userID);
@@ -263,15 +264,27 @@ public class ImageGridRegistration extends JFrame implements ActionListener{
 				gridst.setString(5, "preset");
 			} else {
 				System.err.println("Error. Random or preset not set.");
+				return false;
 			}
 			int y = gridst.executeUpdate();
 			if(y == 0) {
 				JOptionPane.showMessageDialog(registerBtn, "Image grid method for user already exists. 2nd box");
+				return false;
 			} else {
 				new InitialLogin(dbRunner, Method.IMAGEGRID).setVisible(true);
 				dispose();
+				return true;
 			}
 		}
+		return false;
+	}
+
+	public final void setGenRndmImg(Boolean genRndmImg) {
+		this.genRndmImg = genRndmImg;
+	}
+
+	public final void setGenPrstImg(Boolean genPrstImg) {
+		this.genPrstImg = genPrstImg;
 	}
 	
 }

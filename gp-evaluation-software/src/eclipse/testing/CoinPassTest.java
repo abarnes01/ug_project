@@ -50,7 +50,6 @@ public class CoinPassTest {
 		connection.close();
 	}
 	
-	
 	@Test
 	public void testInvalidInitialLogin() throws Exception {
 		dbTestRunner.dropDB();

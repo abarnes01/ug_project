@@ -99,7 +99,7 @@ public class ImageGridLogin extends JFrame implements ActionListener {
 		return true;
 	}
 	
-	public void makeGrid() {
+	public Boolean makeGrid() {
 		System.out.println("Making grid...");
 		cancelBtn = new JButton("Cancel");
 		cancelBtn.addActionListener(this);
@@ -114,7 +114,7 @@ public class ImageGridLogin extends JFrame implements ActionListener {
 			if (randomOrPreset.equals("preset")) {
 				// use local preset images
 				for (int i = 0; i < gridSizeSqr-2; i++) {
-					BufferedImage prstImg = ImageIO.read(ImageGridLogin.class.getResource("/Images/"+Integer.toString(i)+".jpg"));;
+					BufferedImage prstImg = ImageIO.read(ImageGridLogin.class.getResource("/Images/"+Integer.toString(i)+".jpg"));
 					for (int j = 0; j < bufImages.size(); j++) {					
 						while (buffImgsEqual(bufImages.get(j), prstImg)) {
 							prstImg = ImageIO.read(ImageGridLogin.class.getResource("/Images/"+Integer.toString(new Random().nextInt(gridSizeSqr-2))+".jpg"));
@@ -221,9 +221,11 @@ public class ImageGridLogin extends JFrame implements ActionListener {
 			gridLayout = new GridLayout(gridSize, gridSize);
 			gridPanel.setLayout(gridLayout);
 			System.out.println("Grid made.\n");
+			return true;
 		} catch (Exception e) {
 			System.err.println("Error: Grid could not be made.\n");
 			e.printStackTrace();
+			return false;
 		}
 	}
 	
