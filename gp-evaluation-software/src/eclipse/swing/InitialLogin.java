@@ -50,6 +50,9 @@ public class InitialLogin extends JFrame implements ActionListener{
 	private int userID;
 	private long startTime, stopTime;
 	private CoinPassLogin cpLogin;
+	private ColourGridLogin cgLogin;
+	private ColourWheelLogin cwLogin;
+	private ImageGridLogin igLogin;
 	
 	private static Map<Method, String> methodToStrMap;
 	static {
@@ -184,7 +187,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 		}
 	}
 	
-	private void checkImageGridDetails(Connection connection) throws SQLException {
+	private Boolean checkImageGridDetails(Connection connection) throws SQLException {
 		PreparedStatement igSt = (PreparedStatement) connection.prepareStatement("Select gridSize, imageOne, imageTwo, randomOrPreset from image_grid_method where userID=?");
 		igSt.setInt(1, userID);
 		ResultSet igRs = igSt.executeQuery();
@@ -194,28 +197,35 @@ public class InitialLogin extends JFrame implements ActionListener{
 			try {
 				BufferedImage imgOne = ImageIO.read(ioIS);
 				BufferedImage imgTwo = ImageIO.read(itIS);
-				new ImageGridLogin(dbRunner, igRs.getInt(1), imgOne, imgTwo, igRs.getString(4)).setVisible(true);
+				igLogin = new ImageGridLogin(dbRunner, igRs.getInt(1), imgOne, imgTwo, igRs.getString(4));
+				igLogin.setVisible(true);
 				dispose();
+				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println("Failed to create login page.");
+				return false;
 			}
 		} else {
 			JOptionPane.showMessageDialog(loginBtn, "User does not have image grid method details.");
+			return false;
 		}
 	}
 	
-	private void checkColourGridDetails(Connection connection) throws SQLException {
+	public Boolean checkColourGridDetails(Connection connection) throws SQLException {
 		PreparedStatement cglSt = (PreparedStatement) connection.prepareStatement("Select patternPass from colour_grid_method where userID=?");
 		cglSt.setInt(1, userID);
 		ResultSet cglRs = cglSt.executeQuery();
 		if (cglRs.next()) {
 			System.out.println("Got grid method details");
 			String patternPass = cglRs.getString("patternPass");
-			new ColourGridLogin(dbRunner, patternPass).setVisible(true);
+			cgLogin = new ColourGridLogin(dbRunner, patternPass);
+			cgLogin.setVisible(true);
 			dispose();
+			return true;
 		} else {
 			JOptionPane.showMessageDialog(loginBtn, "User does not have colour grid method details.");
+			return false;
 		}
 	}
 	
@@ -236,7 +246,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 		}
 	}
 	
-	private void checkColourWheelDetails(Connection connection) throws SQLException{
+	private Boolean checkColourWheelDetails(Connection connection) throws SQLException{
 		PreparedStatement cpSt = (PreparedStatement) connection.prepareStatement("Select chosenColour, wheelPass from colour_wheel_method where userID=?");
 		cpSt.setInt(1, userID);
 		ResultSet cpRs = cpSt.executeQuery();
@@ -244,10 +254,13 @@ public class InitialLogin extends JFrame implements ActionListener{
 			System.out.println("Got colour wheel method details");
 			String chosenCol = cpRs.getString("chosenColour");
 			String wheelPass = cpRs.getString("wheelPass");
-			new ColourWheelLogin(dbRunner, chosenCol, wheelPass).setVisible(true);
+			cwLogin = new ColourWheelLogin(dbRunner, chosenCol, wheelPass);
+			cwLogin.setVisible(true);
 			dispose();
+			return true;
 		} else {
 			JOptionPane.showMessageDialog(loginBtn, "User does not have colour wheel method details.");
+			return false;
 		}
 	}
 
@@ -262,6 +275,22 @@ public class InitialLogin extends JFrame implements ActionListener{
 	public final CoinPassLogin getCpLogin() {
 		return cpLogin;
 	}
+
+	public final ColourGridLogin getCgLogin() {
+		return cgLogin;
+	}
+
+	public final ColourWheelLogin getCwLogin() {
+		return cwLogin;
+	}
+
+	public final ImageGridLogin getIgLogin() {
+		return igLogin;
+	}
+	
+	
+	
+	
 	
 }
 

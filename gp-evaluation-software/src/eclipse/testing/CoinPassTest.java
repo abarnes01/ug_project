@@ -4,15 +4,12 @@ import static org.junit.Assert.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import eclipse.swing.coinpass.CoinPassRegistration; 
 import eclipse.swing.coinpass.CoinPassLogin;
-import eclipse.swing.coinpass.CoinPassSurfer;
 import eclipse.sql.DatabaseRunner;
 import eclipse.swing.InitialLogin;
 import eclipse.swing.Method;
-import eclipse.swing.coinpass.CoinCanvas;
 import org.junit.Test;
 
 public class CoinPassTest {
@@ -32,8 +29,7 @@ public class CoinPassTest {
 		String username = cpRegTestFrame.getNameField().getText();
 		String password = String.valueOf(cpRegTestFrame.getPassField().getPassword());
 		String coinpass = cpRegTestFrame.getCoinPassField().getText();
-		Connection connection;
-		connection = DriverManager.getConnection(dbTestRunner.getDburl(),dbTestRunner.getDbname(),dbTestRunner.getDbpass());
+		Connection connection = DriverManager.getConnection(dbTestRunner.getDburl(),dbTestRunner.getDbname(),dbTestRunner.getDbpass());
 		assertTrue(cpRegTestFrame.insertCoinPassDetails(connection, username, password, coinpass));
 		connection.close();
 	}
@@ -68,7 +64,6 @@ public class CoinPassTest {
 	
 	@Test
 	public void testInvalidInitialLogin() throws Exception {
-		//testValidRegistration();
 		dbTestRunner.dropDB();
 		dbTestRunner.createDB();
 		initLoginTestFrame = new InitialLogin(dbTestRunner, Method.COIN);

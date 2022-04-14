@@ -243,40 +243,16 @@ public class CoinPassRegistration extends JFrame implements ActionListener {
 		return registerBtn;
 	}
 
-
-	public final void setRegisterBtn(JButton registerBtn) {
-		this.registerBtn = registerBtn;
-	}
-
-
 	public final JTextField getNameField() {
 		return nameField;
 	}
-
-
-	public final void setNameField(JTextField nameField) {
-		this.nameField = nameField;
-	}
-
 
 	public final JTextField getCoinPassField() {
 		return coinPassField;
 	}
 
-
-	public final void setCoinPassField(JTextField coinPassField) {
-		this.coinPassField = coinPassField;
-	}
-
-
 	public final JPasswordField getPassField() {
 		return passField;
 	}
-
-
-	public final void setPassField(JPasswordField passField) {
-		this.passField = passField;
-	}
-	
 	
 }

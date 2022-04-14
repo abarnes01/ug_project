@@ -42,12 +42,7 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 	private Color patternPassCol;
 	private long startTime;
 	// array of all the colour tiles that need to be placed on the grid
-	private List<Color> ColsOnGrid = new ArrayList<Color>( Arrays.asList(Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED,
-			Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE,
-			Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK,
-			Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE,
-			Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN,
-			Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW));
+	private List<Color> ColsOnGrid;
 	
 	private static Map<Color, String> colMap;
 	static {
@@ -137,10 +132,17 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 		patternPass = str;
 	}
 	
-	public void makeGrid() {
+	public Boolean makeGrid() {
 		// create 6 by 6 grid to add to the main panel
 		gridPanel = new JPanel();
 		gridLayout = new GridLayout(6,6);
+		
+		ColsOnGrid = new ArrayList<Color>( Arrays.asList(Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED,
+				Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE,
+				Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK, Color.PINK,
+				Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE, Color.WHITE,
+				Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN, Color.GREEN,
+				Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW));
 		
 		// in case patternPass exists
 		try {
@@ -179,11 +181,12 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 				// to make sure all colour are evenly distributed
 				ColsOnGrid.remove(randColIndex);
 			}
-		// IF no pattern pass, which is also dealt with in simple login
-		} catch (NullPointerException e) {
+			mainPanel.add(gridPanel);
+			return true;
+		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
-		mainPanel.add(gridPanel);
 	}
 }
 

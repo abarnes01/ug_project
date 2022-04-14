@@ -105,7 +105,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		}
 	}
 	
-	private void insertColourGridDetails(Connection connection, String username, String password, String patternPass) throws Exception {
+	public Boolean insertColourGridDetails(Connection connection, String username, String password, String patternPass) throws Exception {
 		PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select * from user where username=?");
 		st.setString(1, username);
 		ResultSet rs = st.executeQuery();
@@ -119,7 +119,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		} else {
 			if (rs.getInt("password") != password.hashCode()) {
 				JOptionPane.showMessageDialog(registerBtn, "Password for existing user is incorrect.");
-				return;
+				return false;
 			}
 		}
 		PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
@@ -133,6 +133,7 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		ResultSet checkdbrs = checkdbst.executeQuery();
 		if (checkdbrs.next()) {
 			JOptionPane.showMessageDialog(registerBtn, "Colour grid method for user already exists.");
+			return false;
 		} else {
 			String gridQuery = "INSERT INTO colour_grid_method(userID,patternPass) values(?, ?)";
 			PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
@@ -141,11 +142,32 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 			int y = gridst.executeUpdate();
 			if(y == 0) {
 				System.err.println("Error: Colour grid details for user already exists. Insertion failed.");
+				return false;
 			} else {
 				new InitialLogin(dbRunner, Method.COLOURGRID).setVisible(true);
 				dispose();
+				return true;
 			}
 		}
+	}
+
+	public final JTextField getUsernameField() {
+		return usernameField;
+	}
+
+
+	public final JPasswordField getPasswordField() {
+		return passwordField;
+	}
+
+
+	public final JPasswordField getPatternPField() {
+		return patternPField;
+	}
+
+
+	public final JButton getRegisterBtn() {
+		return registerBtn;
 	}
 
 }
