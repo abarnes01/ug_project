@@ -187,7 +187,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 		}
 	}
 	
-	private Boolean checkImageGridDetails(Connection connection) throws SQLException {
+	public Boolean checkImageGridDetails(Connection connection) throws SQLException {
 		PreparedStatement igSt = (PreparedStatement) connection.prepareStatement("Select gridSize, imageOne, imageTwo, randomOrPreset from image_grid_method where userID=?");
 		igSt.setInt(1, userID);
 		ResultSet igRs = igSt.executeQuery();
@@ -246,7 +246,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 		}
 	}
 	
-	private Boolean checkColourWheelDetails(Connection connection) throws SQLException{
+	public Boolean checkColourWheelDetails(Connection connection) throws SQLException{
 		PreparedStatement cpSt = (PreparedStatement) connection.prepareStatement("Select chosenColour, wheelPass from colour_wheel_method where userID=?");
 		cpSt.setInt(1, userID);
 		ResultSet cpRs = cpSt.executeQuery();

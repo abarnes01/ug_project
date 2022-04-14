@@ -10,44 +10,49 @@ import org.junit.Test;
 import eclipse.sql.DatabaseRunner;
 import eclipse.swing.InitialLogin;
 import eclipse.swing.Method;
-import eclipse.swing.colourgrid.ColourGridLogin;
-import eclipse.swing.colourgrid.ColourGridRegistration;
+import eclipse.swing.colourwheel.ColourWheelLogin;
+import eclipse.swing.colourwheel.ColourWheelRegistration;
 
-public class ColourGridTest {
+public class ColourWheelTest {
 	DatabaseRunner dbTestRunner = new DatabaseRunner("jdbc:mysql://localhost:3306/", "root", "");
-	ColourGridRegistration cgRegTestFrame;
-	ColourGridLogin cgLoginTestFrame;
+	ColourWheelRegistration cwRegTestFrame;
+	ColourWheelLogin cwLoginTestFrame;
 	InitialLogin initLoginTestFrame;
 	
 	@Test
 	public void testValidRegistration() throws Exception {
-		cgRegTestFrame = new ColourGridRegistration(dbTestRunner);
+		cwRegTestFrame = new ColourWheelRegistration(dbTestRunner);
 		dbTestRunner.dropDB();
 		dbTestRunner.createDB();
 		String username = "username";
 		String password = "password";
-		String patternPass = "carlos";
+		String colStr = "orange";
+		String wheelPass = "car.los";
+		
 		Connection connection = DriverManager.getConnection(dbTestRunner.getDburl(),dbTestRunner.getDbname(),dbTestRunner.getDbpass());
-		assertTrue(cgRegTestFrame.insertColourGridDetails(connection, username, password, patternPass));
+		assertTrue(cwRegTestFrame.insertColourWheelDetails(connection, username, password, wheelPass, colStr));
 		connection.close();
 	}
 	
 	@Test
 	public void testInvalidRegistration() throws Exception {
-		cgRegTestFrame = new ColourGridRegistration(dbTestRunner);
+		cwRegTestFrame = new ColourWheelRegistration(dbTestRunner);
 		dbTestRunner.dropDB();
 		dbTestRunner.createDB();
 		String username = "username";
 		String password = "password";
-		String patternPass = "carlos";
+		String colStr = "orange";
+		String wheelPass = "car.los";
 		Connection connection = DriverManager.getConnection(dbTestRunner.getDburl(),dbTestRunner.getDbname(),dbTestRunner.getDbpass());
-		assertTrue(cgRegTestFrame.insertColourGridDetails(connection, username, password, patternPass));
+		assertTrue(cwRegTestFrame.insertColourWheelDetails(connection, username, password, wheelPass, colStr));
 		
 		// attempt to register another user
 		String username2 = "username";
 		String password2 = "password";
-		String patternPass2 = "andrew";
-		assertFalse(cgRegTestFrame.insertColourGridDetails(connection, username2, password2, patternPass2));
+		String colStr2 = "orange";
+		String wheelPass2 = "car.los";
+		
+		assertFalse(cwRegTestFrame.insertColourWheelDetails(connection, username2, password2, wheelPass2, colStr2));
 		connection.close();
 	}
 	
@@ -55,31 +60,20 @@ public class ColourGridTest {
 	public void testInvalidInitialLogin() throws Exception {
 		dbTestRunner.dropDB();
 		dbTestRunner.createDB();
-		initLoginTestFrame = new InitialLogin(dbTestRunner, Method.COLOURGRID);
+		initLoginTestFrame = new InitialLogin(dbTestRunner, Method.WHEEL);
 		initLoginTestFrame.setUserID(1);
 		Connection connection = DriverManager.getConnection(dbTestRunner.getDburl(),dbTestRunner.getDbname(),dbTestRunner.getDbpass());
-		assertFalse(initLoginTestFrame.checkColourGridDetails(connection));
+		assertFalse(initLoginTestFrame.checkColourWheelDetails(connection));
 		connection.close();
 	}
 	
 	@Test
 	public void testValidInitialLogin() throws Exception {
 		testValidRegistration();
-		initLoginTestFrame = new InitialLogin(dbTestRunner, Method.COLOURGRID);
+		initLoginTestFrame = new InitialLogin(dbTestRunner, Method.WHEEL);
 		initLoginTestFrame.setUserID(1);
 		Connection connection = DriverManager.getConnection(dbTestRunner.getDburl(),dbTestRunner.getDbname(),dbTestRunner.getDbpass());
-		assertTrue(initLoginTestFrame.checkColourGridDetails(connection));
+		assertTrue(initLoginTestFrame.checkColourWheelDetails(connection));
 		connection.close();
 	}
-	
-	@Test
-	public void testMakeGrid() throws Exception {
-		initLoginTestFrame = new InitialLogin(dbTestRunner, Method.COLOURGRID);
-		initLoginTestFrame.setUserID(1);
-		Connection connection = DriverManager.getConnection(dbTestRunner.getDburl(),dbTestRunner.getDbname(),dbTestRunner.getDbpass());
-		initLoginTestFrame.checkColourGridDetails(connection);
-		connection.close();
-		assertTrue(initLoginTestFrame.getCgLogin().makeGrid());
-	}
-	
 }

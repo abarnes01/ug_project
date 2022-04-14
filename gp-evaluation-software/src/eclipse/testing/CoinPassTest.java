@@ -23,12 +23,9 @@ public class CoinPassTest {
 		cpRegTestFrame = new CoinPassRegistration(dbTestRunner);
 		dbTestRunner.dropDB();
 		dbTestRunner.createDB();
-		cpRegTestFrame.getNameField().setText("username");
-		cpRegTestFrame.getPassField().setText("password");
-		cpRegTestFrame.getCoinPassField().setText(":0.png:2:blue:1.png:3:red");
-		String username = cpRegTestFrame.getNameField().getText();
-		String password = String.valueOf(cpRegTestFrame.getPassField().getPassword());
-		String coinpass = cpRegTestFrame.getCoinPassField().getText();
+		String username = "username";
+		String password = "password";
+		String coinpass = ":0.png:2:blue:1.png:3:red";
 		Connection connection = DriverManager.getConnection(dbTestRunner.getDburl(),dbTestRunner.getDbname(),dbTestRunner.getDbpass());
 		assertTrue(cpRegTestFrame.insertCoinPassDetails(connection, username, password, coinpass));
 		connection.close();
@@ -39,26 +36,18 @@ public class CoinPassTest {
 		cpRegTestFrame = new CoinPassRegistration(dbTestRunner);
 		dbTestRunner.dropDB();
 		dbTestRunner.createDB();
-		cpRegTestFrame.getNameField().setText("username");
-		cpRegTestFrame.getPassField().setText("password");
-		cpRegTestFrame.getCoinPassField().setText(":0.png:2:blue:1.png:3:red");
-		String username = cpRegTestFrame.getNameField().getText();
-		String password = String.valueOf(cpRegTestFrame.getPassField().getPassword());
-		String coinpass = cpRegTestFrame.getCoinPassField().getText();
+		String username = "username";
+		String password = "password";
+		String coinpass = ":0.png:2:blue:1.png:3:red";
 		Connection connection = DriverManager.getConnection(dbTestRunner.getDburl(),dbTestRunner.getDbname(),dbTestRunner.getDbpass());
 		assertTrue(cpRegTestFrame.insertCoinPassDetails(connection, username, password, coinpass));
-		connection.close();
 
 		// attempt to register another user
-		cpRegTestFrame.getNameField().setText("username");
-		cpRegTestFrame.getPassField().setText("password");
-		cpRegTestFrame.getCoinPassField().setText(":4.png:6:green:7.png:4:orange");
-		String username2 = cpRegTestFrame.getNameField().getText();
-		String password2 = String.valueOf(cpRegTestFrame.getPassField().getPassword());
-		String coinpass2 = cpRegTestFrame.getCoinPassField().getText();
-		Connection connection2 = DriverManager.getConnection(dbTestRunner.getDburl(),dbTestRunner.getDbname(),dbTestRunner.getDbpass());
-		assertFalse(cpRegTestFrame.insertCoinPassDetails(connection2, username2, password2, coinpass2));
-		connection2.close();
+		String username2 = "username";
+		String password2 = "password";
+		String coinpass2 = ":8.png:5:blue:4.png:5:green";
+		assertFalse(cpRegTestFrame.insertCoinPassDetails(connection, username2, password2, coinpass2));
+		connection.close();
 	}
 	
 	

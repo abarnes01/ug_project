@@ -167,7 +167,7 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		}
 	}
 	
-	private void insertColourWheelDetails(Connection connection, String username, String password, String wheelPass, String colStr) throws Exception {
+	public Boolean insertColourWheelDetails(Connection connection, String username, String password, String wheelPass, String colStr) throws Exception {
 		PreparedStatement st = (PreparedStatement) connection.prepareStatement("Select * from user where username=?");
 		st.setString(1, username);
 		ResultSet rs = st.executeQuery();
@@ -177,11 +177,12 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 			int x = statement.executeUpdate(query);
 			if(x == 0) {
 				System.err.println("Error: User already exists.");
+				return false;
 			}
 		} else {
 			if (rs.getInt("password") != password.hashCode()) {
 				JOptionPane.showMessageDialog(registerBtn, "Password for existing user is incorrect.");
-				return;
+				return false;
 			}
 		}
 		PreparedStatement nextst = (PreparedStatement) connection.prepareStatement("Select userID from user where username=?");
@@ -195,6 +196,7 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 		ResultSet checkdbrs = checkdbst.executeQuery();
 		if (checkdbrs.next()) {
 			JOptionPane.showMessageDialog(registerBtn, "Colour wheel method for user already exists.");
+			return false;
 		} else {
 			String gridQuery = "INSERT INTO colour_wheel_method(userID,chosenColour,wheelPass) values(?, ?, ?)";
 			PreparedStatement gridst = (PreparedStatement)connection.prepareStatement(gridQuery);
@@ -204,11 +206,31 @@ public class ColourWheelRegistration extends JFrame implements ActionListener {
 			int y = gridst.executeUpdate();
 			if(y == 0) {
 				System.err.println("Error: Colour wheel method for user already exists.");
+				return false;
 			} else {
 				new InitialLogin(dbRunner, Method.WHEEL).setVisible(true);
 				dispose();
+				return true;
 			}
 		}
 	}
+
+	public final JLabel getChosenCol() {
+		return chosenCol;
+	}
+
+	public final JTextField getNameField() {
+		return nameField;
+	}
+
+	public final JPasswordField getPassField() {
+		return passField;
+	}
+
+	public final JPasswordField getWheelPassField() {
+		return wheelPassField;
+	}
+	
+	
 
 }
