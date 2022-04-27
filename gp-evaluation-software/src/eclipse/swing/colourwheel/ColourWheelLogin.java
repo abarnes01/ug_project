@@ -170,8 +170,10 @@ public class ColourWheelLogin extends JFrame implements ActionListener {
 			if (passCount == passLength) {
 				stopTime = System.nanoTime()-startTime;
 				long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
+				int combinations = (int) (8 * (Math.pow(64, passLength)));
 				String colWheelLoginResultHtml = "<html><h1>Colour Wheel Login (Successful Login)</h1>"
 						+ "<p> <strong> Total time for login: </strong>" + seconds + " seconds. </p>"
+						+ "<p> <strong> Total combinations: </strong>" + combinations + ".</p>"
 						+ "<p>If the shoulder surfer knows the algorithm, they would still first need to know the users selected colour, <br>"
 						+ " and even then would need to brute force clicking confirm on the right selections of random text each time.</p>";
 				JOptionPane.showMessageDialog(loginBtn, String.format(colWheelLoginResultHtml));

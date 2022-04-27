@@ -40,7 +40,7 @@ public class Welcome extends JFrame implements ActionListener {
 			+ "<p><strong>Scenario B:</strong> Both password images are on vertical vector \u2192 select image below the chosen pass image.</p>"
 			+ "<p><strong>Scenario C:</strong> Both password images are on horizontal vector \u2192 select image to the right of the chosen pass image.</p>"
 			+ "<h2>Colour Grid Approach</h2>"
-			+ "<p>The user selects a colour and a 6 letter password. In the login stage, the first letter of the colour the users password falls into is entered into the password field.</p>"
+			+ "<p>The user selects a 6 letter password. In the login stage, the first letter of the colour the users password falls into is entered into the password field.</p>"
 			+ "<h2>Coin Password Approach</h2>"
 			+ "<p>The users password is made up of 3 different elements: icon, number and colour. The user must choose at least one of each, and the password should be within 6 elements long (2 of each element).</p>"
 			+ "<p>In the login stage, the user clicks the 'coin' that their current element falls into. This is done for each element of the password. If incorrect, the user starts again.</p>"

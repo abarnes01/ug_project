@@ -163,9 +163,8 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 		evaPane.setContentType("text/html");
 		String evaText = "<html><h2>What the shoulder surfer can gather</h2>"
 				+ "<p>Whether they are aware of the algorithm or not, they can see which coin you are pressing and the elements involved.</p>"
-				+ "<p>There are 3 elements for each coin, so for password of length k = 1, there are 3 combinations for the password." 
-				+ " The password must be of length 3 at least however, and the number of combinations for this is 3^3 = 27.</p>"
-				+ "<p>In this example, the password length is k = " + k + ". This means the number of combinations is 3^" + k + " = " + (int)Math.pow(3, k) + ".</p>"
+				+ "<p>There are 3 elements for each coin, and 10 inputs for each element, so for password of length k = 1, there are 30 combinations for the password."
+				+ "In this example, the password length is k = " + k + ". This means the number of combinations is (10*3)^" + k + " = " + (int)Math.pow(10*3, k) + ".</p>"
 				+ "<h3>Incorrect input</h3>"
 				+ "<p>Multiple login attempts help to uncover the elements one by one of the password. Incorrect input, forcing the user to enter again, means the coins on display will be reshuffled."
 				+ " This gives the shoulder surfer another chance to wittle down the elements being selected.</p>"
