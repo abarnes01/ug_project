@@ -78,6 +78,10 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 		contentPane.add(BtnPanel, BorderLayout.SOUTH);
 	}
 	
+	public Boolean containsValidChars(String input) {
+		return input.matches("[a-zA-Z0-9]*$");
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JButton btn = (JButton) event.getSource();
@@ -90,6 +94,8 @@ public class ColourGridRegistration extends JFrame implements ActionListener {
 			String dbpass = dbRunner.getDbpass();
 			if (username.isBlank() || password.isBlank() || patternPass.length() != 6) {
 				JOptionPane.showMessageDialog(registerBtn, "Username or password is empty or pattern pass does not equal 6.");
+			} else if (!containsValidChars(patternPass)) {
+				JOptionPane.showMessageDialog(registerBtn, "patternPass must contain characters ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.");
 			} else {
 				try {
 					Connection connection = DriverManager.getConnection(url,dbname,dbpass);
