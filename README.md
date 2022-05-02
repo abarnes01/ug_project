@@ -20,7 +20,7 @@ First, clone this repository to your machine.
 
 To use the suite, you need to have a MySQL server installed, up and running. Please follow the MySQL documentation to install MySQL on your machine [here](https://dev.mysql.com/doc/refman/8.0/en/installing.html).
 
-Start up the MySQL server before running. Have your MySQL [address](https://dev.mysql.com/doc/refman/8.0/en/installing.html), name and password on hand. It should be something like the following:
+Start up the MySQL server before running. Have your MySQL [address](https://serverfault.com/questions/129635/how-do-i-find-out-what-my-ip-address-of-my-mysql-host-is), name and password on hand. It should be something like the following:
 - url = "jdbc:mysql://localhost:3306/"
 - user = "root"
 - password = ""
