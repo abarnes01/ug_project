@@ -130,8 +130,8 @@ public class ColourGridLogin extends JFrame implements ActionListener{
 				long stopTime = System.nanoTime()-startTime;
 				long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
 				String colGridLoginResultHtml = "<html><h1>Colour Grid Login</h1>"
-						+ "<p> For a shoulder surfer who knows the algorithm and can see the entry of the colour (first letter), <br>"
-						+ " for this example they have under " + (float)seconds/6 + " seconds to memorise each letter of the users password.</p>"
+						+ "<p> For a shoulder surfer who knows the algorithm and can see each keyboard entry, <br>"
+						+ " they have under " + (float)(seconds/6)/ppResult.length() + " seconds to memorise each possible letter of the users password.</p>"
 						+ "<p> <strong>Total time for login:</strong> " + seconds + " seconds.</p>";
 				JOptionPane.showMessageDialog(loginBtn, String.format(colGridLoginResultHtml));
 				Welcome welcome = new Welcome(dbRunner);

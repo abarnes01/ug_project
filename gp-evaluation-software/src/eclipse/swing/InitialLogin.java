@@ -145,7 +145,7 @@ public class InitialLogin extends JFrame implements ActionListener{
 						long seconds = TimeUnit.SECONDS.convert(stopTime, TimeUnit.NANOSECONDS);
 						String simpleLoginResultHtml = "<html><h1>Simple Login</h1>"
 								+ "<p>Time taken to login: " + seconds + " seconds. </p>"
-								+ "<p>This provides no shoulder surfing resistance.</p><br>"
+								+ "<p>This provides little shoulder surfing resistance.</p><br>"
 								+ "<p>The keystroke entry and number of keystrokes <br>can be observed to reveal the password. </p>";
 						JOptionPane.showMessageDialog(loginBtn, String.format(simpleLoginResultHtml));
 						Welcome welcome = new Welcome(dbRunner);
