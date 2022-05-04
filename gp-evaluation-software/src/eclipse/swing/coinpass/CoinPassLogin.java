@@ -111,6 +111,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 			
 			numArr = new ArrayList<Integer>( Arrays.asList(1,2,3,4,5,6,7,8,9,10));
 			
+			// get all icons, packaged in JAR
 			for (int i = 0; i < 10; i++) {
 				BufferedImage img = ImageIO.read(CoinPassLogin.class.getResource("/Icons/" + Integer.toString(i) + ".png"));
 				iconArr.add(img);
@@ -128,10 +129,9 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 				Color colViewed = colArr.get(randCol);
 				coin.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent me) {
-						
 						if (!coinPassElements.isEmpty()) {
 							String str = coinPassElements.get(0);
-							
+							// check each element of clicked coin to see if it matches the current element in password
 							if (str.contains(".png") && iconMap.get(str) == iconViewed) {
 								passEntry += ":" + str;
 								coinPassElements.remove(0);
@@ -152,6 +152,7 @@ public class CoinPassLogin extends JFrame implements ActionListener {
 								surfer.restartSurfer();
 							}
 						}
+						// regenerate coins
 						coinPanel.removeAll();
 						coinPanel.revalidate();
 						coinPanel.repaint();

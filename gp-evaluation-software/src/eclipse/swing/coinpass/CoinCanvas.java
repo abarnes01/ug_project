@@ -26,12 +26,13 @@ public class CoinCanvas extends JComponent {
 	}
 	
 	protected void paintComponent(Graphics g) {
-		// g2d more functionality 
+		// graphics2d more useful than graphics package, so casting it
 		Graphics2D g2d = (Graphics2D) g;
 		
-		// smoothen graphic
+		// smoothen graphics
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
+		// draw circle with icon, number and colour
 		Ellipse2D.Double circle = new Ellipse2D.Double(width, height, 80, 80);
 		g2d.setColor(Color.LIGHT_GRAY);
 		g2d.fill(circle);

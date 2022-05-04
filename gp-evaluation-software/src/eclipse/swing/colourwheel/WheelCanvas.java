@@ -20,10 +20,7 @@ public class WheelCanvas extends JComponent {
 	}
 
 	protected void paintComponent(Graphics g) {
-		// g2d more functionality 
 		Graphics2D g2d = (Graphics2D) g;
-		
-		// smoothen graphic
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		for (int i = 0; i < 8; i++) {

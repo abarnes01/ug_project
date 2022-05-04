@@ -96,6 +96,8 @@ public class CoinPassSurfer extends JFrame implements ActionListener {
 	public void updateSurfer(BufferedImage viewedImg, String viewedNum, Color viewedCol) {
 		JPanel viewedElements = new JPanel();
 		Coin coin = new Coin(viewedImg, viewedNum, viewedCol);
+		// compare current coin at this index with the currently viewed elements
+		// remove any non-repeating elements through use of try catch clauses
 		try {
 			coin = viewedCoins.get(k);
 			try {
