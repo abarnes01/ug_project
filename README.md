@@ -43,5 +43,3 @@ _Please note: Only use these steps if Method 1 does not work._
   <li>All libraries and dependencies will have to be imported again to the build path. JRE 14 is needed.</li>
   <li>You can run DatabaseSetup.java in the IDE. Make sure the argument <code>-XstartOnFirstThread</code> is unchecked on MacOS.</li>
 </ol>
-
-_For any queries, please email me at [ab1049@student.le.ac.uk](ab1049@student.le.ac.uk)_
